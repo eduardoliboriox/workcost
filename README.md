@@ -50,7 +50,8 @@ Sistema de Metas - Venttos/
 ├─ producao.db
 ├─ ping.py
 ├─ Profile   
-├─ README.md   
+├─ README.md
+├─ README.EN.md   
 ├─ requirements.txt 
 ```
 ---
