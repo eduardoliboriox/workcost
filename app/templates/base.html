@@ -1,9 +1,8 @@
 <!doctype html>
-<html lang="pt-br" data-bs-theme="light">
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>{% block title %}Sistema{% endblock %}</title>
 
   <!-- Bootstrap -->
@@ -12,64 +11,51 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-  {% block head %}{% endblock %}
 </head>
 
 <body>
 
-<!-- ================= MOBILE HEADER ================= -->
+<!-- ================= HEADER MOBILE ================= -->
 <header class="mobile-header d-md-none">
   <div class="mobile-left">
     <div class="avatar">EL</div>
     <span class="username">Eduardo</span>
   </div>
-
   <div class="mobile-right">
-    <button class="icon-btn"><i class="bi bi-search"></i></button>
-    <button class="icon-btn"><i class="bi bi-bell"></i></button>
+    <i class="bi bi-search"></i>
+    <i class="bi bi-bell"></i>
   </div>
 </header>
 
-<!-- ================= DESKTOP APP ================= -->
-<div class="app d-none d-md-flex">
+<!-- ================= APP ================= -->
+<div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo text-center mb-4">
-      <img src="{{ url_for('static', filename='images/logos/logo.png') }}" height="48">
-    </div>
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="sidebar d-none d-md-flex">
+    <div class="logo">VENTTOS</div>
 
-    <nav class="menu">
+    <nav>
       <a href="{{ url_for('pages.dashboard') }}"><i class="bi bi-house"></i> Dashboard</a>
       <a href="{{ url_for('pages.cadastro') }}"><i class="bi bi-plus-square"></i> Cadastro</a>
       <a href="{{ url_for('pages.modelos') }}"><i class="bi bi-table"></i> Modelos</a>
       <a href="{{ url_for('pages.calculo') }}"><i class="bi bi-calculator"></i> Calcular</a>
       <a href="{{ url_for('pages.perdas') }}"><i class="bi bi-exclamation-triangle"></i> Perdas</a>
     </nav>
-
-    <div class="sidebar-footer">
-      <small>© Eduardo Libório</small>
-    </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
-    <header class="desktop-header">
-      <h5 class="mb-0">{% block page_title %}{% endblock %}</h5>
+    <header class="desktop-header d-none d-md-flex">
+      <h5>{% block page_title %}{% endblock %}</h5>
     </header>
 
+    <!-- 🔴 BLOCO ÚNICO -->
     <section class="content">
       {% block content %}{% endblock %}
     </section>
   </main>
 
 </div>
-
-<!-- ================= MOBILE CONTENT ================= -->
-<main class="mobile-content d-md-none">
-  {% block content %}{% endblock %}
-</main>
 
 <!-- ================= BOTTOM NAV MOBILE ================= -->
 <nav class="bottom-nav d-md-none">
@@ -79,9 +65,6 @@
   <a href="{{ url_for('pages.calculo') }}"><i class="bi bi-calculator"></i></a>
 </nav>
 
-<!-- ================= SCRIPTS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 </body>
 </html>
