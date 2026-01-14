@@ -18,7 +18,7 @@ project/
 │   │
 │   ├─ services/              # regras de negócio
 │   │   ├─ __init__.py        # pacote services (NÃO blueprint)
-│   │   └─ __init__.py
+│   │   modelos_service.py
 │   │
 │   ├─ repositories/          # acesso ao banco (SQL)
 │   │   ├─ __init__.py        # pacote repositories

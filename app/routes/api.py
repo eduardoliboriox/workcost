@@ -17,7 +17,7 @@ def cadastrar():
 def calcular_meta():
     return jsonify(modelos_service.calcular_meta(request.form))
 
-
 @bp.route("/perdas", methods=["POST"])
 def calcular_perda():
     return jsonify(modelos_service.calcular_perda(request.form))
+

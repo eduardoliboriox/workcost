@@ -23,6 +23,13 @@
   <div id="resultadoPerda" class="mt-3 p-3 border rounded shadow-sm bg-light text-center fw-semibold"></div>
 </div>
 
+{% if resultado %}
+<div class="alert alert-warning mt-3 text-center fw-bold">
+  ⏱️ Perda de produção: {{ resultado }}
+</div>
+{% endif %}
+
+
 <script>
 document.getElementById('perdaForm').addEventListener('submit', async e => {
   e.preventDefault();
