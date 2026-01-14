@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service
-from app.services.modelos_service import calcular_perda_producao
+from app.services.modelos_service import calcular_perda_producao, calcular_meta_smt, calcular_tempo_smt_inverso
 
 bp = Blueprint("api", __name__)
 
@@ -25,6 +25,28 @@ def calcular_perda():
     resultado = calcular_perda_producao(meta_hora, producao_real)
 
     return jsonify(resultado)
+
+@bp.route("/smt/calcular_meta", methods=["POST"])
+def api_calcular_meta_smt():
+    tempo = request.form.get("tempo_montagem")
+    blank = request.form.get("blank")
+
+    if not tempo or not blank:
+        return jsonify({"erro": "Tempo de montagem e blank são obrigatórios"}), 400
+
+    return jsonify(calcular_meta_smt(tempo, blank))
+
+@bp.route("/smt/calcular_tempo", methods=["POST"])
+def api_calcular_tempo_smt():
+    meta = request.form.get("meta_hora")
+    blank = request.form.get("blank")
+
+    if not meta or not blank:
+        return jsonify({"erro": "Meta hora e blank são obrigatórios"}), 400
+
+    return jsonify(calcular_tempo_smt_inverso(meta, blank))
+
+
 
 
 

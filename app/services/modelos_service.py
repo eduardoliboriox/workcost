@@ -1,4 +1,5 @@
 from app.repositories import modelos_repository
+import math
 
 def listar_codigos():
     return modelos_repository.listar_codigos()
@@ -57,5 +58,53 @@ def calcular_perda_producao(meta_hora, producao_real):
         "tempo_perdido": f"{minutos} minutos e {segundos:02d} segundos",
         "pecas_faltantes": int(meta_hora - producao_real)
     }
+
+def calcular_meta_smt(tempo_montagem, blank):
+    try:
+        tempo = float(tempo_montagem)
+        blank = int(blank)
+
+        if tempo <= 0 or blank <= 0:
+            return {"sucesso": False, "erro": "Valores inválidos"}
+
+        meta_teorica = 3600 / tempo
+        meta_com_perda = meta_teorica * blank * 0.9
+
+        meta_corrigida = math.floor(meta_com_perda / blank) * blank
+
+        return {
+            "sucesso": True,
+            "dados": {
+                "meta_hora": meta_corrigida,
+                "meta_teorica": round(meta_teorica, 2),
+                "meta_com_perda": round(meta_com_perda, 2)
+            }
+        }
+
+    except Exception:
+        return {"sucesso": False, "erro": "Erro no cálculo SMT"}
+
+
+def calcular_tempo_smt_inverso(meta_hora, blank):
+    try:
+        meta = float(meta_hora)
+        blank = int(blank)
+
+        if meta <= 0 or blank <= 0:
+            return {"sucesso": False, "erro": "Valores inválidos"}
+
+        tempo = (3600 * 0.9 * blank) / meta
+
+        return {
+            "sucesso": True,
+            "dados": {
+                "tempo_montagem": round(tempo, 2)
+            }
+        }
+
+    except Exception:
+        return {"sucesso": False, "erro": "Erro no cálculo inverso"}
+
+
 
 
