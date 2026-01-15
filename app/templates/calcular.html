@@ -208,31 +208,30 @@ document.getElementById('calcForm').addEventListener('submit', async e => {
 </script>
 
 <script>
-document.getElementById('smtInversoForm').addEventListener('submit', async (e) => {
+document.getElementById("smtInversoForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const meta = document.getElementById('metaHoraInv').value;
-  const blank = document.getElementById('blankInv').value;
+  const fd = new FormData();
+  fd.append("meta_hora", document.getElementById("metaHoraInv").value);
+  fd.append("blank", document.getElementById("blankInv").value);
 
-  const form = new FormData();
-  form.append('meta_hora', meta);
-  form.append('blank', blank);
-
-  const resp = await fetch('/api/smt/calcular_tempo', {
-    method: 'POST',
-    body: form
+  const r = await fetch("/api/smt/calcular_tempo", {
+    method: "POST",
+    body: fd
   });
 
-  const data = await resp.json();
+  const data = await r.json();
 
-  if (data.erro) {
-    document.getElementById('resultadoInverso').innerHTML = data.erro;
+  if (!data.sucesso) {
+    document.getElementById("resultadoInverso").innerHTML =
+      `<span class="text-danger">${data.erro}</span>`;
     return;
   }
 
-  document.getElementById('resultadoInverso').innerHTML =
-    `Tempo de montagem: <strong>${data.tempo_montagem} s</strong>`;
+  document.getElementById("resultadoInverso").innerHTML =
+    `Tempo de montagem considerado: <strong>${data.dados.tempo_montagem}s</strong>`;
 });
+
 </script>
 
 
