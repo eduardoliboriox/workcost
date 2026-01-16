@@ -88,7 +88,7 @@ $(document).ready(function(){
                 </div>
 
                 <div class="linha"><strong>Setor:</strong> ${m.setor}</div>
-                <div class="linha"><strong>Meta/hora:</strong> ${m.meta}</div>
+                <div class="linha"><strong>Meta/hora:</strong> $${m.meta_padrao}</div>
                 <div class="linha"><strong>Fase:</strong> ${m.fase}</div>
               </div>
             </div>
@@ -135,7 +135,7 @@ $(document).ready(function(){
   $('#editarForm').on('submit', async function(e){
       e.preventDefault();
       const fd = new FormData(this);
-      await fetch('/api/editar', {method:'POST', body:fd});
+      await fetch('/api/modelos', {method:'POST', body:fd});
       mostrarMensagem('Modelo atualizado com sucesso!', 'success');
       carregarModelos();
       atualizarSelects();
@@ -145,7 +145,7 @@ $(document).ready(function(){
   $('#excluirForm').on('submit', async function(e){
       e.preventDefault();
       const fd = new FormData(this);
-      await fetch('/api/excluir', {method:'POST', body:fd});
+      await fetch('/api/modelos', {method:'DELETE', body:fd});
       mostrarMensagem('Modelo excluído com sucesso!', 'danger');
       carregarModelos();
       atualizarSelects();

@@ -30,3 +30,16 @@ def inserir(dados):
                 dados["meta"],
                 dados["pessoas"]
             ))
+
+def excluir(codigo):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM modelos WHERE codigo = %s",
+        (codigo,)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()

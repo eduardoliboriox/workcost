@@ -13,6 +13,11 @@ def cadastrar():
     dados = request.form
     return jsonify(modelos_service.cadastrar_modelo(dados))
 
+@bp.route("/modelos", methods=["DELETE"])
+def excluir():
+    dados = request.form
+    return jsonify(modelos_service.excluir_modelo(dados))
+
 @bp.route("/modelos/calcular", methods=["POST"])
 def calcular_meta():
     return jsonify(modelos_service.calcular_meta(request.form))

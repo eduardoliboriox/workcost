@@ -14,6 +14,27 @@ def cadastrar_modelo(dados):
     except Exception:
         return {"sucesso": False, "mensagem": "Código já existe"}
 
+def excluir_modelo(dados):
+    codigo = dados.get("codigo")
+
+    if not codigo:
+        return {
+            "sucesso": False,
+            "mensagem": "Código não informado"
+        }
+
+    try:
+        modelos_repository.excluir(codigo)
+        return {
+            "sucesso": True,
+            "mensagem": "Modelo excluído com sucesso"
+        }
+    except Exception:
+        return {
+            "sucesso": False,
+            "mensagem": "Erro ao excluir modelo"
+        }
+
 def calcular_meta(dados):
     meta = float(dados["meta_padrao"])
     pessoas_atual = int(dados["pessoas_atuais"])

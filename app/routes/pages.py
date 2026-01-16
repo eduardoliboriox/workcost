@@ -12,7 +12,11 @@ def dashboard():
 
 @bp.route("/cadastro")
 def cadastro():
-    return render_template("cadastro.html", codigos=listar_codigos())
+    try:
+        codigos = listar_codigos()
+    except Exception:
+        codigos = []
+    return render_template("cadastro.html", codigos=codigos)
 
 
 @bp.route("/modelos")
