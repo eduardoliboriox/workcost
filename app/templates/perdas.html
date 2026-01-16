@@ -5,36 +5,59 @@
 {% block content %}
 
 <div class="container-fluid">
+  <!-- CARD PRINCIPAL -->
   <div class="card shadow-sm p-4">
-    <h5 class="mb-4"><i class="bi bi-exclamation-triangle text-danger"></i> Perda de Produção</h5>
+    <h5 class="mb-4">
+      <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+      Perda de Produção
+    </h5>
 
-<div class="card p-4">
-  <form id="perdaForm" class="row g-3">
-    <div class="col-md-6">
-      <label class="form-label">Meta / Hora</label>
-      <input class="form-control" name="meta_hora" type="number" required>
-    </div>
-    <div class="col-md-6">
-      <label class="form-label">Produção real</label>
-      <input class="form-control" name="producao_real" type="number" required>
-    </div>
-    <div class="col-12">
-      <button class="btn btn-danger mt-2 w-100" type="submit">
-        <i class="bi bi-calculator"></i> Calcular Perda
-      </button>
-    </div>
-  </form>
+    <!-- CARD INTERNO (AÇÃO) -->
+    <div class="card border-0 bg-light p-4">
 
-<div id="resultadoWrapper" class="mt-3 d-none">
-  <div id="resultadoPerda"
-       class="p-3 border rounded shadow-sm bg-light text-center fw-semibold">
+      <form id="perdaForm" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Meta / Hora</label>
+          <input class="form-control form-control-lg"
+                 name="meta_hora"
+                 type="number"
+                 required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Produção real</label>
+          <input class="form-control form-control-lg"
+                 name="producao_real"
+                 type="number"
+                 required>
+        </div>
+
+        <div class="col-12">
+          <button class="btn btn-danger btn-lg w-100 mt-2" type="submit">
+            <i class="bi bi-calculator"></i> Calcular Perda
+          </button>
+        </div>
+
+      </form>
+
+      <!-- RESULTADO -->
+      <div id="resultadoWrapper" class="mt-4 d-none">
+
+        <div id="resultadoPerda"
+             class="p-3 border rounded bg-white text-center fw-semibold shadow-sm">
+        </div>
+
+        <button id="btnCopiar"
+                class="btn btn-outline-secondary w-100 mt-3"
+                type="button">
+          <i class="bi bi-clipboard"></i> Copiar resultado
+        </button>
+
+      </div>
+
+    </div>
   </div>
-
-  <button id="btnCopiar"
-          class="btn btn-outline-secondary w-100 mt-2"
-          type="button">
-    <i class="bi bi-clipboard"></i> Copiar resultado
-  </button>
 </div>
 
 <script>
@@ -57,16 +80,12 @@ document.getElementById('perdaForm').addEventListener('submit', async e => {
     `Perda de Produção: ${data.tempo_perdido} | ` +
     `Peças faltantes: ${data.pecas_faltantes}`;
 
-  // HTML apenas
   resultadoDiv.innerHTML = `
     ⏱️ <strong>Perda de Produção:</strong> ${data.tempo_perdido}<br>
     📦 <strong>Peças faltantes:</strong> ${data.pecas_faltantes}
   `;
 
-  // agora sim: mostra o bloco inteiro
   wrapper.classList.remove('d-none');
-
-  // texto para copiar
   btnCopiar.dataset.texto = textoResultado;
 });
 
@@ -76,10 +95,11 @@ btnCopiar.addEventListener('click', async () => {
 
     btnCopiar.innerHTML = '✅ Copiado!';
     setTimeout(() => {
-      btnCopiar.innerHTML = '<i class="bi bi-clipboard"></i> Copiar resultado';
+      btnCopiar.innerHTML =
+        '<i class="bi bi-clipboard"></i> Copiar resultado';
     }, 1500);
 
-  } catch (err) {
+  } catch {
     alert('Erro ao copiar o resultado');
   }
 });
