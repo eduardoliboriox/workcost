@@ -10,7 +10,7 @@
   --card: #ffffff;
   --text: #212529;
   --primary: #0d6efd;
-  --primary-color: #198754;
+  --success-color: #198754;
 }
 
 /* =========================
@@ -226,7 +226,7 @@ body {
   padding: 16px;
   background: #fff;
   height: 100%;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid var(--success-color);
 }
 
 .card-modelo .codigo {
