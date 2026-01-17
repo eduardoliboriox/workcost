@@ -13,6 +13,7 @@ def listar():
             "setor": m["setor"],
             "meta": float(m["meta_padrao"]) if m["meta_padrao"] is not None else 0,
             "tempo_montagem": m["tempo_montagem"],
+            "blank": m["blank"],
             "fase": m["fase"]
         }
         for m in modelos

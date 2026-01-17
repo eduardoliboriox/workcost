@@ -17,6 +17,7 @@ def listar_modelos():
                     meta_padrao,
                     pessoas_padrao,
                     tempo_montagem,
+                    blank,
                     fase
                 FROM modelos
                 ORDER BY codigo
@@ -33,15 +34,17 @@ def inserir(dados):
                     setor,
                     meta_padrao,
                     tempo_montagem,
+                    blank,
                     fase
                 )
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (
                 dados["codigo"],
                 dados["cliente"],
                 dados["setor"],
                 dados["meta_padrao"],
                 dados["tempo_montagem"],
+                dados["blank"],
                 dados["fase"]
             ))
         conn.commit()
@@ -61,3 +64,16 @@ def atualizar_meta(codigo, nova_meta):
                 (nova_meta, codigo)
             )
         conn.commit()
+
+def atualizar(codigo, campos):
+    sets = ", ".join(f"{k} = %s" for k in campos)
+    valores = list(campos.values()) + [codigo]
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                f"UPDATE modelos SET {sets} WHERE codigo = %s",
+                valores
+            )
+        conn.commit()
+

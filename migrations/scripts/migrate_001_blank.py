@@ -13,3 +13,6 @@ with psycopg.connect(DATABASE_URL, sslmode="require") as conn:
             ADD COLUMN IF NOT EXISTS blank INTEGER NOT NULL DEFAULT 1;
         """)
     conn.commit()
+
+print("✅ Coluna 'blank' criada com sucesso")
+
