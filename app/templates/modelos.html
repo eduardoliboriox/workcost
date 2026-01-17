@@ -14,13 +14,21 @@
 
   </div>
 
-  <!-- ===================== EDITAR MODELO ===================== -->
+<!-- ===================== EDITAR MODELO ===================== -->
   <div class="card mb-4 p-3 shadow-sm">
-    <h5 class="mb-3 text-warning"><i class="bi bi-pencil-square"></i> Editar Modelo</h5>
+    <h5 class="mb-3 text-warning">
+      <i class="bi bi-pencil-square"></i> Editar Modelo
+    </h5>
+
     <form id="editarForm" class="row g-3">
+
       <div class="col-md-3">
-        <label class="form-label">Modelo</label>
-        <select class="form-select" name="codigo" id="selectEditar" required></select>
+        <label class="form-label">Selecione o modelo</label>
+        <select class="form-select" name="codigo" required>
+          {% for c in codigos %}
+            <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
       </div>
 
       <div class="col-md-3">
@@ -46,8 +54,8 @@
       </div>
 
     </form>
-
   </div>
+
 
   <!-- ===================== EXCLUIR MODELO ===================== -->
   <div class="card mb-4 p-3 shadow-sm">
