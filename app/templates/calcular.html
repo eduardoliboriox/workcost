@@ -5,6 +5,61 @@
 {% block content %}
 <div class="container-fluid">
    <!--<div class="card shadow-sm p-4">-->
+   <div class="card shadow-sm p-4 mb-5">
+     <h5 class="mb-3 text-success">
+       <i class="bi bi-clock-history"></i> Cálculo PCP
+     </h5>
+   
+     <div class="row g-3">
+       <div class="col-md-3">
+         <label>A Produzir</label>
+         <input id="totalOp" class="form-control" value="3008">
+       </div>
+   
+       <div class="col-md-3">
+         <label>Já Produzido</label>
+         <input id="produzido" class="form-control" value="144">
+       </div>
+   
+       <div class="col-md-3">
+         <label>Início</label>
+         <input id="horaInicio" class="form-control" value="16:25">
+       </div>
+   
+       <div class="col-md-3">
+         <label>Meta Hora</label>
+         <input id="metaHora" class="form-control" value="768">
+       </div>
+   
+       <div class="col-md-3">
+         <label>Blank</label>
+         <input id="blank" class="form-control" value="16">
+       </div>
+   
+       <div class="col-md-6">
+         <label>Turnos</label><br>
+         <input type="checkbox" value="1" checked> 1º
+         <input type="checkbox" value="2" checked> 2º
+         <input type="checkbox" value="3"> 3º
+       </div>
+   
+       <div class="col-md-3">
+         <label>Refeição</label>
+         <select id="refeicao" class="form-select">
+           <option value="false">Não</option>
+           <option value="true">Sim</option>
+         </select>
+       </div>
+   
+       <div class="col-12">
+         <button class="btn btn-success w-100" onclick="calcularPCP()">
+           Calcular Produção
+         </button>
+       </div>
+     </div>
+   
+     <div id="resultadoPCP" class="mt-4"></div>
+   </div>
 
   <div class="card shadow-sm p-4 mt-4">
     <h5 class="mb-4 text-primary"><i class="bi bi-lightning-charge-fill text-primary"></i> Cálculo Rápido (Meta/Hora x Minutos)</h5>
