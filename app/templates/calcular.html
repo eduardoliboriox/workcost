@@ -179,6 +179,53 @@
        class="mt-4 p-3 border rounded bg-light text-center fw-semibold">
   </div>
 </div>
+   
+<hr class="my-5">
+
+<div class="card shadow-sm p-4">
+  <h5 class="mb-4 text-danger">
+    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+    Perda de Produção
+  </h5>
+
+  <form id="perdaForm" class="row g-4">
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Meta / Hora</label>
+      <input class="form-control form-control-lg"
+             name="meta_hora"
+             type="number"
+             required>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Produção real</label>
+      <input class="form-control form-control-lg"
+             name="producao_real"
+             type="number"
+             required>
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-danger btn-lg w-100 mt-2" type="submit">
+        <i class="bi bi-calculator"></i> Calcular Perda
+      </button>
+    </div>
+
+  </form>
+
+  <div id="resultadoWrapperPerda" class="mt-4 d-none">
+    <div id="resultadoPerda"
+         class="p-3 border rounded bg-light text-center fw-semibold">
+    </div>
+
+    <button id="btnCopiarPerda"
+            class="btn btn-outline-secondary w-100 mt-3"
+            type="button">
+      <i class="bi bi-clipboard"></i> Copiar resultado
+    </button>
+  </div>
+</div>
 
 </div>
 
@@ -320,6 +367,47 @@ document.getElementById("smtInversoForm").addEventListener("submit", async e => 
 });
 
 </script>
+
+<script>
+const resultadoDivPerda = document.getElementById('resultadoPerda');
+const btnCopiarPerda = document.getElementById('btnCopiarPerda');
+const wrapperPerda = document.getElementById('resultadoWrapperPerda');
+
+document.getElementById('perdaForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const fd = new FormData(e.target);
+
+  const resp = await fetch('/api/calcular_perda', {
+    method: 'POST',
+    body: fd
+  });
+
+  const data = await resp.json();
+
+  const textoResultado =
+    `Perda de Produção: ${data.tempo_perdido} | ` +
+    `Peças faltantes: ${data.pecas_faltantes}`;
+
+  resultadoDivPerda.innerHTML = `
+    ⏱️ <strong>Perda de Produção:</strong> ${data.tempo_perdido}<br>
+    📦 <strong>Peças faltantes:</strong> ${data.pecas_faltantes}
+  `;
+
+  wrapperPerda.classList.remove('d-none');
+  btnCopiarPerda.dataset.texto = textoResultado;
+});
+
+btnCopiarPerda.addEventListener('click', async () => {
+  await navigator.clipboard.writeText(btnCopiarPerda.dataset.texto);
+  btnCopiarPerda.innerHTML = '✅ Copiado!';
+  setTimeout(() => {
+    btnCopiarPerda.innerHTML =
+      '<i class="bi bi-clipboard"></i> Copiar resultado';
+  }, 1500);
+});
+</script>
+
 
 <script src="{{ url_for('static', filename='js/pcp.js') }}"></script>
 
