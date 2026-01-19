@@ -7,9 +7,3 @@ psycopg[binary]
 
 gunicorn==22.0.0
 
-qrcode==7.4.2
-Pillow==10.4.0
-pywebpush==1.14.0
-
-flask-cors==4.0.1
-pytest==8.2.2
