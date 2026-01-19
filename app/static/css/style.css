@@ -9,7 +9,7 @@
   --bg: #f8f9fa;
   --card: #ffffff;
   --text: #212529;
-  --text-sidebar-d: #000000;
+  --sdesk: #000000;
   --primary: #0d6efd;
   --success-color: #198754;
 }
@@ -71,7 +71,7 @@ body {
   padding: 10px 12px;
   border-radius: 8px;
   text-decoration: none;
-  color: var(--text-sidebar-d);
+  color: var(--sdesk);
 }
 
 .sidebar nav a:hover,
