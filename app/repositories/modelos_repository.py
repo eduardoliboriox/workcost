@@ -24,6 +24,18 @@ def listar_modelos():
             """)
             return cur.fetchall()
 
+def buscar_ultimo_modelo():
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT codigo
+                FROM modelos
+                ORDER BY criado_em DESC
+                LIMIT 1
+            """)
+            row = cur.fetchone()
+            return row[0] if row else None
+
 def inserir(dados):
     with get_db() as conn:
         with conn.cursor() as cur:
