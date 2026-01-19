@@ -1,4 +1,5 @@
 from app.repositories import modelos_repository
+from app.repositories.modelos_repository import buscar_ultimo_modelo
 import math
 
 def resumo_dashboard():
@@ -16,11 +17,15 @@ def resumo_dashboard():
         por_setor[setor] = por_setor.get(setor, 0) + 1
         por_fase[fase] = por_fase.get(fase, 0) + 1
 
+    ultimo_modelo = buscar_ultimo_modelo()
+
     return {
         "total_modelos": total,
         "por_setor": por_setor,
-        "por_fase": por_fase
+        "por_fase": por_fase,
+        "ultimo_modelo": ultimo_modelo
     }
+
 
 def listar_codigos():
     return modelos_repository.listar_codigos()
