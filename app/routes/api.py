@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service
 from app.services.modelos_service import calcular_perda_producao, calcular_meta_smt, calcular_tempo_smt_inverso
+from app.services.pcp_service import calcular_pcp
 
 bp = Blueprint("api", __name__)
 
@@ -84,8 +85,21 @@ def api_calculo_rapido():
             "erro": "Erro no cálculo rápido"
         }), 400
 
+@bp.route("/pcp/calcular", methods=["POST"])
+def api_calcular_pcp():
+    dados = request.json
 
+    resultado = calcular_pcp(
+        total_op=int(dados["total_op"]),
+        produzido=int(dados["produzido"]),
+        hora_inicio=dados["hora_inicio"],
+        meta_hora=float(dados["meta_hora"]),
+        blank=int(dados["blank"]),
+        turnos_aplicados=dados["turnos"],
+        considerar_refeicao=dados["refeicao"]
+    )
 
+    return jsonify(resultado)
 
 
 
