@@ -40,14 +40,6 @@ def dashboard():
 def lancamento():
     return render_template("lancamento.html", codigos=[])
 
-@bp.route("/modelos")
-def modelos():
-    return render_template("modelos.html", modelos=[])
-
-@bp.route("/calculo")
-def calculo():
-    return render_template("calcular.html")
-
 @bp.route("/cargos")
 def cargos():
     return render_template("cargos.html", cargos=[])
