@@ -3,7 +3,9 @@
 {% block page_title %}Lançamento de Absenteísmo{% endblock %}
 
 {% block content %}
-<form id="formLancamento">
+<form id="formLancamento"
+      method="post"
+      action="{{ url_for('api.api_criar_lancamento') }}">
 
   <div class="row g-3">
 
@@ -14,32 +16,34 @@
 
     <div class="col-md-3">
       <label class="form-label">Filial</label>
-      <select name="filial" class="form-select">
-        <option>VTE</option>
-        <option>VTT</option>
+      <select name="filial" class="form-select" required>
+        <option value="VTE">VTE</option>
+        <option value="VTT">VTT</option>
       </select>
     </div>
 
     <div class="col-md-3">
       <label class="form-label">Setor</label>
-      <select name="setor" class="form-select">
-        <option>SMT</option>
-        <option>PTH</option>
-        <option>IM</option>
-        <option>PA</option>
+      <select name="setor" class="form-select" required>
+        <option value="SMT">SMT</option>
+        <option value="PTH">PTH</option>
+        <option value="IM">IM</option>
+        <option value="PA">PA</option>
       </select>
     </div>
 
     <div class="col-md-3">
       <label class="form-label">Linha</label>
-      <input name="linha" class="form-control" placeholder="PA-04.12">
+      <input name="linha" class="form-control" placeholder="PA-04.12" required>
     </div>
 
-    <div class="col-12">
-      <label class="form-label">Turno</label><br>
-      <input type="checkbox" name="turno" value="1T"> 1º Turno
-      <input type="checkbox" name="turno" value="2T"> 2º Turno
-      <input type="checkbox" name="turno" value="3T"> 3º Turno
+    <div class="col-md-3">
+      <label class="form-label">Turno</label>
+      <select name="turno" class="form-select" required>
+        <option value="1T">1º Turno</option>
+        <option value="2T">2º Turno</option>
+        <option value="3T">3º Turno</option>
+      </select>
     </div>
 
     <div class="col-md-4">
@@ -58,7 +62,9 @@
     </div>
 
     <div class="col-12">
-      <button class="btn btn-primary w-100">Salvar Lançamento</button>
+      <button class="btn btn-primary w-100">
+        Salvar Lançamento
+      </button>
     </div>
 
   </div>
