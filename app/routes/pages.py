@@ -1,4 +1,4 @@
-from flask import request
+from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard
 
 bp = Blueprint("pages", __name__)
