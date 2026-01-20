@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service
+from app.services.lancamentos_service import criar_lancamento
 
 bp = Blueprint("api", __name__)
 
@@ -14,3 +15,9 @@ def cadastrar():
 @bp.route("/modelos", methods=["DELETE"])
 def excluir():
     return jsonify(modelos_service.excluir_modelo(request.form))
+
+@bp.route("/lancamentos", methods=["POST"])
+def api_criar_lancamento():
+    dados = request.form
+    return jsonify(criar_lancamento(dados))
+
