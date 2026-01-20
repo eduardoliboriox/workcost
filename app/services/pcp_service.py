@@ -4,9 +4,9 @@ def resumo_dashboard(filtros):
     where = []
     params = []
 
-    if filtros.get("data"):
-        where.append("data = %s")
-        params.append(filtros["data"])
+    if filtros.get("data_inicial") and filtros.get("data_final"):
+        where.append("data BETWEEN %s AND %s")
+        params.extend([filtros["data_inicial"], filtros["data_final"]])
 
     if filtros.get("turno"):
         where.append("turno = %s")
@@ -64,7 +64,7 @@ def resumo_dashboard(filtros):
 
     ranking_linhas = sorted(dados, key=lambda x: x["absenteismo"], reverse=True)
 
-    # 🔴 Ranking por SETOR
+    # Ranking por SETOR
     ranking_setor = {}
     for d in dados:
         ranking_setor.setdefault(d["setor"], []).append(d)
@@ -80,7 +80,7 @@ def resumo_dashboard(filtros):
         reverse=True
     )
 
-    # 🔵 Ranking por FILIAL
+    # Ranking por FILIAL
     ranking_filial = {}
     for d in dados:
         ranking_filial.setdefault(d["filial"], []).append(d)
