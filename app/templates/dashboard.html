@@ -23,8 +23,8 @@
       </button>
     </div>
   
-    <div class="col-md-2 d-flex align-items-end">
-      <label class="form-label">Turno   </label>
+    <div class="col-md-2 d-flex align-items-center">
+      <label class="form-label me-2 mb-0">Turno</label>
       <select name="turno" class="form-select">
         <option value="">Todos</option>
         <option value="1T" {% if filtros.turno == '1T' %}selected{% endif %}>1º Turno</option>
@@ -32,15 +32,16 @@
         <option value="3T" {% if filtros.turno == '3T' %}selected{% endif %}>3º Turno</option>
       </select>
     </div>
-  
-    <div class="col-md-2 d-flex align-items-end">
-      <label class="form-label">Filial   </label>
+    
+    <div class="col-md-2 d-flex align-items-center">
+      <label class="form-label me-2 mb-0">Filial</label>
       <select name="filial" class="form-select">
         <option value="">Todas</option>
         <option value="VTE" {% if filtros.filial == 'VTE' %}selected{% endif %}>VTE</option>
         <option value="VTT" {% if filtros.filial == 'VTT' %}selected{% endif %}>VTT</option>
       </select>
     </div>
+
   
     <div class="col-md-12 d-flex align-items-end">
       <button type="submit" class="btn btn-primary w-100">
