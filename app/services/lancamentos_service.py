@@ -6,8 +6,9 @@ def calcular_absenteismo(hc_padrao, hc_real):
     return round((hc_padrao - hc_real) / hc_padrao * 100, 2)
 
 def criar_lancamento(dados):
-    # transforma ImmutableMultiDict em dict normal
     dados = dict(dados)
+
+    cargos = json.loads(dados.pop("cargos"))
 
     absenteismo = calcular_absenteismo(
         int(dados["hc_padrao"]),
@@ -16,10 +17,8 @@ def criar_lancamento(dados):
 
     dados["absenteismo"] = absenteismo
 
-    lancamentos_repository.inserir(dados)
+    lancamentos_repository.inserir_com_cargos(dados, cargos)
 
-    return {
-        "sucesso": True,
-        "absenteismo": absenteismo
-    }
+    return {"sucesso": True, "absenteismo": absenteismo}
+
 

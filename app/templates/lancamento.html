@@ -7,6 +7,9 @@
       method="post"
       action="{{ url_for('api.api_criar_lancamento') }}">
 
+  <!-- 🔴 CAMPO OCULTO PARA ENVIAR OS CARGOS -->
+  <input type="hidden" name="cargos" id="cargosJson">
+
   <div class="row g-3">
 
     <div class="col-md-3">
@@ -61,6 +64,37 @@
       <input type="number" name="ferias" class="form-control">
     </div>
 
+    <hr>
+
+    <h6 class="fw-bold mt-3">Absenteísmo por Cargo</h6>
+
+    <div class="row g-3">
+
+      <div class="col-md-6">
+        <label class="form-label">Cargo</label>
+        <select id="cargo" class="form-select">
+          <option value="">Selecione</option>
+          {% for c in cargos %}
+            <option value="{{ c.id }}">{{ c.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Qtd</label>
+        <input type="number" id="qtd" class="form-control" min="1">
+      </div>
+
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="button" class="btn btn-secondary w-100" onclick="addCargo()">
+          Adicionar
+        </button>
+      </div>
+
+    </div>
+
+    <ul id="listaCargos" class="list-group mt-3"></ul>
+
     <div class="col-12">
       <button type="submit" class="btn btn-primary w-100">
         Salvar Lançamento
@@ -76,9 +110,49 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+let cargos = [];
+
+function addCargo() {
+    const cargoSelect = document.getElementById("cargo");
+    const qtdInput = document.getElementById("qtd");
+
+    const cargoId = cargoSelect.value;
+    const cargoNome = cargoSelect.options[cargoSelect.selectedIndex].text;
+    const qtd = parseInt(qtdInput.value);
+
+    if (!cargoId || !qtd || qtd <= 0) {
+        alert("Selecione um cargo e informe a quantidade.");
+        return;
+    }
+
+    cargos.push({
+        cargo_id: parseInt(cargoId),
+        quantidade: qtd
+    });
+
+    document.getElementById("listaCargos").innerHTML += `
+        <li class="list-group-item d-flex justify-content-between">
+            ${cargoNome}
+            <span class="badge bg-primary">${qtd}</span>
+        </li>
+    `;
+
+    // atualiza o hidden corretamente
+    document.getElementById("cargosJson").value = JSON.stringify(cargos);
+
+    cargoSelect.value = "";
+    qtdInput.value = "";
+}
+</script>
+
 <script>
 document.getElementById("formLancamento").addEventListener("submit", async function(e){
-    e.preventDefault(); // previne o envio padrão
+    e.preventDefault();
+
+    // garante envio dos cargos
+    document.getElementById("cargosJson").value = JSON.stringify(cargos);
 
     const formData = new FormData(this);
 
@@ -94,10 +168,13 @@ document.getElementById("formLancamento").addEventListener("submit", async funct
         if(data.sucesso){
             msgDiv.innerHTML = `
                 <div class="alert alert-success">
-                    Lançamento salvo com sucesso! Absenteísmo calculado: <strong>${data.absenteismo}%</strong>
+                    Lançamento salvo com sucesso! Absenteísmo calculado:
+                    <strong>${data.absenteismo}%</strong>
                 </div>
             `;
-            this.reset(); // limpa o formulário
+            this.reset();
+            cargos = [];
+            document.getElementById("listaCargos").innerHTML = "";
         } else {
             msgDiv.innerHTML = `
                 <div class="alert alert-danger">
@@ -106,7 +183,7 @@ document.getElementById("formLancamento").addEventListener("submit", async funct
             `;
         }
     } catch(err){
-        document.getElementById("msgLancamento").innerHTML = `
+        msgDiv.innerHTML = `
             <div class="alert alert-danger">
                 Erro de conexão. Tente novamente.
             </div>
@@ -115,4 +192,5 @@ document.getElementById("formLancamento").addEventListener("submit", async funct
     }
 });
 </script>
+
 {% endblock %}

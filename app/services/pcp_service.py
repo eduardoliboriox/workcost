@@ -112,3 +112,33 @@ def resumo_dashboard(filtros):
             "linhas": len(dados)
         }
     }
+
+def ranking_cargos(filtros):
+    where = []
+    params = []
+
+    if filtros.get("data_inicial") and filtros.get("data_final"):
+        where.append("l.data BETWEEN %s AND %s")
+        params += [filtros["data_inicial"], filtros["data_final"]]
+
+    where_sql = " AND ".join(where)
+    if where_sql:
+        where_sql = "WHERE " + where_sql
+
+    query = f"""
+        SELECT
+            c.nome,
+            SUM(lc.quantidade) AS total
+        FROM lancamentos_cargos lc
+        JOIN cargos c ON c.id = lc.cargo_id
+        JOIN lancamentos l ON l.id = lc.lancamento_id
+        {where_sql}
+        GROUP BY c.nome
+        ORDER BY total DESC
+    """
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+            return cur.fetchall()
+
