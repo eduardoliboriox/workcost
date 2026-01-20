@@ -9,9 +9,9 @@ def dashboard():
     dados = resumo_dashboard()
     return render_template("dashboard.html", **dados)
 
-@bp.route("/cadastro")
-def cadastro():
-    return render_template("cadastro.html", codigos=[])
+@bp.route("/lancamento")
+def lancamento():
+    return render_template("lancamento.html", codigos=[])
 
 @bp.route("/modelos")
 def modelos():

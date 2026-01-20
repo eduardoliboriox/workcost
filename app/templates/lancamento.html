@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Lançamento Diário{% endblock %}
+{% block page_title %}Lançamento de Absenteísmo{% endblock %}
+
+{% block content %}
+<form id="formLancamento">
+
+  <div class="row g-3">
+
+    <div class="col-md-3">
+      <label class="form-label">Data</label>
+      <input type="date" name="data" class="form-control" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Filial</label>
+      <select name="filial" class="form-select">
+        <option>VTE</option>
+        <option>VTT</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Setor</label>
+      <select name="setor" class="form-select">
+        <option>SMT</option>
+        <option>PTH</option>
+        <option>IM</option>
+        <option>PA</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Linha</label>
+      <input name="linha" class="form-control" placeholder="PA-04.12">
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Turno</label><br>
+      <input type="checkbox" name="turno" value="1T"> 1º Turno
+      <input type="checkbox" name="turno" value="2T"> 2º Turno
+      <input type="checkbox" name="turno" value="3T"> 3º Turno
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">HC Padrão</label>
+      <input type="number" name="hc_padrao" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">HC Real</label>
+      <input type="number" name="hc_real" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">Férias</label>
+      <input type="number" name="ferias" class="form-control">
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-primary w-100">Salvar Lançamento</button>
+    </div>
+
+  </div>
+</form>
+{% endblock %}
