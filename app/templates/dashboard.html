@@ -1,25 +1,64 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Sistema de Metas{% endblock %}
-{% block page_title %}SMT Production Manager - Dashboard{% endblock %}
+{% block title %}Dashboard — SMT{% endblock %}
+{% block page_title %}SMT Production Manager{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-<div class="row g-3">
-  {% for linha in dados %}
-  <div class="col-12 col-md-4">
-    <div class="card-modelo">
-      <div class="codigo">{{ linha.nome }}</div>
-      <div class="linha">
-        <strong>HC:</strong> {{ linha.hc_real }} / {{ linha.hc_planejado }}
+
+  <!-- KPIs -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <small>HC Planejado</small>
+        <h4>{{ kpis.hc_planejado }}</h4>
       </div>
-      <div class="linha">
-        <strong>Absenteísmo:</strong> {{ linha.absenteismo }}%
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <small>HC Real</small>
+        <h4>{{ kpis.hc_real }}</h4>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <small>Absenteísmo</small>
+        <h4>{{ kpis.absenteismo }}%</h4>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3">
+        <small>Linhas Ativas</small>
+        <h4>{{ kpis.linhas }}</h4>
       </div>
     </div>
   </div>
-  {% endfor %}
-</div>
 
+  <!-- Linhas -->
+  <div class="row g-3">
+    {% for linha in dados %}
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-start
+        {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}
+      ">
+        <h6 class="fw-bold">{{ linha.nome }}</h6>
+        <p class="mb-1">
+          <strong>HC:</strong> {{ linha.hc_real }} / {{ linha.hc_planejado }}
+        </p>
+        <p class="mb-1">
+          <strong>Absenteísmo:</strong> {{ linha.absenteismo }}%
+        </p>
+        <span class="badge
+          {% if linha.status == 'CRÍTICO' %}bg-danger{% else %}bg-success{% endif %}
+        ">
+          {{ linha.status }}
+        </span>
+      </div>
     </div>
+    {% endfor %}
+  </div>
 
+</div>
 {% endblock %}
