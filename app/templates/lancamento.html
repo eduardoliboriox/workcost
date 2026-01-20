@@ -62,11 +62,57 @@
     </div>
 
     <div class="col-12">
-      <button class="btn btn-primary w-100">
+      <button type="submit" class="btn btn-primary w-100">
         Salvar Lançamento
       </button>
     </div>
 
   </div>
 </form>
+
+<!-- Mensagem de resultado -->
+<div id="msgLancamento" class="mt-3"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("formLancamento").addEventListener("submit", async function(e){
+    e.preventDefault(); // previne o envio padrão
+
+    const formData = new FormData(this);
+
+    try {
+        const resp = await fetch(this.action, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await resp.json();
+        const msgDiv = document.getElementById("msgLancamento");
+
+        if(data.sucesso){
+            msgDiv.innerHTML = `
+                <div class="alert alert-success">
+                    Lançamento salvo com sucesso! Absenteísmo calculado: <strong>${data.absenteismo}%</strong>
+                </div>
+            `;
+            this.reset(); // limpa o formulário
+        } else {
+            msgDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    Ocorreu um erro ao salvar o lançamento.
+                </div>
+            `;
+        }
+    } catch(err){
+        document.getElementById("msgLancamento").innerHTML = `
+            <div class="alert alert-danger">
+                Erro de conexão. Tente novamente.
+            </div>
+        `;
+        console.error(err);
+    }
+});
+</script>
 {% endblock %}
