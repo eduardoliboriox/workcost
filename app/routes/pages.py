@@ -9,7 +9,7 @@ def dashboard():
     dados = resumo_dashboard()
     return render_template("dashboard.html", **dados)
 
-@bp.route("/lancamento")
+@bp.route("/cadastro")
 def cadastro():
     return render_template("lancamento.html", codigos=[])
 
