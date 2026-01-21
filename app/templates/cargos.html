@@ -4,11 +4,98 @@
 
 {% block content %}
 <div class="container-fluid">
-  <div class="card p-4 shadow-sm text-center">
-    <h5 class="fw-bold">Cargos</h5>
-    <p class="text-muted mb-0">
-      Em breve: métricas de absenteísmo por cargo.
-    </p>
+
+  <!-- CADASTRO -->
+  <div class="card shadow-sm p-3 mb-4">
+    <h6 class="fw-bold">Cadastrar Cargo</h6>
+
+    <form id="formCargo" class="row g-3">
+      <div class="col-md-6">
+        <input type="text" name="nome" class="form-control"
+               placeholder="Nome do cargo" required>
+      </div>
+
+      <div class="col-md-4">
+        <select name="area" class="form-select" required>
+          <option value="">Área</option>
+          <option value="TECNICA">Área Técnica</option>
+          <option value="PRODUCAO">Produção</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100">
+          Salvar
+        </button>
+      </div>
+    </form>
   </div>
+
+  <!-- LISTA -->
+  <div class="card shadow-sm p-3">
+    <h6 class="fw-bold">Cargos Cadastrados</h6>
+
+    <table class="table table-sm align-middle">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Área</th>
+          <th width="120"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in cargos %}
+        <tr>
+          <td>{{ c.nome }}</td>
+          <td>
+            {% if c.area == 'TECNICA' %}
+              Área Técnica
+            {% else %}
+              Produção
+            {% endif %}
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-danger"
+                    onclick="excluirCargo({{ c.id }})">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("formCargo").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  await fetch("/api/cargos", {
+    method: "POST",
+    body: formData
+  });
+
+  location.reload();
+});
+
+async function excluirCargo(id){
+  if(!confirm("Excluir este cargo?")) return;
+
+  const fd = new FormData();
+  fd.append("id", id);
+
+  await fetch("/api/cargos", {
+    method: "DELETE",
+    body: fd
+  });
+
+  location.reload();
+}
+</script>
 {% endblock %}
