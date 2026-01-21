@@ -1,3 +1,4 @@
+from psycopg.rows import dict_row
 from app.extensions import get_db
 
 def resumo_dashboard(filtros):
@@ -138,7 +139,7 @@ def ranking_cargos(filtros):
     """
 
     with get_db() as conn:
-        with conn.cursor() as cur:
+        # <-- use DictCursor aqui
+        with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, params)
             return cur.fetchall()
-
