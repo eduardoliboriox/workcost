@@ -4,11 +4,46 @@
 
 {% block content %}
 <div class="container-fluid">
-  <div class="card p-4 shadow-sm text-center">
+
+  <!-- Boas-vindas -->
+  <div class="card p-4 shadow-sm text-center mb-4">
     <h5 class="fw-bold">Bem-vindo ao Venttos Factory Metrics</h5>
     <p class="text-muted mb-0">
-      Página inicial em construção.
+      Acompanhe indicadores de produção, absenteísmo e desempenho operacional.
     </p>
   </div>
+
+  <!-- Orientação de Cadastro -->
+  <div class="alert alert-info shadow-sm">
+    <h6 class="fw-bold mb-2">
+      <i class="bi bi-info-circle"></i>
+      Orientação para cadastro de cargos
+    </h6>
+
+    <p class="mb-2">
+      Para garantir a correta consolidação dos dados no sistema, os cargos devem
+      ser cadastrados <strong>sempre com o setor ao final do nome</strong>.
+    </p>
+
+    <ul class="mb-2">
+      <li>
+        <strong>Correto:</strong> Revisor(a) AOI <strong>SMT</strong>
+      </li>
+      <li>
+        <strong>Incorreto:</strong> Revisor(a) AOI
+      </li>
+      <li>
+        <strong>Correto:</strong> Revisor(a) Pré Máquina <strong>IM</strong>
+      </li>
+      <li>
+        <strong>Incorreto:</strong> Revisor(a) Pré Máquina
+      </li>
+    </ul>
+
+    <p class="mb-0">
+      Essa padronização é essencial para relatórios, rankings e análises do dashboard.
+    </p>
+  </div>
+
 </div>
 {% endblock %}
