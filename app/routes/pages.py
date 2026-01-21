@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard
 from datetime import date
-from app.services import cargos_service
+from app.services.cargos_service import listar_cargos_por_area
 
 bp = Blueprint("pages", __name__)
 
