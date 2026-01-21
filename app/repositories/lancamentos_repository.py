@@ -40,7 +40,7 @@ def inserir_com_cargos(d, cargos):
                 d.get("ferias", 0), d["absenteismo"]
             ))
 
-            lancamento_id = cur.fetchone()["id"]
+            lancamento_id = cur.fetchone()[0]
 
             for c in cargos:
                 cur.execute("""
