@@ -162,8 +162,6 @@
            style="cursor:pointer"
            onclick="abrirModalLinha('{{ linha.nome }}')">
 
-            {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}
-          ">
             <h6 class="fw-bold">{{ linha.nome }}</h6>
             <p class="mb-1">
               <strong>HC:</strong> {{ linha.hc_real }} / {{ linha.hc_planejado }}
