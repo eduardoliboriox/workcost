@@ -157,6 +157,11 @@
         {% for linha in dados %}
         <div class="col-md-6 col-xl-4">
           <div class="card shadow-sm p-3 border-start
+           {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}
+           "
+           style="cursor:pointer"
+           onclick="abrirModalLinha('{{ linha.nome }}')">
+
             {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}
           ">
             <h6 class="fw-bold">{{ linha.nome }}</h6>
@@ -204,10 +209,31 @@
         {% endif %}
       </div>
     </div>
-
   </div>
-
 </div>
+
+<!-- Modal de Faltas por Linha -->
+<div class="modal fade" id="modalLinha" tabindex="-1">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content shadow">
+
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalLinhaTitulo"></h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-2">
+        <ul class="list-group list-group-flush" id="listaCargosLinha"></ul>
+
+        <div class="mt-2 text-end fw-bold">
+          Total: <span id="totalFaltasLinha">0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 <script>
   document.getElementById("btnHoje").addEventListener("click", function(){
@@ -233,5 +259,52 @@ function toggleCargos() {
 }
 </script>
 
+<script>
+async function abrirModalLinha(linha) {
+
+  document.getElementById("modalLinhaTitulo").innerText =
+    `Faltas — ${linha}`;
+
+  const params = new URLSearchParams({
+    linha: linha,
+    data_inicial: "{{ filtros.data_inicial }}",
+    data_final: "{{ filtros.data_final }}",
+    turno: "{{ filtros.turno or '' }}",
+    filial: "{{ filtros.filial or '' }}"
+  });
+
+  const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
+  const dados = await resp.json();
+
+  const lista = document.getElementById("listaCargosLinha");
+  const totalSpan = document.getElementById("totalFaltasLinha");
+
+  lista.innerHTML = "";
+  let total = 0;
+
+  if (!dados.length) {
+    lista.innerHTML = `
+      <li class="list-group-item text-muted">
+        Nenhuma falta registrada
+      </li>`;
+  }
+
+  dados.forEach(c => {
+    total += c.total;
+
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${c.nome}
+        <span class="badge bg-danger">${c.total}</span>
+      </li>`;
+  });
+
+  totalSpan.innerText = total;
+
+  new bootstrap.Modal(
+    document.getElementById("modalLinha")
+  ).show();
+}
+</script>
 
 {% endblock %}

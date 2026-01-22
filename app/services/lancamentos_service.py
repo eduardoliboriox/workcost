@@ -1,5 +1,6 @@
 import json
 from app.repositories import lancamentos_repository
+from app.repositories.lancamentos_repository import faltas_por_cargo_e_linha
 
 def calcular_absenteismo(hc_padrao, hc_real):
     if hc_padrao <= 0:
@@ -33,3 +34,6 @@ def criar_lancamento(dados):
         "hc_real": hc_real,
         "absenteismo": absenteismo
     }
+
+def cargos_faltas_por_linha(linha, filtros):
+    return faltas_por_cargo_e_linha(linha, filtros)
