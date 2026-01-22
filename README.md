@@ -97,9 +97,9 @@ project/
 │   │
 │   ├─ templates/             # Jinja2
 │   │   ├─ base.html
-│   │   ├─ inicio.html
-│   │   ├─ dashboard.html
 │   │   ├─ cargos.html
+│   │   ├─ dashboard.html
+│   │   ├─ inicio.html
 │   │   └─ lancamento.html
 │   │
 │   └─ static/
