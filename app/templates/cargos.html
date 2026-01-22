@@ -5,31 +5,36 @@
 {% block content %}
 <div class="container-fluid">
 
-  <!-- CADASTRO -->
-  <div class="card shadow-sm p-3 mb-4">
-    <h6 class="fw-bold">Cadastrar Cargo</h6>
+<!-- CADASTRO -->
+<div class="card shadow-sm p-3 mb-4">
+  <h6 class="fw-bold">Cadastrar Cargo</h6>
 
-    <form id="formCargo" class="row g-3">
-      <div class="col-md-6">
-        <input type="text" name="nome" class="form-control"
-               placeholder="Nome do cargo" required>
-      </div>
+  <form id="formCargo" class="row g-3 align-items-end">
+    <div class="col-md-6">
+      <input type="text"
+             name="nome"
+             class="form-control"
+             placeholder="Nome do cargo"
+             required>
+    </div>
 
-      <div class="col-md-4">
+    <div class="col-md-4">
       <label class="form-label fw-bold">Área</label>
-        <select name="area" class="form-select" required>
-          <option value="TECNICA">Área Técnica</option>
-          <option value="PRODUCAO">Produção</option>
-        </select>
-      </div>
+      <select name="area" class="form-select" required>
+        <option value="">Selecione</option>
+        <option value="PRODUCAO">Produção</option>
+        <option value="TECNICA">Área Técnica</option>
+      </select>
+    </div>
 
-      <div class="col-md-2">
-        <button class="btn btn-primary w-100">
-          Salvar
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">
+        Salvar
+      </button>
+    </div>
+  </form>
+</div>
+
 
   <!-- LISTA -->
   <div class="card shadow-sm p-3">
