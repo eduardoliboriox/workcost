@@ -207,11 +207,9 @@
             <ul class="list-group list-group-flush" id="rankingFeriasList">
               {% for l in ranking_linhas_ferias %}
               <li class="list-group-item d-flex justify-content-between
-                {% if loop.index > 5 %}d-none extra-ferias{% endif %}"
-                style="cursor:pointer"
-                onclick="abrirModalFerias('{{ l.linha }}')">
-
-                {{ l.linha }}
+              {% if loop.index > 5 %}d-none extra-ferias{% endif %}"
+              style="cursor:pointer"
+              onclick="abrirModalFerias('{{ l.linha }}')">
                 <span class="badge bg-info">{{ l.total }}</span>
               </li>
               {% endfor %}
@@ -239,7 +237,10 @@
   
             <ul class="list-group list-group-flush" id="rankingLinhasList">
               {% for linha in ranking_linhas %}
-              <li class="list-group-item d-flex justify-content-between
+              <<li class="list-group-item d-flex justify-content-between"
+                style="cursor:pointer"
+                onclick="abrirModalLinha('{{ linha.nome }}')">
+
                 {% if loop.index > 5 %}d-none extra-linha{% endif %}">
                 {{ linha.nome }}
                 <span class="badge bg-danger px-2 py-1">{{ linha.absenteismo }}%</span>
@@ -330,7 +331,6 @@ function toggleFerias() {
   btn.textContent = isHidden ? "Recolher" : "Ver mais";
 }
 </script>
-
 <script>
 async function abrirModalLinha(linha) {
 
@@ -351,7 +351,6 @@ async function abrirModalLinha(linha) {
   const lista = document.getElementById("modalLista");
   const totalSpan = document.getElementById("modalTotal");
 
-
   lista.innerHTML = "";
   let total = 0;
 
@@ -366,10 +365,9 @@ async function abrirModalLinha(linha) {
     total += c.total;
 
     lista.innerHTML += `
-    <li class="list-group-item d-flex justify-content-between"
-        style="cursor:pointer"
-        onclick="abrirModalLinha('{{ linha.nome }}')">
-
+      <li class="list-group-item d-flex justify-content-between">
+        ${c.nome}
+        <span class="badge bg-danger">${c.total}</span>
       </li>`;
   });
 
