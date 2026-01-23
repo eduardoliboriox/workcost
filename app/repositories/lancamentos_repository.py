@@ -28,7 +28,7 @@ def inserir(d):
 
 def inserir_com_cargos(d, cargos):
     with get_db() as conn:
-        with conn.cursor() as cur:
+        with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 INSERT INTO lancamentos (
                     data, filial, setor, turno, linha,
@@ -62,7 +62,9 @@ def inserir_com_cargos(d, cargos):
                     c["quantidade"],
                     c["tipo"]
                 ))
+
         conn.commit()
+
 
 def faltas_por_cargo_e_linha(linha, filtros):
     where = ["l.linha = %s"]
