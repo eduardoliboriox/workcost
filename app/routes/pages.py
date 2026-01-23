@@ -64,5 +64,12 @@ def ferias_linha():
     }
     return jsonify(ferias_por_linha(filtros))
 
+@bp.route("/relatorios")
+def relatorios():
+    return render_template("relatorios.html")
+
+@bp.route("/powerbi")
+def powerbi():
+    return render_template("powerbi.html")
 
 
