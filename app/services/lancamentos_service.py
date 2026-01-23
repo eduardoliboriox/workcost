@@ -1,4 +1,4 @@
-from app.repositories.lancamentos_repository import inserir_com_cargos, ferias_por_linha
+from app.repositories.lancamentos_repository import inserir_com_cargos, ferias_por_linha, cargos_por_linha
 import json
 
 def criar_lancamento(dados):
@@ -24,3 +24,10 @@ def criar_lancamento(dados):
 
 def cargos_faltas_por_linha(linha, filtros):
     return faltas_por_cargo_e_linha(linha, filtros)
+
+def faltas_por_linha(linha, filtros):
+    return cargos_por_linha(linha, "FALTA", filtros)
+
+def ferias_por_linha_cargos(linha, filtros):
+    return cargos_por_linha(linha, "FERIAS", filtros)
+
