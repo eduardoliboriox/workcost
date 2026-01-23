@@ -1,4 +1,4 @@
-from app.repositories.lancamentos_repository import inserir_com_cargos, ferias_cargos_por_linha
+from app.repositories.lancamentos_repository import inserir_com_cargos, ferias_por_linha
 import json
 
 def criar_lancamento(dados):
