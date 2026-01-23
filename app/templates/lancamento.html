@@ -164,7 +164,7 @@ function addCargo() {
 
   const cargoId = select.value;
   const cargoNome = select.options[select.selectedIndex].text;
-  const qtd = parseInt(qtdInput.value);
+  const qtd = parseInt(qtdInput.value, 10);
 
   if (!cargoId || !qtd) return alert("Informe cargo e quantidade");
 
@@ -190,7 +190,7 @@ function addFerias() {
 
   const cargoId = select.value;
   const cargoNome = select.options[select.selectedIndex].text;
-  const qtd = parseInt(qtdInput.value);
+  const qtd = parseInt(qtdInput.value, 10);
 
   if (!cargoId || !qtd) return alert("Informe cargo e quantidade");
 
@@ -264,7 +264,7 @@ form.addEventListener("submit", async function(e){
 
     const result = await response.json();
 
-    if(response.ok && result.success){
+    if(response.ok && result.success){  // ✅ consistente
       msgDiv.innerHTML = `<div class="alert alert-success">Lançamento salvo com sucesso! ✅</div>`;
       form.reset();
       cargos = [];
@@ -274,8 +274,9 @@ form.addEventListener("submit", async function(e){
       atualizarHCReal();
       atualizarLinhas();
     } else {
-      msgDiv.innerHTML = `<div class="alert alert-danger">Erro ao salvar: ${result.error || "Tente novamente."}</div>`;
+      msgDiv.innerHTML = `<div class="alert alert-danger">Erro ao salvar: ${result.error || 'Verifique os dados.'}</div>`;
     }
+
   } catch(err){
     msgDiv.innerHTML = `<div class="alert alert-danger">Erro de conexão. Tente novamente.</div>`;
     console.error(err);
