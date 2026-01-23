@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service, cargos_service
 from app.services.lancamentos_service import criar_lancamento, cargos_faltas_por_linha
+from app.repositories.lancamentos_repository import ferias_por_linha
 
 bp = Blueprint("api", __name__)
 
@@ -50,10 +51,10 @@ def cargos_por_linha_api():
 
     return jsonify(cargos_faltas_por_linha(linha, filtros))
 
+from app.repositories.lancamentos_repository import ferias_por_linha
+
 @bp.route("/dashboard/linha/ferias", methods=["GET"])
 def ferias_por_linha_api():
-    linha = request.args.get("linha")
-
     filtros = {
         "data_inicial": request.args.get("data_inicial"),
         "data_final": request.args.get("data_final"),
@@ -61,7 +62,6 @@ def ferias_por_linha_api():
         "filial": request.args.get("filial")
     }
 
-    return jsonify(
-        cargos_ferias_por_linha(linha, filtros)
-    )
+    return jsonify(ferias_por_linha(filtros))
+
 
