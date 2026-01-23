@@ -147,122 +147,110 @@
   </div>
 
 </div>
-
-  <div class="row g-4">
-
-    <!-- Cards por linha -->
+  
+  <div class="row g-4 mb-4">
+  
+    <!-- ================== CARDS POR LINHA ================== -->
     <div class="col-lg-8">
       <div class="row g-3">
         {% for linha in dados %}
         <div class="col-md-6 col-xl-4">
           <div class="card shadow-sm p-3 border-start
-           {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}
-           "
-           style="cursor:pointer"
-           onclick="abrirModalLinha('{{ linha.nome }}')">
-
+            {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}"
+            style="cursor:pointer"
+            onclick="abrirModalLinha('{{ linha.nome }}')">
+  
             <h6 class="fw-bold">{{ linha.nome }}</h6>
+  
             <p class="mb-1">
               <strong>HC:</strong> {{ linha.hc_real }} / {{ linha.hc_planejado }}
             </p>
+  
             <p class="mb-1">
               <strong>Absenteísmo:</strong> {{ linha.absenteismo }}%
             </p>
+  
             <span class="badge
-              {% if linha.status == 'CRÍTICO' %}bg-danger{% else %}bg-success{% endif %}
-            ">
+              {% if linha.status == 'CRÍTICO' %}bg-danger{% else %}bg-success{% endif %}">
               {{ linha.status }}
             </span>
+  
           </div>
         </div>
         {% endfor %}
       </div>
     </div>
-
+  
+    <!-- ================== RANKINGS LATERAIS ================== -->
     <div class="col-lg-4">
-  <div class="card shadow-sm p-3">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h6 class="fw-bold text-info mb-0">
-        <i class="bi bi-calendar2-week"></i>
-        Ranking de linhas com férias
-      </h6>
-
-      {% if ranking_linhas_ferias|length > 5 %}
-      <button class="btn btn-sm btn-outline-info"
-              onclick="toggleFerias()"
-              id="toggleFeriasBtn">
-        Ver mais
-      </button>
-      {% endif %}
-    </div>
-
-    <ul class="list-group list-group-flush" id="rankingFeriasList">
-      {% for l in ranking_linhas_ferias %}
-      <li class="list-group-item d-flex justify-content-between
-          {% if loop.index > 5 %}d-none extra-ferias{% endif %}"
-          style="cursor:pointer"
-          onclick="abrirModalFerias('{{ l.linha }}')">
-        {{ l.linha }}
-        <span class="badge bg-info">{{ l.total }}</span>
-      </li>
-      {% endfor %}
-    </ul>
-
-  </div>
-</div>
-
-
-    <!-- 🔴 Ranking de Absenteísmo -->
-    <div class="col-lg-4">
-      <div class="card shadow-sm p-3">
-    
-        <!-- Header com botão -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold text-danger mb-0">
-            <i class="bi bi-exclamation-triangle"></i>
-            Ranking de linhas por absenteísmo
-          </h6>
-    
-          {% if ranking_linhas|length > 5 %}
-            <button
-              class="btn btn-sm btn-outline-danger"
-              type="button"
-              id="toggleLinhasBtn"
-              onclick="toggleLinhas()">
-              Ver mais
-            </button>
-          {% endif %}
+  
+      <div class="row g-3">
+  
+        <!-- Ranking Férias -->
+        <div class="col-12">
+          <div class="card shadow-sm p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold text-info mb-0">
+                <i class="bi bi-calendar2-week"></i>
+                Ranking de linhas com férias
+              </h6>
+  
+              {% if ranking_linhas_ferias|length > 5 %}
+              <button class="btn btn-sm btn-outline-info"
+                      onclick="toggleFerias()"
+                      id="toggleFeriasBtn">
+                Ver mais
+              </button>
+              {% endif %}
+            </div>
+  
+            <ul class="list-group list-group-flush" id="rankingFeriasList">
+              {% for l in ranking_linhas_ferias %}
+              <li class="list-group-item d-flex justify-content-between
+                {% if loop.index > 5 %}d-none extra-ferias{% endif %}">
+                {{ l.linha }}
+                <span class="badge bg-info">{{ l.total }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-    
-        {% if ranking_linhas %}
-          <ul class="list-group list-group-flush" id="rankingLinhasList">
-            {% for linha in ranking_linhas %}
-            <li class="list-group-item d-flex justify-content-between align-items-center
-                       {% if loop.index > 5 %}d-none extra-linha{% endif %}"
-                style="cursor:pointer"
-                onclick="abrirModalLinha('{{ linha.nome }}')">
-    
-              <div>
-                <strong>{{ linha.nome }}</strong><br>
-                <small>HC {{ linha.hc_real }} / {{ linha.hc_planejado }}</small>
-              </div>
-    
-              <span class="badge bg-danger rounded-pill">
-                {{ linha.absenteismo }}%
-              </span>
-            </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="text-muted">Nenhum dado disponível</p>
-        {% endif %}
-    
+  
+        <!-- Ranking Absenteísmo -->
+        <div class="col-12">
+          <div class="card shadow-sm p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold text-danger mb-0">
+                <i class="bi bi-exclamation-triangle"></i>
+                Ranking de linhas por absenteísmo
+              </h6>
+  
+              {% if ranking_linhas|length > 5 %}
+              <button class="btn btn-sm btn-outline-danger"
+                      onclick="toggleLinhas()"
+                      id="toggleLinhasBtn">
+                Ver mais
+              </button>
+              {% endif %}
+            </div>
+  
+            <ul class="list-group list-group-flush" id="rankingLinhasList">
+              {% for linha in ranking_linhas %}
+              <li class="list-group-item d-flex justify-content-between
+                {% if loop.index > 5 %}d-none extra-linha{% endif %}">
+                {{ linha.nome }}
+                <span class="badge bg-danger">{{ linha.absenteismo }}%</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+  
       </div>
     </div>
-
+  
   </div>
-</div>
+
 
 <!-- Modal de Faltas por Linha -->
 <div class="modal fade" id="modalLinha" tabindex="-1">
