@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Dashboard & KPIs{% endblock %}
-
 {% block page_title %}
-<div class="page-header">
-  <!-- Título à esquerda -->
-  <span class="page-title">Venttos - Factory Metrics - Dashboard & KPIs</span>
+<div class="d-flex align-items-center w-100">
+  <span>Venttos - Factory Metrics - Dashboard & KPIs</span>
 
-  <!-- Botões à direita -->
-  <div class="btn-group" role="group">
+  <div class="btn-group ms-auto" role="group">
     <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
@@ -19,8 +16,8 @@
     </a>
   </div>
 </div>
-
 {% endblock %}
+
 
 
 {% block content %}
