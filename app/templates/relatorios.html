@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% block title %}Relatórios{% endblock %}
-{% block page_title %}Relatórios{% endblock %}
+
+{% block page_title %}
+<div class="d-flex align-items-center w-100 mb-3">
+  <!-- Breadcrumb / título -->
+  <span class="me-auto">
+    Venttos - Factory Metrics - Dashboard &rarr; Relatórios
+  </span>
+
+  <!-- Botões de navegação -->
+  <div class="btn-group" role="group" aria-label="Dashboard Actions">
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary me-2">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+    <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary me-2 active" aria-current="page">
+      <i class="bi bi-file-earmark-text"></i> Relatórios
+    </a>
+    <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success">
+      <i class="bi bi-bar-chart"></i> Power BI
+    </a>
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
