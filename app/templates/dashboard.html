@@ -394,7 +394,8 @@ async function abrirModalFerias(linha) {
     filial: "{{ filtros.filial or '' }}"
   });
 
-  const resp = await fetch(`/api/dashboard/linha/ferias?${params}`);
+  // 🔹 Novo endpoint que retorna cargos
+  const resp = await fetch(`/api/dashboard/linha/ferias_cargos?${params}`);
   const dados = await resp.json();
 
   const lista = document.getElementById("modalLista");
@@ -414,7 +415,7 @@ async function abrirModalFerias(linha) {
     total += c.total;
     lista.innerHTML += `
       <li class="list-group-item d-flex justify-content-between">
-        ${c.nome}
+        ${c.nome}   <!-- cargo name corrigido -->
         <span class="badge bg-info">${c.total}</span>
       </li>`;
   });
