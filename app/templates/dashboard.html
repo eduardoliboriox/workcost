@@ -2,23 +2,25 @@
 {% block title %}Dashboard & KPIs{% endblock %}
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
-  <span>Venttos - Factory Metrics - Dashboard & KPIs</span>
+  <span class="page-title">
+    Venttos - Factory Metrics - Dashboard & KPIs
+  </span>
 
-  <div class="btn-group ms-auto" role="group">
+  <div class="ms-auto d-flex gap-2">
     <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
+
     <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary">
       <i class="bi bi-file-earmark-text"></i> Relatórios
     </a>
+
     <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
   </div>
 </div>
 {% endblock %}
-
-
 
 {% block content %}
 <div class="container-fluid">
