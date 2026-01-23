@@ -35,7 +35,9 @@ def excluir_cargo():
 @bp.route("/lancamentos", methods=["POST"])
 def api_criar_lancamento():
     dados = request.form
-    return jsonify(criar_lancamento(dados))
+    resultado = criar_lancamento(dados)
+    status_code = 200 if resultado.get("success") else 400
+    return jsonify(resultado), status_code
 
 @bp.route("/dashboard/linha/ferias", methods=["GET"])
 def ferias_linha():
