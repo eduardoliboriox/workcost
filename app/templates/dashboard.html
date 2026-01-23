@@ -152,21 +152,21 @@
   
     <!-- ================== CARDS POR LINHA ================== -->
     <div class="col-lg-8">
-      <div class="row g-3">
+      <div class="row g-2">
         {% for linha in dados %}
         <div class="col-md-6 col-xl-4">
-          <div class="card shadow-sm p-3 border-start
+          <div class="card shadow-sm p-2 border-start
             {% if linha.status == 'CRÍTICO' %}border-danger{% else %}border-success{% endif %}"
             style="cursor:pointer"
             onclick="abrirModalLinha('{{ linha.nome }}')">
   
-            <h6 class="fw-bold">{{ linha.nome }}</h6>
+            <h6 class="fw-bold mb-1"">{{ linha.nome }}</h6>
   
-            <p class="mb-1">
+            <p class="mb-0 small">
               <strong>HC:</strong> {{ linha.hc_real }} / {{ linha.hc_planejado }}
             </p>
   
-            <p class="mb-1">
+            <p class="mb-0 small">
               <strong>Absenteísmo:</strong> {{ linha.absenteismo }}%
             </p>
   
@@ -184,7 +184,7 @@
     <!-- ================== RANKINGS LATERAIS ================== -->
     <div class="col-lg-4">
   
-      <div class="row g-3">
+      <div class="row g-2">
   
         <!-- Ranking Férias -->
           <div class="col-12 col-lg-6">
@@ -239,7 +239,7 @@
               <li class="list-group-item d-flex justify-content-between
                 {% if loop.index > 5 %}d-none extra-linha{% endif %}">
                 {{ linha.nome }}
-                <span class="badge bg-danger">{{ linha.absenteismo }}%</span>
+                <span class="badge bg-danger px-2 py-1">{{ linha.absenteismo }}%</span>
               </li>
               {% endfor %}
             </ul>
