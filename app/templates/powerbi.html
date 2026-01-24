@@ -20,6 +20,122 @@
 {% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/powerbi.css') }}">
+
+<section class="powerbi-container">
+
+  <!-- HEADER -->
+  <div class="powerbi-header">
+    <img src="{{ url_for('static', filename='images/logos/logo-sidebar-desktop.png') }}"
+         class="powerbi-logo">
+
+    <div class="powerbi-filters">
+      <div>
+        <label>Filial</label>
+        <select class="form-select form-select-sm">
+          <option>VTE</option>
+          <option>VTT</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Setor</label>
+        <select class="form-select form-select-sm">
+          <option>IM</option>
+          <option>PA</option>
+          <option>SMT</option>
+          <option>PTH</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Turno</label>
+        <select class="form-select form-select-sm">
+          <option>1T</option>
+          <option>2T</option>
+          <option>3T</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Linha</label>
+        <select class="form-select form-select-sm">
+          <option>Todas</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Período</label>
+        <input type="date" class="form-control form-control-sm">
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="powerbi-kpis">
+    <div class="kpi">
+      <span>HC Padrão</span>
+      <strong>{{ kpis.hc_planejado }}</strong>
+    </div>
+
+    <div class="kpi">
+      <span>HC Real</span>
+      <strong>{{ kpis.hc_real }}</strong>
+    </div>
+
+    <div class="kpi">
+      <span>Absenteísmo</span>
+      <strong>{{ kpis.absenteismo }}%</strong>
+    </div>
+
+    <div class="kpi">
+      <span>Linhas Ativas</span>
+      <strong>{{ kpis.linhas }}</strong>
+    </div>
+  </div>
+
+  <!-- GRÁFICO ABSENTEÍSMO -->
+  <div class="powerbi-section">
+    <h6>Absenteísmo por Linha</h6>
+
+    <div class="bar-chart-horizontal">
+      {% for l in ranking_linhas %}
+      <div class="bar-row">
+        <span class="label">{{ l.nome }}</span>
+        <div class="bar">
+          <div class="fill" style="width: {{ l.absenteismo }}%"></div>
+        </div>
+        <span class="value">{{ l.absenteismo }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- RANKING CARGOS -->
+  <div class="powerbi-section small">
+    <h6>Ranking de Cargos por Faltas</h6>
+
+    {% for c in ranking_cargos %}
+    <div class="bar-row compact">
+      <span class="label">{{ c.nome }}</span>
+      <div class="bar">
+        <div class="fill warning"
+             style="width: {{ c.total * 10 }}%"></div>
+      </div>
+      <span class="value">{{ c.total }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+</section>
+
+<script src="{{ url_for('static', filename='js/powerbi.js') }}"></script>
+{% endblock %}
+
+
+
+{% block content %}
 <div class="container-fluid">
   <div class="alert alert-success mt-3">
     Página Power BI - Conteúdo mínimo para teste.
