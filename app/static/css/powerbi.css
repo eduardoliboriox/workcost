@@ -186,13 +186,17 @@
 }
 
 /* KPIs – garantir leitura em cards brancos */
-.powerbi-wrapper .card small,
-.powerbi-wrapper .card h4 {
+.powerbi-wrapper .card small {
   color: #212529 !important;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-/* Ranking – labels das linhas */
-.powerbi-wrapper .card small.d-block {
+.powerbi-wrapper .card h4 {
   color: #212529 !important;
+  font-size: 2.2rem;   
+  font-weight: 700;
+  margin-top: 4px;
 }
+
 
