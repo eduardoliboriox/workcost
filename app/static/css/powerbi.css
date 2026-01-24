@@ -1,0 +1,87 @@
+.powerbi-container {
+  background: #0b1c2d;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.powerbi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.powerbi-logo {
+  height: 42px;
+}
+
+.powerbi-filters {
+  display: flex;
+  gap: 12px;
+}
+
+.powerbi-filters label {
+  font-size: 11px;
+  opacity: .8;
+}
+
+.powerbi-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.kpi {
+  background: #132c44;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.kpi span {
+  font-size: 12px;
+  opacity: .8;
+}
+
+.kpi strong {
+  font-size: 22px;
+}
+
+.powerbi-section {
+  background: #132c44;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.bar-chart-horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar {
+  background: #1f3a56;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 10px;
+}
+
+.bar .fill {
+  background: #ff5c5c;
+  height: 100%;
+}
+
+.bar .fill.warning {
+  background: #ffc107;
+}
