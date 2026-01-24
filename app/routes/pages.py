@@ -71,23 +71,18 @@ def relatorios():
 
 @bp.route("/powerbi")
 def powerbi():
-    data_inicial = request.args.get("data_inicial")
-    data_final = request.args.get("data_final")
-    turno = request.args.get("turno")
-    filial = request.args.get("filial")
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial"),
+        "setor": request.args.get("setor"),
+        "linha": request.args.get("linha"),
+    }
 
     hoje = date.today().isoformat()
-    if not data_inicial:
-        data_inicial = hoje
-    if not data_final:
-        data_final = hoje
-
-    filtros = {
-        "data_inicial": data_inicial,
-        "data_final": data_final,
-        "turno": turno,
-        "filial": filial
-    }
+    filtros["data_inicial"] = filtros["data_inicial"] or hoje
+    filtros["data_final"] = filtros["data_final"] or hoje
 
     dados = resumo_dashboard(filtros)
 
@@ -97,6 +92,7 @@ def powerbi():
         active_menu="dashboard",
         **dados
     )
+
 
 
 

@@ -21,6 +21,14 @@ def resumo_dashboard(filtros):
         where.append("filial = %s")
         params.append(filtros["filial"])
 
+    if filtros.get("setor"):
+    where.append("setor = %s")
+    params.append(filtros["setor"])
+
+    if filtros.get("linha"):
+        where.append("linha = %s")
+        params.append(filtros["linha"])
+
     where_sql = " AND ".join(where)
     if where_sql:
         where_sql = "WHERE " + where_sql

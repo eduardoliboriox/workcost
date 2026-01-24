@@ -22,112 +22,118 @@
 {% block content %}
 <div class="container-fluid">
 
-  <!-- HEADER / FILTROS -->
-  <form method="get">
-    <div class="d-flex align-items-center mb-4 gap-4">
-      <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
-           style="height:70px">
+<form method="get" class="mb-4">
 
-      <div class="row w-100 g-2">
+  <!-- HEADER -->
+  <div class="d-flex align-items-center gap-4 flex-wrap">
+    <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
+         style="height:70px">
 
-        <!-- FILIAL -->
-        <div class="col">
-          <label>Filial</label>
-          <select class="form-select" name="filial">
-            <option value="">Todas</option>
-            <option value="VTE" {% if filtros.filial == 'VTE' %}selected{% endif %}>VTE</option>
-            <option value="VTT" {% if filtros.filial == 'VTT' %}selected{% endif %}>VTT</option>
-          </select>
-        </div>
+    <div class="row g-2 flex-grow-1">
 
-        <!-- SETOR -->
-        <div class="col">
-          <label>Setor</label>
-          <select class="form-select" id="setorSelect" name="setor">
-            <option value="">Todos</option>
-            <option value="IM"  {% if filtros.setor == 'IM' %}selected{% endif %}>IM</option>
-            <option value="PA"  {% if filtros.setor == 'PA' %}selected{% endif %}>PA</option>
-            <option value="SMT" {% if filtros.setor == 'SMT' %}selected{% endif %}>SMT</option>
-            <option value="PTH" {% if filtros.setor == 'PTH' %}selected{% endif %}>PTH</option>
-            <option value="VTT" {% if filtros.setor == 'VTT' %}selected{% endif %}>VTT</option>
-          </select>
-        </div>
-
-        <!-- TURNO -->
-        <div class="col">
-          <label>Turno</label>
-          <select class="form-select" name="turno">
-            <option value="">Todos</option>
-            <option value="1T" {% if filtros.turno == '1T' %}selected{% endif %}>1T</option>
-            <option value="2T" {% if filtros.turno == '2T' %}selected{% endif %}>2T</option>
-            <option value="3T" {% if filtros.turno == '3T' %}selected{% endif %}>3T</option>
-          </select>
-        </div>
-
-        <!-- LINHA -->
-        <div class="col">
-          <label>Linha</label>
-          <select class="form-select" id="linhaSelect" name="linha">
-            <option value="">Todas</option>
-          </select>
-        </div>
-
-        <!-- PERÍODO -->
-        <div class="col">
-          <label>Data Inicial</label>
-          <input type="date"
-                 class="form-control"
-                 name="data_inicial"
-                 value="{{ filtros.data_inicial }}">
-        </div>
-
-        <div class="col">
-          <label>Data Final</label>
-          <input type="date"
-                 class="form-control"
-                 name="data_final"
-                 value="{{ filtros.data_final }}">
-        </div>
-
+      <!-- FILIAL -->
+      <div class="col-md">
+        <label>Filial</label>
+        <select name="filial" class="form-select">
+          <option value="">Todas</option>
+          <option value="VTE" {% if filtros.filial=='VTE' %}selected{% endif %}>VTE</option>
+          <option value="VTT" {% if filtros.filial=='VTT' %}selected{% endif %}>VTT</option>
+        </select>
       </div>
-    </div>
 
-    <!-- botão invisível para submit -->
-    <button type="submit" class="d-none"></button>
-  </form>
-
-  <!-- KPIs -->
-  <div class="row g-3 mb-4 text-center">
-    {% for k, v in kpis.items() %}
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3">
-        <small class="text-muted">{{ k|replace('_',' ')|title }}</small>
-        <h2 class="fw-bold">
-          {{ v }}{% if k == 'absenteismo' %}%{% endif %}
-        </h2>
+      <!-- SETOR -->
+      <div class="col-md">
+        <label>Setor</label>
+        <select name="setor" id="setorSelect" class="form-select">
+          <option value="">Todos</option>
+          <option value="IM" {% if filtros.setor=='IM' %}selected{% endif %}>IM</option>
+          <option value="PA" {% if filtros.setor=='PA' %}selected{% endif %}>PA</option>
+          <option value="SMT" {% if filtros.setor=='SMT' %}selected{% endif %}>SMT</option>
+          <option value="PTH" {% if filtros.setor=='PTH' %}selected{% endif %}>PTH</option>
+        </select>
       </div>
+
+      <!-- TURNO -->
+      <div class="col-md">
+        <label>Turno</label>
+        <select name="turno" class="form-select">
+          <option value="">Todos</option>
+          <option value="1T" {% if filtros.turno=='1T' %}selected{% endif %}>1º</option>
+          <option value="2T" {% if filtros.turno=='2T' %}selected{% endif %}>2º</option>
+          <option value="3T" {% if filtros.turno=='3T' %}selected{% endif %}>3º</option>
+        </select>
+      </div>
+
+      <!-- LINHA -->
+      <div class="col-md">
+        <label>Linha</label>
+        <select name="linha" id="linhaSelect" class="form-select">
+          <option value="">Todas</option>
+        </select>
+      </div>
+
+      <!-- DATAS (mantidas no final) -->
+      <div class="col-md">
+        <label>Data Inicial</label>
+        <input type="date" name="data_inicial"
+               class="form-control"
+               value="{{ filtros.data_inicial }}">
+      </div>
+
+      <div class="col-md">
+        <label>Data Final</label>
+        <input type="date" name="data_final"
+               class="form-control"
+               value="{{ filtros.data_final }}">
+      </div>
+
+      <div class="col-md d-flex align-items-end">
+        <button class="btn btn-primary w-100">
+          <i class="bi bi-funnel"></i> Filtrar
+        </button>
+      </div>
+
     </div>
-    {% endfor %}
   </div>
+</form>
 
-  <!-- GRÁFICOS (placeholder visual) -->
-  <div class="card p-4 mb-4">
-    <h5>Absenteísmo por Linha</h5>
-    <div class="text-muted">Gráfico empilhado horizontal (PowerBI-like)</div>
+<!-- KPIs -->
+<div class="row g-3 mb-4 text-center">
+  {% for k,v in kpis.items() %}
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <small>{{ k|replace('_',' ')|title }}</small>
+      <h4>{{ v }}{% if k=='absenteismo' %}%{% endif %}</h4>
+    </div>
   </div>
-
-  <div class="card p-4">
-    <h5>Ranking de cargos por faltas</h5>
-    <ul>
-      {% for c in ranking_cargos %}
-      <li>{{ c.nome }} - {{ c.total }}</li>
-      {% endfor %}
-    </ul>
-  </div>
+  {% endfor %}
+</div>
 
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/powerbi.js') }}"></script>
+<script>
+const linhas = {
+  IM:["IM-01","IM-02"],
+  PA:["PA-01","PA-02"],
+  SMT:["SMT-01","SMT-02"],
+  PTH:["PTH-01"]
+};
+
+function atualizarLinhas(){
+  const setor = document.getElementById("setorSelect").value;
+  const linhaSelect = document.getElementById("linhaSelect");
+  const atual = "{{ filtros.linha or '' }}";
+
+  linhaSelect.innerHTML = `<option value="">Todas</option>`;
+  (linhas[setor] || []).forEach(l=>{
+    linhaSelect.innerHTML += `
+      <option value="${l}" ${l===atual?'selected':''}>${l}</option>`;
+  });
+}
+
+document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
+document.addEventListener("DOMContentLoaded", atualizarLinhas);
+</script>
 {% endblock %}
