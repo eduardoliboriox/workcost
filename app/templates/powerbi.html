@@ -124,6 +124,48 @@
   </div>
 </div>
 
+<!-- ================= RANKING DE LINHAS POR ABSENTEÍSMO ================= -->
+<div class="row g-3 mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm p-3">
+
+      <h6 class="fw-bold text-danger mb-3">
+        <i class="bi bi-bar-chart-line"></i>
+        Ranking de linhas por absenteísmo
+      </h6>
+
+      {% if ranking_linhas %}
+      <div class="bar-chart">
+
+        {% set max_abs = ranking_linhas[0].absenteismo or 1 %}
+
+        {% for l in ranking_linhas %}
+          {% set altura = (l.absenteismo / max_abs) * 100 %}
+
+          <div class="bar-item">
+
+            {% if l.absenteismo > 0 %}
+              <div class="bar-value">{{ l.absenteismo }}%</div>
+            {% endif %}
+
+            <div
+              class="bar {% if l.absenteismo > 0 %}red{% else %}green{% endif %}"
+              style="height: {{ altura }}%">
+            </div>
+
+            <div class="bar-label">{{ l.nome }}</div>
+          </div>
+
+        {% endfor %}
+      </div>
+      {% else %}
+        <p class="text-muted mb-0">Nenhum dado encontrado para os filtros selecionados.</p>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
 </div>
 {% endblock %}
 
