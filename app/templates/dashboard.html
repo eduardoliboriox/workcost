@@ -105,7 +105,10 @@
   <!-- Ranking por Setor -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
-      <h6 class="fw-bold text-danger">Ranking por Setor</h6>
+      <h6 class="fw-bold text-danger">
+        <i class="bi bi-diagram-3"></i>
+        Ranking por Setor
+     </h6>
       <ul class="list-group list-group-flush">
         {% for s in ranking_setor %}
         <li class="list-group-item d-flex justify-content-between">
@@ -120,7 +123,11 @@
   <!-- Ranking por Filial -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
-      <h6 class="fw-bold text-primary">Ranking por Filial</h6>
+      <h6 class="fw-bold text-primary">
+        <i class="bi bi-geo-alt"></i>
+        Ranking por Filial
+    </h6>
+
       <ul class="list-group list-group-flush">
         {% for f in ranking_filial %}
         <li class="list-group-item d-flex justify-content-between">
@@ -139,10 +146,11 @@
       <!-- Header com botão -->
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="fw-bold text-warning mb-0">
+          <i class="bi bi-people"></i>
           Ranking de cargos por faltas
         </h6>
-  
-        {% if ranking_cargos|length > 5 %}
+
+          {% if ranking_cargos|length > 5 %}
           <button
             class="btn btn-sm btn-outline-warning"
             type="button"
