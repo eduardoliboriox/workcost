@@ -3,7 +3,7 @@
 
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
-  <span class="me-auto">Venttos - Factory Metrics &rarr; Power BI</span>
+  <span class="me-auto">Venttos - Factory Metrics → Power BI</span>
 
   <div class="btn-group" role="group">
     <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary me-2">
@@ -72,7 +72,7 @@
         </select>
       </div>
 
-      <!-- DATAS (NO FINAL, COMO PEDIDO) -->
+      <!-- DATAS -->
       <div class="col-md">
         <label>Data Inicial</label>
         <input type="date"
@@ -95,16 +95,33 @@
 
 <!-- KPIs -->
 <div class="row g-3 mb-4 text-center">
-  {% for k,v in kpis.items() %}
   <div class="col-md-3">
     <div class="card shadow-sm p-3">
-      <small class="text-muted">{{ k|replace('_',' ')|title }}</small>
-      <h4 class="fw-bold">
-        {{ v }}{% if k=='absenteismo' %}%{% endif %}
-      </h4>
+      <small>HC Planejado</small>
+      <h4>{{ kpis.hc_planejado }}</h4>
     </div>
   </div>
-  {% endfor %}
+
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <small>HC Real</small>
+      <h4>{{ kpis.hc_real }}</h4>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <small>Absenteísmo Geral</small>
+      <h4>{{ kpis.absenteismo }}%</h4>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3">
+      <small>Linhas Ativas</small>
+      <h4>{{ kpis.linhas }}</h4>
+    </div>
+  </div>
 </div>
 
 </div>
@@ -112,9 +129,10 @@
 
 {% block scripts %}
 <script>
+/* ===== LINHAS POR SETOR ===== */
 const linhas = {
-  IM: ["IM-01","IM-02"],
-  PA: ["PA-01","PA-02"],
+  IM:["IM-01","IM-02"],
+  PA:["PA-01","PA-02"],
   SMT:["SMT-01","SMT-02"],
   PTH:["PTH-01"]
 };
@@ -124,20 +142,21 @@ function atualizarLinhas(){
   const linhaSelect = document.getElementById("linhaSelect");
   const atual = "{{ filtros.linha or '' }}";
 
-  linhaSelect.innerHTML = '<option value="">Todas</option>';
-  (linhas[setor] || []).forEach(l => {
-    linhaSelect.innerHTML +=
-      `<option value="${l}" ${l===atual?'selected':''}>${l}</option>`;
+  linhaSelect.innerHTML = `<option value="">Todas</option>`;
+  (linhas[setor] || []).forEach(l=>{
+    linhaSelect.innerHTML += `
+      <option value="${l}" ${l===atual?'selected':''}>${l}</option>
+    `;
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  atualizarLinhas();
+document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
+document.addEventListener("DOMContentLoaded", atualizarLinhas);
 
-  document.querySelectorAll(".auto-submit").forEach(el => {
-    el.addEventListener("change", () => {
-      document.getElementById("filtrosForm").submit();
-    });
+/* ===== AUTO SUBMIT (POWER BI STYLE) ===== */
+document.querySelectorAll(".auto-submit").forEach(el => {
+  el.addEventListener("change", () => {
+    document.getElementById("filtrosForm").submit();
   });
 });
 </script>
