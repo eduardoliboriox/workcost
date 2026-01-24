@@ -1,6 +1,7 @@
 from psycopg.rows import dict_row
 from app.extensions import get_db
 from app.repositories.lancamentos_repository import ferias_por_linha
+from app.services.pcp_service import ranking_linhas_faltas
 
 def ranking_linhas_ferias(filtros):
     return ferias_por_linha(filtros)
@@ -120,6 +121,7 @@ def resumo_dashboard(filtros):
         "ranking_filial": ranking_filial,
         "ranking_cargos": ranking_cargos(filtros), 
         "ranking_linhas_ferias": ranking_linhas_ferias(filtros),
+        "ranking_linhas_faltas": ranking_linhas_faltas(filtros),
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,
