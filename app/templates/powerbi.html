@@ -95,28 +95,35 @@
 
 <!-- KPIs -->
 <div class="row g-3 mb-4 text-center">
-  <div class="col-md-3">
+  <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>HC Planejado</small>
       <h4>{{ kpis.hc_planejado }}</h4>
     </div>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>HC Real</small>
       <h4>{{ kpis.hc_real }}</h4>
     </div>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3">
+      <small>Ausências</small>
+      <h4 class="text-danger">{{ kpis.ausencias }}</h4>
+    </div>
+  </div>
+
+  <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>Absenteísmo Geral</small>
       <h4>{{ kpis.absenteismo }}%</h4>
     </div>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>Linhas Ativas</small>
       <h4>{{ kpis.linhas }}</h4>
