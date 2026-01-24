@@ -1,6 +1,17 @@
-// reservado para:
-// - animações
-// - filtros dinâmicos
-// - charts reais no futuro
+document.getElementById("setorSelect").addEventListener("change", async e => {
+  const setor = e.target.value;
+  const linhaSelect = document.getElementById("linhaSelect");
 
-console.log("PowerBI view loaded");
+  linhaSelect.innerHTML = "<option>Todas</option>";
+
+  if (setor === "Todos") return;
+
+  const resp = await fetch(`/api/linhas?setor=${setor}`);
+  const linhas = await resp.json();
+
+  linhas.forEach(l => {
+    const opt = document.createElement("option");
+    opt.textContent = l;
+    linhaSelect.appendChild(opt);
+  });
+});
