@@ -121,12 +121,17 @@ def resumo_dashboard(filtros):
         "ranking_cargos": ranking_cargos(filtros), 
         "ranking_linhas_ferias": ranking_linhas_ferias(filtros),
         "ranking_linhas_faltas": ranking_linhas_faltas(filtros),
+        
+        ausencias = max(total_p - total_r, 0)
+        
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,
+            "ausencias": ausencias,
             "absenteismo": abs_total,
             "linhas": len(dados)
         }
+
     }
 
 
