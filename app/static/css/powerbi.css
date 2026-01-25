@@ -201,4 +201,12 @@
   margin-top: 2px;
 }
 
+/* Força textos dentro do modal Power BI para escuro */
+#modalLinhaPowerBI,
+#modalLinhaPowerBI h6,
+#modalLinhaPowerBI span,
+#modalLinhaPowerBI .list-group-item {
+    color: #212529 !important; /* Cor padrão escura */
+}
+
 
