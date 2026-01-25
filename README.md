@@ -1,6 +1,6 @@
-# Venttos – Factory Metrics
+# 
 
-**Venttos – Factory Metrics** é um sistema web desenvolvido para **engenharia, produção e PCP**, com foco em **controle de absenteísmo**, **análise de headcount**, **métricas operacionais** e **padronização de dados industriais**.
+**name** é um sistema web desenvolvido para
 
 O projeto foi pensado para uso real em fábrica, priorizando **simplicidade**, **consistência de dados**, **baixo erro operacional** e **arquitetura limpa**.
 
@@ -8,12 +8,12 @@ O projeto foi pensado para uso real em fábrica, priorizando **simplicidade**, *
 
 ## 🎯 Finalidade
 
-* Lançamento diário de **absenteísmo por setor, linha e turno**
-* Cálculo automático de **HC real**
-* Registro de **faltas por cargo**
-* Dashboard com visão consolidada
-* Padronização de setores e linhas (sem digitação manual)
-* Base sólida para futuras análises de PCP e produtividade
+* 
+* 
+* 
+* 
+* 
+* 
 
 ---
 
@@ -40,9 +40,9 @@ Arquitetura inspirada em boas práticas de **DDD leve + Clean Architecture**.
   * Setor
   * Linha (dinâmica)
   * Turno
-* Definição de **HC padrão**
-* Cálculo automático de **HC real**
-* Inclusão de faltas por cargo
+* 
+* 
+* 
 * Envio dos dados via API REST
 
 ### 📊 Dashboard
