@@ -36,10 +36,10 @@ async function abrirModalLinha(linha) {
 
   const params = new URLSearchParams({
     linha: linha,
-    data_inicial: "{{ filtros.data_inicial }}",
-    data_final: "{{ filtros.data_final }}",
-    turno: "{{ filtros.turno or '' }}",
-    filial: "{{ filtros.filial or '' }}"
+    data_inicial: filtros.data_inicial,
+    data_final: filtros.data_final,
+    turno: filtros.turno,
+    filial: filtros.filial
   });
 
   const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
