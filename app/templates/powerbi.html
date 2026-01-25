@@ -172,6 +172,45 @@
   </div>
 </div>
 
+<!-- Modal de Faltas PowerBI -->
+<div class="modal fade" id="modalLinhaPowerBI" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalLinhaPowerBITitulo"></h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-2">
+        <!-- Lista de cargos por linha (via fetch) -->
+        <ul class="list-group list-group-flush mb-3" id="modalListaPowerBI"></ul>
+        
+        <!-- Total de faltas -->
+        <div class="text-end fw-bold mb-3">
+          Total: <span id="modalTotalPowerBI">0</span>
+        </div>
+
+        <!-- Ranking de linhas -->
+        <h6 class="fw-bold text-danger">Ranking de Linhas</h6>
+        <ul class="list-group list-group-flush" id="rankingLinhasPowerBIList">
+          {% for linha in ranking_linhas_faltas_powerbi %}
+          <li class="list-group-item d-flex justify-content-between"
+              style="cursor:pointer"
+              onclick="abrirModalLinhaPowerBI('{{ linha.linha }}')">
+            <span>{{ linha.linha }}</span>
+            <span class="badge bg-danger px-2 py-1">{{ linha.faltas }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  
+
 </div>
 </div>
 {% endblock %}
@@ -208,6 +247,53 @@ document.querySelectorAll(".auto-submit").forEach(el => {
     document.getElementById("filtrosForm").submit();
   });
 });
+</script>
+
+<script>
+async function abrirModalLinhaPowerBI(linha) {
+
+  document.getElementById("modalLinhaPowerBITitulo").innerText =
+    `Faltas — ${linha}`;
+
+  const params = new URLSearchParams({
+    linha: linha,
+    data_inicial: "{{ filtros.data_inicial }}",
+    data_final: "{{ filtros.data_final }}",
+    turno: "{{ filtros.turno or '' }}",
+    filial: "{{ filtros.filial or '' }}"
+  });
+
+  const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
+  const dados = await resp.json();
+
+  const lista = document.getElementById("modalListaPowerBI");
+  const totalSpan = document.getElementById("modalTotalPowerBI");
+
+  lista.innerHTML = "";
+  let total = 0;
+
+  if (!dados.length) {
+    lista.innerHTML = `
+      <li class="list-group-item text-muted">
+        Nenhuma falta registrada
+      </li>`;
+  }
+
+  dados.forEach(c => {
+    total += c.total;
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${c.nome}
+        <span class="badge bg-danger">${c.total}</span>
+      </li>`;
+  });
+
+  totalSpan.innerText = total;
+
+  new bootstrap.Modal(
+    document.getElementById("modalLinhaPowerBI")
+  ).show();
+}
 </script>
 
 
