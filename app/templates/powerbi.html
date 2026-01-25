@@ -234,5 +234,16 @@ document.querySelectorAll(".auto-submit").forEach(el => {
 });
 </script>
 
+<script>
+  const filtros = {
+    data_inicial: "{{ filtros.data_inicial }}",
+    data_final: "{{ filtros.data_final }}",
+    turno: "{{ filtros.turno or '' }}",
+    filial: "{{ filtros.filial or '' }}",
+    linha: "{{ filtros.linha or '' }}"
+  };
+</script>
+<script src="{{ url_for('static', filename='js/powerbi.js') }}"></script>
+
 
 {% endblock %}
