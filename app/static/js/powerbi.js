@@ -37,37 +37,20 @@ const linhas = {
   PTH:["PTH-01"]
 };
 
-function atualizarLinhas(){
-  const setor = document.getElementById("setorSelect").value;
-  const linhaSelect = document.getElementById("linhaSelect");
-  const atual = filtros.linha;
-
-  linhaSelect.innerHTML = `<option value="">Todas</option>`;
-  (linhas[setor] || []).forEach(l=>{
-    linhaSelect.innerHTML += `<option value="${l}" ${l===atual?'selected':''}>${l}</option>`;
-  });
-}
-
-document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
-document.addEventListener("DOMContentLoaded", atualizarLinhas);
-
-/* ===== AUTO SUBMIT ===== */
-document.querySelectorAll(".auto-submit").forEach(el => {
-  el.addEventListener("change", () => {
-    document.getElementById("filtrosForm").submit();
-  });
-});
-
-/* ===== ABRIR MODAL LINHA ===== */
 async function abrirModalLinha(linha) {
-  document.getElementById("modalLinhaTitulo").innerText = `Faltas — ${linha}`;
+
+  // Pegando os valores dos selects diretamente do DOM
+  const data_inicial = document.querySelector("input[name='data_inicial']").value;
+  const data_final   = document.querySelector("input[name='data_final']").value;
+  const turno        = document.querySelector("select[name='turno']").value;
+  const filial       = document.querySelector("select[name='filial']").value;
 
   const params = new URLSearchParams({
-    linha: linha,
-    data_inicial: filtros.data_inicial,
-    data_final: filtros.data_final,
-    turno: filtros.turno,
-    filial: filtros.filial
+    linha,
+    data_inicial,
+    data_final,
+    turno,
+    filial
   });
 
   const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
