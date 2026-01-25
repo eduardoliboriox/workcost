@@ -81,15 +81,19 @@ project/
 │   ├─ extensions.py          # DB (psycopg)
 │   │
 │   ├─ repositories/          # Acesso ao banco (SQL)
+│   │   ├─ __init__.py
+│   │   ├─ atestados_repository.py
 │   │   ├─ cargos_repository.py
 │   │   ├─ lancamentos_repository.py
 │   │   └─ modelos_repository.py
 │   │  
 │   ├─ routes/
+│   │   ├─ __init__.py
 │   │   ├─ api.py             # Rotas REST (JSON)
 │   │   └─ pages.py           # Rotas HTML
 │   │
 │   ├─ services/              # Regras de negócio
+│   │   ├─ atestados_service.py
 │   │   ├─ cargos_service.py
 │   │   ├─ lancamentos_service.py
 │   │   ├─ modelos_service.py
@@ -100,13 +104,20 @@ project/
 │   │   ├─ cargos.html
 │   │   ├─ dashboard.html
 │   │   ├─ inicio.html
-│   │   └─ lancamento.html
+│   │   ├─ lancamento.html
+│   │   ├─ powerbi.html
+│   │   └─ relatorios.html
 │   │
 │   └─ static/
-│       ├─ css/style.css
+│       ├─ css/
+│       │   ├─ powerbi.css
+│       │   └─ style.css
+│       │
 │       ├─ js/
 │       │   ├─ main.js
-│       │   └─ pcp.js
+│       │   ├─ pcp.js
+│       │   └─ powerbi.js
+│       │
 │       ├─ images/
 │       └─ fonts/inter.woff2
 │
