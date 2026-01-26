@@ -2,19 +2,26 @@
 {% block title %}Power BI{% endblock %}
 
 {% block page_title %}
-<div class="d-flex align-items-center w-100">
+<div class="d-flex align-items-center w-100 ">
   <span class="me-auto">Venttos - Factory Metrics → Power BI</span>
 
-  <div class="btn-group" role="group">
-    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary me-2">
+  <div class="btn-group gap-2" role="group">
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
-    <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary me-2">
+    <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary ">
       <i class="bi bi-file-earmark-text"></i> Relatórios
     </a>
-    <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success">
+    <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success active">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
+  
+    <button class="btn btn-outline-dark"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
   </div>
 </div>
 {% endblock %}
@@ -107,35 +114,37 @@
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>HC Planejado</small>
-      <h4>{{ kpis.hc_planejado }}</h4>
+      <h4 id="kpi-hc-planejado">{{ kpis.hc_planejado }}</h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>HC Real</small>
-      <h4>{{ kpis.hc_real }}</h4>
+      <h4 id="kpi-hc-real">{{ kpis.hc_real }}</h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>Ausências</small>
-      <h4 class="text-danger">{{ kpis.ausencias }}</h4>
+      <h4 id="kpi-ausencias" class="{% if kpis.ausencias == 0 %}text-success{% else %}text-danger{% endif %}">
+          {{ kpis.ausencias }}
+      </h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>Absenteísmo Geral</small>
-      <h4>{{ kpis.absenteismo }}%</h4>
+      <h4 id="kpi-abs">{{ kpis.absenteismo }}%</h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
       <small>Linhas Ativas</small>
-      <h4>{{ kpis.linhas }}</h4>
+      <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
     </div>
   </div>
 </div>
@@ -147,7 +156,7 @@
     Ranking de linhas por faltas
   </h6>
 
-  <div class="d-flex align-items-end gap-3" style="height:220px">
+  <div id="rankingPowerBI" class="d-flex align-items-end gap-3" style="height:220px">
     {% for l in ranking_faltas_powerbi %}
       <!-- Cada coluna clicável -->
       <div class="text-center" style="width:60px; cursor:pointer;" 
@@ -210,9 +219,6 @@
     </div>
   </div>
 </div>
-
-
-  
 
 </div>
 </div>
@@ -304,5 +310,5 @@ async function abrirModalLinhaPowerBI(linha) {
 </script>
 
 
-
+<script src="{{ url_for('static', filename='js/powerbi-live.js') }}"></script>
 {% endblock %}
