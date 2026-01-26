@@ -95,5 +95,3 @@ def atualizar(codigo, fase, campos):
                 valores
             )
         conn.commit()
-
-
