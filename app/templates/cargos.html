@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Cargos{% endblock %}
-{% block page_title %}Venttos - Factory Metrics - Cargos{% endblock %}
+{% block page_title %}
+<div class="d-flex align-items-center w-100">
+  <span class="me-auto">
+    Venttos - Factory Metrics - Cargos
+  </span>
+
+  <div class="ms-auto d-flex gap-2">
+
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+
+    <a href="{{ url_for('pages.hc_linhas') }}" class="btn btn-outline-primary">
+      <i class="bi bi-diagram-3"></i> HC por Linha
+    </a>
+
+    <button class="btn btn-outline-dark"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
+  </div>
+</div>
+{% endblock %}
+
 
 {% block content %}
 <div class="container-fluid">
