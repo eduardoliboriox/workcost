@@ -46,7 +46,7 @@
     </a>
   
     <a href="{{ url_for('pages.lancamento') }}"
-       class="{% if request.endpoint == 'pages.lancamento' %}active{% endif %}">
+       class="{% if active_menu == 'lancamento' or request.endpoint == 'pages.lancamento' %}active{% endif %}">
       <i class="bi bi-plus-square"></i> Lançamentos
     </a>
   
@@ -56,8 +56,8 @@
     </a>
   
     <a href="{{ url_for('pages.cargos') }}"
-       class="{% if request.endpoint == 'pages.cargos' %}active{% endif %}">
-      <i class="bi bi-people"></i> Cargos
+       class="{% if active_menu == 'cargos' or request.endpoint == 'pages.cargos' %}active{% endif %}">
+      <i class="bi bi-database"></i> Database
     </a>
   </nav>
 
@@ -117,8 +117,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 
 {% block scripts %}{% endblock %}
 </body>
 </html>
-
