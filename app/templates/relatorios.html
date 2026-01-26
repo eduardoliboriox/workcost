@@ -9,24 +9,67 @@
   </span>
 
   <!-- Botões de navegação -->
-  <div class="btn-group" role="group" aria-label="Dashboard Actions">
-    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary me-2 active">
+  <div class="btn-group gap-2" role="group" aria-label="Dashboard Actions">
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
-    <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary me-2" aria-current="page">
+    <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-primary active" aria-current="page">
       <i class="bi bi-file-earmark-text"></i> Relatórios
     </a>
     <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
+    
+     <button class="btn btn-outline-dark"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+    
   </div>
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-  <div class="alert alert-info mt-3">
-    Página de Relatórios - Conteúdo mínimo para teste.
-  </div>
+
+  <!-- Filtros -->
+  <form id="formRelatorio" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">Setor</label>
+      <select class="form-select" name="setor">
+        <option value="">Todos</option>
+        <option>IM</option>
+        <option>PA</option>
+        <option>SMT</option>
+        <option>PTH</option>
+        <option>VTT</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">Período</label>
+      <select class="form-select" name="tipo">
+        <option value="SEMANAL">Semanal</option>
+        <option value="MENSAL" selected>Mensal</option>
+        <option value="ANUAL">Anual</option>
+      </select>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+      <button class="btn btn-primary w-100">
+        <i class="bi bi-file-earmark-text"></i>
+        Gerar Relatório
+      </button>
+    </div>
+  </form>
+
+  <!-- Resultado -->
+  <div id="resultadoRelatorio"></div>
+
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
 {% endblock %}
