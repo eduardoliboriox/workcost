@@ -157,7 +157,6 @@
 .powerbi-wrapper h1,
 .powerbi-wrapper h2,
 .powerbi-wrapper h3,
-.powerbi-wrapper h4,
 .powerbi-wrapper h5,
 .powerbi-wrapper h6,
 .powerbi-wrapper p,
@@ -194,13 +193,19 @@
   font-weight: 500;
 }
 
+/* KPIs – padrão */
 .powerbi-wrapper .card h4 {
-  color: #212529 !important;
+  color: #212529;
   font-size: 2.1rem;   
   font-weight: 600;
   margin-top: 2px;
 }
 
+/* Exceção semântica */
+.powerbi-wrapper .card h4.text-danger {
+  color: #dc3545;
+}
+ 
 /* Força textos dentro do modal Power BI para escuro */
 #modalLinhaPowerBI,
 #modalLinhaPowerBI h6,
@@ -208,5 +213,3 @@
 #modalLinhaPowerBI .list-group-item {
     color: #212529 !important; /* Cor padrão escura */
 }
-
-
