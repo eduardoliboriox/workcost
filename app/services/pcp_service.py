@@ -265,5 +265,3 @@ def ranking_linhas_faltas_powerbi(filtros):
         })
 
     return resultado
-
-
