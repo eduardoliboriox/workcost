@@ -1,0 +1,28 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Entrar{% endblock %}
+
+{% block content %}
+<section class="mobile-screen"
+  style="background-image:url('{{ url_for('static', filename='images/banners/bg-log-pass.png') }}')">
+
+  <form method="post"
+        action="{{ url_for('auth.login_local') }}"
+        class="mobile-form">
+
+    <input name="username" class="form-control mb-3" placeholder="Usuário" required>
+    <input type="password" name="password" class="form-control mb-3" placeholder="Senha" required>
+
+    <button class="btn btn-primary w-100 mb-3">Entrar</button>
+
+    <a href="{{ url_for('auth.login_google') }}"
+       class="btn btn-outline-danger w-100 mb-2">
+        <i class="bi bi-google me-2"></i>Google
+      </a>
+
+    <a href="{{ url_for('auth.login_github') }}"
+       class="btn btn-outline-dark w-100">
+      <i class="bi bi-github me-2"></i>GitHub
+      </a>
+  </form>
+</section>
+{% endblock %}
