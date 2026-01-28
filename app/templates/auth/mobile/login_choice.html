@@ -1,0 +1,21 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Factory Metrics{% endblock %}
+
+{% block content %}
+<section class="mobile-screen"
+  style="background-image:url('{{ url_for('static', filename='images/banners/bg-cad-log.png') }}')">
+
+  <div class="mobile-actions">
+    <a href="{{ url_for('auth.register_mobile_form') }}"
+       class="btn btn-primary w-100 mb-3">
+      Cadastrar-se
+    </a>
+
+    <a href="{{ url_for('auth.login_mobile_form') }}"
+       class="btn btn-outline-light w-100">
+      Entrar
+    </a>
+  </div>
+
+</section>
+{% endblock %}
