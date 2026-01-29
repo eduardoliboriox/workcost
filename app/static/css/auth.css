@@ -174,3 +174,20 @@
 .mobile-form {
   transform: translateY(-48px);
 }
+
+.btn-outline-purple {
+  color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.btn-outline-purple:hover,
+.btn-outline-purple:focus {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
+.btn-outline-purple:active {
+  background-color: #5a32a3;
+  border-color: #5a32a3;
+  color: #fff;
+}
