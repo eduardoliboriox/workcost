@@ -1,0 +1,93 @@
+{% extends "layouts/app.html" %}
+{% block title %}Meu Perfil{% endblock %}
+
+{% block page_title %}
+<div class="d-flex align-items-center w-100">
+  <span class="me-auto">
+    Venttos - Factory Metrics - Meu Perfil
+  </span>
+
+  <div class="ms-auto d-flex gap-2">
+
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+    
+    <button class="btn btn-outline-purple" onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+      <i class="bi bi-box-arrow-right"></i> Sair
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4" style="max-width: 640px">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <h5 class="mb-3">Dados do usuário</h5>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <label class="form-label">Nome completo</label>
+      <input class="form-control" value="{{ user.full_name }}" disabled>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Usuário</label>
+      <input class="form-control" value="{{ user.username }}" disabled>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Email</label>
+      <input class="form-control" value="{{ user.email }}" disabled>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Matrícula</label>
+      <input class="form-control" value="{{ user.matricula }}" disabled>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Setor</label>
+      <input class="form-control" value="{{ user.setor }}" disabled>
+    </div>
+  </div>
+
+  <h5 class="mb-3">Alterar senha</h5>
+
+  <form method="post">
+    <input type="password"
+           name="current_password"
+           class="form-control mb-2"
+           placeholder="Senha atual">
+
+    <input type="password"
+           name="new_password"
+           class="form-control mb-2"
+           placeholder="Nova senha">
+
+    <input type="password"
+           name="confirm_password"
+           class="form-control mb-3"
+           placeholder="Confirmar nova senha">
+
+    <small class="text-muted d-block mb-3">
+      Deixe em branco para não alterar
+    </small>
+
+    <button class="btn btn-outline-success">
+      Alterar senha
+    </button>
+  </form>
+
+</div>
+{% endblock %}
