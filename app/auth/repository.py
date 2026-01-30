@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash
 # =====================================================
 # CORE USERS (Flask-Login / OAuth / Local)
 # =====================================================
-
 def get_user_by_id(user_id):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -14,7 +13,6 @@ def get_user_by_id(user_id):
                 (user_id,)
             )
             return cur.fetchone()
-
 
 def get_user_by_provider(provider, provider_id):
     with get_db() as conn:
@@ -27,7 +25,6 @@ def get_user_by_provider(provider, provider_id):
                 (provider, provider_id),
             )
             return cur.fetchone()
-
 
 def create_user(data):
     with get_db() as conn:
@@ -49,11 +46,9 @@ def create_user(data):
             conn.commit()
             return cur.fetchone()
 
-
 # =====================================================
 # LOCAL AUTH
 # =====================================================
-
 def get_user_by_username(username):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -62,7 +57,6 @@ def get_user_by_username(username):
                 (username,),
             )
             return cur.fetchone()
-
 
 def create_local_user(data):
     with get_db() as conn:
@@ -89,11 +83,9 @@ def create_local_user(data):
             conn.commit()
             return cur.fetchone()
 
-
 # =====================================================
 # ADMIN
 # =====================================================
-
 def list_pending_users(search=None):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -119,7 +111,6 @@ def list_pending_users(search=None):
                 )
             return cur.fetchall()
 
-
 def approve_user(user_id):
     with get_db() as conn:
         with conn.cursor() as cur:
@@ -128,7 +119,6 @@ def approve_user(user_id):
                 (user_id,),
             )
             conn.commit()
-
 
 def deny_user(user_id):
     with get_db() as conn:
@@ -146,9 +136,7 @@ def count_users():
             row = cur.fetchone()
             return row["total"]
 
-
 # app/auth/repository.py
-
 def list_all_users(search=None):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -170,11 +158,9 @@ def list_all_users(search=None):
                 )
             return cur.fetchall()
 
-
 # =====================================================
 # ALTERAÇÃO DE SENHA
 # =====================================================
-
 def update_user_password(user_id: int, new_password: str):
     password_hash = generate_password_hash(new_password)
 
