@@ -1,9 +1,7 @@
 from app.repositories import hc_linhas_repository
 
-
 def listar():
     return hc_linhas_repository.listar()
-
 
 def salvar(dados):
     try:
@@ -15,7 +13,6 @@ def salvar(dados):
         return {"success": True}
     except Exception as e:
         return {"success": False, "error": str(e)}
-
 
 def excluir(id_):
     try:
