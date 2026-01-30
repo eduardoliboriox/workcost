@@ -1,7 +1,6 @@
 from app.repositories.lancamentos_repository import inserir_com_cargos, cargos_por_linha
 import json
 
-
 def criar_lancamento(dados):
     try:
         dados = dict(dados)
@@ -35,7 +34,6 @@ def criar_lancamento(dados):
 
     except Exception as e:
         return {"success": False, "error": str(e)}
-
 
 def faltas_por_linha(linha, filtros):
     return cargos_por_linha(linha, "FALTA", filtros)
