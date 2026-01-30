@@ -7,9 +7,11 @@
   </span>
 
   <div class="ms-auto d-flex gap-2">
-    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
-      <i class="bi bi-arrow-left"></i> Voltar
+    <a href="{{ url_for('auth.my_profile') }}"
+       class="btn btn-outline-info">
+      <i class="bi bi-person-circle"></i> Meu Perfil
     </a>
+    
     <a href="{{ url_for('pages.atestados') }}" class="btn btn-outline-warning">
       <i class="bi bi-file-earmark-medical"></i> Atestados
     </a>
