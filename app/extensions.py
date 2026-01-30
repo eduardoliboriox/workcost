@@ -6,7 +6,6 @@ from flask import current_app
 # 🔐 Flask-Login (instanciado UMA vez)
 login_manager = LoginManager()
 
-
 def get_db():
     return psycopg.connect(
         current_app.config["DATABASE_URL"],
