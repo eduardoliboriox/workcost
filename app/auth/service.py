@@ -9,7 +9,6 @@ from app.auth.repository import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 def get_or_create_user(profile, provider):
     provider_id = profile["id"]
     email = profile["email"]
@@ -25,7 +24,6 @@ def get_or_create_user(profile, provider):
         "provider": provider,
         "provider_id": provider_id
     })
-
 
 def generate_username(full_name: str) -> str:
     parts = full_name.strip().lower().split()
@@ -52,8 +50,6 @@ def register_user(form):
         "is_admin": is_first_user
     })
 
-
-
 def authenticate_local(username, password):
     user = get_user_by_username(username)
     if not user:
@@ -63,7 +59,6 @@ def authenticate_local(username, password):
     if not check_password_hash(user["password_hash"], password):
         return None
     return user
-
 
 # ==============================================
 #  ALTERAÇÃO DE SENHA
