@@ -1,7 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 
-
 def listar():
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -11,7 +10,6 @@ def listar():
                 ORDER BY setor, linha
             """)
             return cur.fetchall()
-
 
 def inserir(setor, linha, hc_padrao):
     with get_db() as conn:
@@ -23,7 +21,6 @@ def inserir(setor, linha, hc_padrao):
                 DO UPDATE SET hc_padrao = EXCLUDED.hc_padrao
             """, (setor, linha, hc_padrao))
         conn.commit()
-
 
 def excluir(id_):
     with get_db() as conn:
