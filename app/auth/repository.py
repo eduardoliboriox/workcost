@@ -1,6 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
-
+from werkzeug.security import generate_password_hash
 
 # =====================================================
 # CORE USERS (Flask-Login / OAuth / Local)
@@ -169,3 +169,23 @@ def list_all_users(search=None):
                     """
                 )
             return cur.fetchall()
+
+
+# =====================================================
+# ALTERAÇÃO DE SENHA
+# =====================================================
+
+def update_user_password(user_id: int, new_password: str):
+    password_hash = generate_password_hash(new_password)
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE users
+                SET password_hash = %s
+                WHERE id = %s
+                """,
+                (password_hash, user_id),
+            )
+            conn.commit()
