@@ -1,15 +1,19 @@
-/* =========================
-   AUTH LAYOUT
-========================= */
+/* ==================================================
+   AUTH BODY – FUNDO GLOBAL
+================================================== */
 
 .auth-body {
-  background-color: #f8f9fa;
   min-height: 100vh;
+  background-color: #0f172a; 
+  background-image: url("../images/banners/bg-login-desktop.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* =========================
+/* ==================================================
    HEADER AUTH (DESKTOP)
-========================= */
+================================================== */
 
 .auth-header {
   height: 64px;
@@ -30,6 +34,38 @@
   gap: 10px;
 }
 
+.auth-header .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ==================================================
+   CONTAINER PRINCIPAL (DESKTOP)
+================================================== */
+
+.auth-container {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+/* ==================================================
+   VISUAL ESQUERDO
+================================================== */
+
+.auth-visual {
+  background-image: url("../images/banners/desktop-ilustraction.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center left;
+  padding: 40px;
+}
+
+/* ==================================================
+   CARD LOGIN
+================================================== */
 
 .auth-card-wrapper {
   display: flex;
@@ -38,146 +74,18 @@
   padding: 32px;
 }
 
-/* =========================
-   CARD LOGIN
-========================= */
-
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
   background: #ffffff;
   border-radius: 14px;
   padding: 28px;
   box-shadow: 0 20px 40px rgba(0,0,0,.08);
 }
 
-
-/* =========================
-   AUTH CONTAINER
-========================= */
-
-.auth-container {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  min-height: calc(100vh - 64px);
-}
-
-/* =========================
-   VISUAL ESQUERDO
-========================= */
-
-.auth-visual {
-  background-image: url("../images/banners/desktop-ilustraction.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center left;
-
-  padding: 40px;
-  min-height: 100%;
-}
-
-
-.btn-outline-purple {
-  color: #6f42c1;
-  border-color: #6f42c1;
-}
-
-.btn-outline-purple:hover {
-  background-color: #6f42c1;
-  color: #fff;
-}
-
-.auth-header .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-/* =========================
-   MOBILE
-========================= */
-@media (max-width: 991px) {
-
-  .auth-header {
-    display: none;
-  }
-
-  /* REMOVE GRID NO MOBILE */
-  .auth-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 16px;
-  }
-
-  .auth-visual {
-    display: none;
-  }
-
-  .auth-card-wrapper {
-    width: 100%;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .auth-card {
-    width: 100%;
-    max-width: 380px;
-    padding: 24px;
-  }
-}
-
-.mobile-screen {
-  min-height: 100vh;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: flex-end;
-  padding: 24px;
-}
-
-.mobile-actions {
-  width: 100%;
-}
-
-.mobile-form {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  background: rgba(255,255,255,.92);
-  padding: 24px;
-  border-radius: 14px;
-}
-
-/* =========================
-   MOBILE LOGIN CHOICE
-   Ajuste vertical dos botões
-========================= */
-
-.mobile-screen {
-  position: relative;
-}
-
-.mobile-actions {
-  width: 100%;
-  transform: translateY(-48px); /* sobe os botões */
-}
-
-/* =========================
-   MOBILE LOGIN FORM
-   Ajuste vertical do formulário
-========================= */
-
-.mobile-form {
-  transform: translateY(-48px);
-}
-
-/* =========================
-  Outline - Botão Roxo
-========================= */
+/* ==================================================
+   BOTÃO OUTLINE ROXO
+================================================== */
 
 .btn-outline-purple {
   color: #6f42c1;
@@ -194,4 +102,114 @@
   background-color: #5a32a3;
   border-color: #5a32a3;
   color: #fff;
+}
+
+/* ==================================================
+   MOBILE – LOGIN CHOICE / FORM
+================================================== */
+
+.mobile-screen {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+}
+
+.mobile-actions,
+.mobile-form {
+  width: 100%;
+  transform: translateY(-48px);
+}
+
+.mobile-form {
+  max-width: 420px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.92);
+  padding: 24px;
+  border-radius: 14px;
+}
+
+/* ==================================================
+   RESPONSIVO – MOBILE
+================================================== */
+
+@media (max-width: 991px) {
+
+  .auth-header {
+    display: none;
+  }
+
+  .auth-body {
+    background-image: none;
+    background-color: #f8f9fa;
+  }
+
+   .auth-container {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     min-height: calc(100vh - 64px);
+     padding: 64px;
+   }
+
+  .auth-visual {
+    display: none;
+  }
+
+  .auth-card-wrapper {
+    padding: 0;
+  }
+
+  .auth-card {
+    max-width: 380px;
+    padding: 24px;
+  }
+}
+
+/* ==================================================
+   LOGIN – INPUTS COM ÍCONE
+================================================== */
+
+.auth-input .input-group-text {
+  background-color: #fff;
+  border-right: none;
+  color: #6c757d;
+}
+
+.auth-input .form-control {
+  border-left: none;
+}
+
+.auth-input .form-control:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+
+/* ==================================================
+   LOGIN DESKTOP – CENTRALIZAÇÃO REAL
+================================================== */
+
+.auth-container-centered {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+}
+
+.auth-container-centered .auth-card {
+  max-width: 560px;
+}
+
+.auth-container-centered .auth-card-wrapper {
+  width: 100%;
+  max-width: 560px;  
+  padding: 32px;
+}
+
+.auth-container-centered .auth-card {
+  width: 100%;
+  max-width: none;   
 }
