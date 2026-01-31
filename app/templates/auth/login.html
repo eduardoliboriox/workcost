@@ -2,20 +2,16 @@
 {% block title %}WorkCost{% endblock %}
 {% block content %}
 
-<!-- HEADER DESKTOP -->
 <header class="auth-header d-none d-lg-flex">
   <div class="brand">
     <img src="{{ url_for('static', filename='images/logos/logo-sidebar-desktop.png') }}" alt="Venttos">
   </div>
 
   <div class="actions">
-
-    <!-- Login -->
-    <a href="{{ url_for('auth.logout') }}"
-       class="btn btn-outline-purple btn-sm">
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-purple btn-sm">
       Fazer login
     </a>
-    
+
     <button class="btn btn-outline-primary"
             data-bs-toggle="collapse"
             data-bs-target="#register">
@@ -24,9 +20,8 @@
   </div>
 </header>
 
-<!-- CONTAINER CENTRAL -->
-<div class="auth-container auth-container-centered">
 
+<div class="auth-container auth-container-centered">
   <div class="auth-card-wrapper">
     <div class="auth-card" id="login">
 
@@ -43,36 +38,10 @@
         {% endfor %}
       {% endwith %}
 
-      <!-- LOGIN LOCAL -->
+      <!-- LOGIN -->
       <form method="post" action="{{ url_for('auth.login_local') }}">
-
-        <!-- USUÁRIO -->
-        <div class="mb-3">
-          <div class="input-group auth-input">
-            <span class="input-group-text">
-              <i class="bi bi-person"></i>
-            </span>
-            <input type="text"
-                   name="username"
-                   class="form-control"
-                   placeholder="Usuário"
-                   required>
-          </div>
-        </div>
-
-        <!-- SENHA -->
-        <div class="mb-3">
-          <div class="input-group auth-input">
-            <span class="input-group-text">
-              <i class="bi bi-lock"></i>
-            </span>
-            <input type="password"
-                   name="password"
-                   class="form-control"
-                   placeholder="Senha"
-                   required>
-          </div>
-        </div>
+        <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="Senha" required>
 
         <button class="btn btn-primary w-100 mb-3">
           Entrar
@@ -87,22 +56,27 @@
         </button>
       </div>
 
-      <!-- CADASTRO -->
+
+      <!-- REGISTER -->
       <div id="register" class="collapse">
       <form method="post" action="{{ url_for('auth.register') }}">
+
         <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
         <input name="matricula" class="form-control mb-2" placeholder="Matrícula real" required>
-        <input name="phone" class="form-control mb-2" placeholder="Telefone">
-      
+
+        <input name="phone" data-mask="phone" class="form-control mb-2" placeholder="(99) 99999-9999">
+
         <input name="street" class="form-control mb-2" placeholder="Rua">
         <input name="number" class="form-control mb-2" placeholder="Número">
         <input name="neighborhood" class="form-control mb-2" placeholder="Bairro">
         <input name="city" class="form-control mb-2" placeholder="Cidade">
         <input name="state" class="form-control mb-2" placeholder="UF">
-        <input name="zip_code" class="form-control mb-2" placeholder="CEP">
+
+        <input name="zip_code" data-mask="zip" class="form-control mb-2" placeholder="00000-000">
+
         <input name="complement" class="form-control mb-2" placeholder="Complemento">
         <input name="reference" class="form-control mb-2" placeholder="Ponto de referência">
-      
+
         <select name="setor" class="form-select mb-2" required>
           <option value="">Setor</option>
           <option>Direção</option>
@@ -111,36 +85,19 @@
           <option>Produção</option>
           <option>TI</option>
         </select>
-      
+
         <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
         <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
         <input type="password" name="password_confirm" class="form-control mb-3" placeholder="Confirmar senha" required>
-      
+
         <button class="btn btn-outline-primary w-100">Cadastrar</button>
-    
-        </form>
-      </div>
-
-      <hr>
-
-      <!-- OAUTH -->
-      <div class="d-grid gap-2 mb-4">
-        <a href="{{ url_for('auth.login_google') }}" class="btn btn-outline-danger">
-          <i class="bi bi-google me-2"></i> Google
-        </a>
-
-        <a href="{{ url_for('auth.login_github') }}" class="btn btn-outline-dark">
-          <i class="bi bi-github me-2"></i> GitHub
-        </a>
-      </div>
-
-      <div class="text-center mt-3">
-        <small class="fw-semibold d-block fw-bold">EDUARDO LIBÓRIO</small>
-        <small class="text-muted">Junior Backend Developer</small>
+      </form>
       </div>
 
     </div>
   </div>
-
 </div>
+
+<script src="{{ url_for('static', filename='js/input-masks.js') }}"></script>
+
 {% endblock %}
