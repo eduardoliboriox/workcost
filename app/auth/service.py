@@ -5,9 +5,13 @@ from app.auth.repository import (
     get_user_by_username,
     count_users,
     get_user_by_id,
-    update_user_password
+    update_user_password,
+    find_employee_by_name,
+    link_user_to_employee,
+    upsert_profile
 )
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 def get_or_create_user(profile, provider):
     provider_id = profile["id"]
@@ -79,3 +83,17 @@ def change_user_password(user_id, current_password, new_password, confirm_passwo
 
     update_user_password(user_id, new_password)
     return "OK"
+
+def attach_employee_and_profile(user_id: int, form):
+    """
+    After register or profile update:
+    - link user with employee by full_name
+    - save address/contact
+    """
+
+    employee = find_employee_by_name(form["full_name"])
+
+    if employee:
+        link_user_to_employee(user_id, employee["id"])
+
+    upsert_profile(user_id, form)
