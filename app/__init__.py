@@ -8,6 +8,8 @@ from app.routes.pages import bp as pages_bp
 from app.routes.api import bp as api_bp
 from app.auth.routes import bp as auth_bp
 from app.auth.models import User
+from app.cli.employees_importer import import_employees
+
 
 
 def create_app():
@@ -35,5 +37,9 @@ def create_app():
     app.register_blueprint(pages_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+
+    # CLI commands
+    from app.cli.employees_importer import import_employees
+    app.cli.add_command(import_employees)
 
     return app
