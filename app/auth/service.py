@@ -1,3 +1,6 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# users core
 from app.auth.repository import (
     get_user_by_provider,
     create_user,
@@ -6,13 +9,19 @@ from app.auth.repository import (
     count_users,
     get_user_by_id,
     update_user_password,
+)
+
+# profile / employee link
+from app.auth.profile_repository import (
     find_employee_by_name,
     link_user_to_employee,
-    upsert_profile
+    upsert_profile,
 )
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
+# =====================================================
+# OAUTH
+# =====================================================
 def get_or_create_user(profile, provider):
     provider_id = profile["id"]
     email = profile["email"]
@@ -29,9 +38,14 @@ def get_or_create_user(profile, provider):
         "provider_id": provider_id
     })
 
+
+# =====================================================
+# REGISTER
+# =====================================================
 def generate_username(full_name: str) -> str:
     parts = full_name.strip().lower().split()
     return f"{parts[0]}.{parts[-1]}"
+
 
 def register_user(form):
     if form["password"] != form["password_confirm"]:
@@ -54,19 +68,28 @@ def register_user(form):
         "is_admin": is_first_user
     })
 
+
+# =====================================================
+# LOGIN LOCAL
+# =====================================================
 def authenticate_local(username, password):
     user = get_user_by_username(username)
+
     if not user:
         return None
+
     if not user["is_active"]:
         return "PENDING"
+
     if not check_password_hash(user["password_hash"], password):
         return None
+
     return user
 
-# ==============================================
-#  ALTERAÇÃO DE SENHA
-# ==============================================
+
+# =====================================================
+# PASSWORD
+# =====================================================
 def change_user_password(user_id, current_password, new_password, confirm_password):
     if not new_password:
         return "EMPTY"
@@ -75,20 +98,22 @@ def change_user_password(user_id, current_password, new_password, confirm_passwo
         raise ValueError("Nova senha e confirmação não conferem")
 
     user = get_user_by_id(user_id)
-    if not user:
-        raise ValueError("Usuário não encontrado")
 
     if not check_password_hash(user["password_hash"], current_password):
         raise ValueError("Senha atual incorreta")
 
     update_user_password(user_id, new_password)
+
     return "OK"
 
+
+# =====================================================
+# PROFILE + EMPLOYEE LINK
+# =====================================================
 def attach_employee_and_profile(user_id: int, form):
     """
-    After register or profile update:
-    - link user with employee by full_name
-    - save address/contact
+    - link user to employee by full_name
+    - save contact/address profile
     """
 
     employee = find_employee_by_name(form["full_name"])
