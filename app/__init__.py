@@ -8,8 +8,6 @@ from app.routes.pages import bp as pages_bp
 from app.routes.api import bp as api_bp
 from app.auth.routes import bp as auth_bp
 from app.auth.models import User
-from app.cli.employees_importer import import_employees
-
 
 
 def create_app():
