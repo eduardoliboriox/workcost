@@ -2,16 +2,20 @@
 {% block title %}WorkCost{% endblock %}
 {% block content %}
 
+<!-- HEADER DESKTOP -->
 <header class="auth-header d-none d-lg-flex">
   <div class="brand">
     <img src="{{ url_for('static', filename='images/logos/logo-sidebar-desktop.png') }}" alt="Venttos">
   </div>
 
   <div class="actions">
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-purple btn-sm">
+
+    <!-- Login -->
+    <a href="{{ url_for('auth.logout') }}"
+       class="btn btn-outline-purple btn-sm">
       Fazer login
     </a>
-
+    
     <button class="btn btn-outline-primary"
             data-bs-toggle="collapse"
             data-bs-target="#register">
@@ -20,8 +24,9 @@
   </div>
 </header>
 
-
+<!-- CONTAINER CENTRAL -->
 <div class="auth-container auth-container-centered">
+
   <div class="auth-card-wrapper">
     <div class="auth-card" id="login">
 
@@ -38,25 +43,43 @@
         {% endfor %}
       {% endwith %}
 
-      <!-- LOGIN -->
+      <!-- LOGIN LOCAL -->
       <form method="post" action="{{ url_for('auth.login_local') }}">
-        <input type="text" name="username" class="form-control mb-2" placeholder="Usuário" required>
-        <input type="password" name="password" class="form-control mb-3" placeholder="Senha" required>
+
+        <!-- USUÁRIO -->
+        <div class="mb-3">
+          <div class="input-group auth-input">
+            <span class="input-group-text">
+              <i class="bi bi-person"></i>
+            </span>
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   placeholder="Usuário"
+                   required>
+          </div>
+        </div>
+
+        <!-- SENHA -->
+        <div class="mb-3">
+          <div class="input-group auth-input">
+            <span class="input-group-text">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   placeholder="Senha"
+                   required>
+          </div>
+        </div>
 
         <button class="btn btn-primary w-100 mb-3">
           Entrar
         </button>
+
       </form>
-
-      <div class="text-center mb-3">
-        <button class="btn btn-link p-0"
-                data-bs-toggle="collapse"
-                data-bs-target="#register">
-          Cadastrar-se
-        </button>
-      </div>
-
-
+      
       <!-- REGISTER -->
       <div id="register" class="collapse">
       <form method="post" action="{{ url_for('auth.register') }}">
