@@ -3,17 +3,33 @@ from pathlib import Path
 import pandas as pd
 import psycopg
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+# =========================
+# CONFIG
+# =========================
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not set")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-EXCEL_PATH = BASE_DIR / "data" / "Lista de Funcionarios Venttos 17.12.25 - Completo.XLS"
+EXCEL_PATH = BASE_DIR / "app" / "data" / "Lista de Funcionarios Venttos 17.12.25 - Completo.XLS"
 
-def normalize_status(value):
+if not EXCEL_PATH.exists():
+    raise FileNotFoundError(f"Excel not found: {EXCEL_PATH}")
+
+# =========================
+# HELPERS
+# =========================
+def normalize_status(value: str) -> str:
     if not value or pd.isna(value):
         return "INACTIVE"
     return "ACTIVE" if "ativo" in str(value).lower() else "INACTIVE"
 
+# =========================
+# MAIN
+# =========================
 def main():
+    print("📊 Reading Excel...")
+
     df = pd.read_excel(EXCEL_PATH, engine="xlrd")
 
     df = df.rename(columns={
@@ -44,12 +60,28 @@ def main():
         for r in df.itertuples(index=False)
     ]
 
+    print(f"🚀 Importing {len(data)} employees...")
+
     with psycopg.connect(
         DATABASE_URL,
         sslmode="require",
-        connect_timeout=10
+        connect_timeout=15
     ) as conn:
         with conn.cursor() as cur:
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS employees (
+                    id SERIAL PRIMARY KEY,
+                    full_name VARCHAR(150) NOT NULL,
+                    job_title VARCHAR(150),
+                    department VARCHAR(150),
+                    hired_at DATE,
+                    status VARCHAR(20),
+                    branch_name VARCHAR(150),
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            """)
+
             cur.executemany("""
                 INSERT INTO employees
                 (full_name, job_title, department, hired_at, status, branch_name)
@@ -58,7 +90,7 @@ def main():
 
         conn.commit()
 
-    print(f"✅ Imported {len(data)} employees")
+    print("✅ Employees imported successfully")
 
 if __name__ == "__main__":
     main()
