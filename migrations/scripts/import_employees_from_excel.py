@@ -12,7 +12,7 @@ if not DATABASE_URL:
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-# Detecta arquivo XLS ou XLSX
+# Detecta arquivo XLS ou XLSX automaticamente
 EXCEL_PATH = None
 for ext in ["xls", "xlsx", "XLS", "XLSX"]:
     candidate = BASE_DIR / "app" / "data" / f"Lista-de-Funcionarios-Venttos-17-12-25-Completo.{ext}"
@@ -22,7 +22,7 @@ for ext in ["xls", "xlsx", "XLS", "XLSX"]:
 
 if not EXCEL_PATH:
     raise FileNotFoundError(
-        "Excel not found in app/data: xxxxxxxxompleto.[xls,xlsx]"
+        "Excel not found in app/data: Lista-de-Funcionarios-Venttos-17-12-25-Completo.[xls,xlsx]"
     )
 
 # Escolhe engine automaticamente
@@ -34,7 +34,7 @@ engine = "xlrd" if EXCEL_PATH.suffix.lower() == ".xls" else "openpyxl"
 def normalize_status(value) -> str:
     if pd.isna(value):
         return "INACTIVE"
-    v = str(value).lower()
+    v = str(value).strip().lower()
     return "ACTIVE" if "ativo" in v else "INACTIVE"
 
 # =========================
@@ -42,7 +42,7 @@ def normalize_status(value) -> str:
 # =========================
 def main():
     print(f"📊 Reading Excel: {EXCEL_PATH.name} ...")
-    
+
     df = pd.read_excel(EXCEL_PATH, engine=engine)
 
     # Renomeia colunas com base na posição (colunas B-G)
@@ -55,14 +55,7 @@ def main():
         df.columns[6]: "branch_name",  # Coluna G
     })
 
-    df = df[[
-        "full_name",
-        "job_title",
-        "department",
-        "hired_at",
-        "status",
-        "branch_name"
-    ]]
+    df = df[["full_name", "job_title", "department", "hired_at", "status", "branch_name"]]
 
     # Normaliza status e datas
     df["status"] = df["status"].apply(normalize_status)
@@ -82,15 +75,14 @@ def main():
         if r.full_name and str(r.full_name).strip()
     ]
 
-    print(f"🚀 Importing {len(rows)} employees...")
+    print(f"📌 Total rows after filtering: {len(rows)}")
+    print(f"🚀 Importing employees into PostgreSQL...")
 
     # Conecta no PostgreSQL
     with psycopg.connect(DATABASE_URL, sslmode="require", connect_timeout=15) as conn:
         with conn.cursor() as cur:
-
             # Limpa tabela antes de inserir
             cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
-
             # Insere dados
             cur.executemany("""
                 INSERT INTO employees (
@@ -103,7 +95,6 @@ def main():
                 )
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, rows)
-
         conn.commit()
 
     print("✅ Employees imported successfully!")
@@ -113,4 +104,3 @@ def main():
 # =========================
 if __name__ == "__main__":
     main()
-
