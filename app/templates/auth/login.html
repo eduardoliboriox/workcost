@@ -89,26 +89,35 @@
 
       <!-- CADASTRO -->
       <div id="register" class="collapse">
-        <form method="post" action="{{ url_for('auth.register') }}">
-          <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
-          <input name="matricula" class="form-control mb-2" placeholder="Matrícula" required>
-
-          <select name="setor" class="form-select mb-2" required>
-            <option value="">Setor</option>
-            <option>Direção</option>
-            <option>Engenharia</option>
-            <option>PCP</option>
-            <option>Produção</option>
-            <option>TI</option>
-          </select>
-
-          <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-          <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
-          <input type="password" name="password_confirm" class="form-control mb-3" placeholder="Confirmar senha" required>
-
-          <button class="btn btn-outline-primary w-100">
-            Cadastrar
-          </button>
+      <form method="post" action="{{ url_for('auth.register') }}">
+        <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
+        <input name="matricula" class="form-control mb-2" placeholder="Matrícula real" required>
+        <input name="phone" class="form-control mb-2" placeholder="Telefone">
+      
+        <input name="street" class="form-control mb-2" placeholder="Rua">
+        <input name="number" class="form-control mb-2" placeholder="Número">
+        <input name="neighborhood" class="form-control mb-2" placeholder="Bairro">
+        <input name="city" class="form-control mb-2" placeholder="Cidade">
+        <input name="state" class="form-control mb-2" placeholder="UF">
+        <input name="zip_code" class="form-control mb-2" placeholder="CEP">
+        <input name="complement" class="form-control mb-2" placeholder="Complemento">
+        <input name="reference" class="form-control mb-2" placeholder="Ponto de referência">
+      
+        <select name="setor" class="form-select mb-2" required>
+          <option value="">Setor</option>
+          <option>Direção</option>
+          <option>Engenharia</option>
+          <option>PCP</option>
+          <option>Produção</option>
+          <option>TI</option>
+        </select>
+      
+        <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+        <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
+        <input type="password" name="password_confirm" class="form-control mb-3" placeholder="Confirmar senha" required>
+      
+        <button class="btn btn-outline-primary w-100">Cadastrar</button>
+    
         </form>
       </div>
 
