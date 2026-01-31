@@ -16,10 +16,16 @@ def normalize_status(value: str) -> str:
 
 @click.command("import-employees")
 def import_employees():
-    """Import employees from Excel into PostgreSQL."""
+    """
+    CLI:
+    flask import-employees
+    """
 
-    base_dir = Path(current_app.root_path)
-    data_dir = base_dir / "data"
+    # 🔥 CORREÇÃO AQUI
+    project_root = Path(current_app.root_path).parent
+    data_dir = project_root / "data"
+
+    print(f"📁 Looking for Excel in: {data_dir}")
 
     excel_file = None
 
@@ -30,7 +36,7 @@ def import_employees():
             break
 
     if not excel_file:
-        raise RuntimeError("Excel file not found inside app/data")
+        raise RuntimeError(f"Excel file NOT found in {data_dir}")
 
     engine = "xlrd" if excel_file.suffix.lower() == ".xls" else "openpyxl"
 
@@ -77,6 +83,7 @@ def import_employees():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
+
             cur.executemany("""
                 INSERT INTO employees (
                     full_name,
@@ -88,6 +95,7 @@ def import_employees():
                 )
                 VALUES (%s,%s,%s,%s,%s,%s)
             """, rows)
+
         conn.commit()
 
     print("✅ Employees imported successfully!")
