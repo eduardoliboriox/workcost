@@ -3,26 +3,35 @@ from pathlib import Path
 import pandas as pd
 import psycopg
 
+
 # =========================
 # CONFIG
 # =========================
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-EXCEL_PATH = BASE_DIR / "app" / "data" / "Lista de Funcionarios Venttos 17.12.25 - Completo.XLS"
+EXCEL_PATH = (
+    BASE_DIR
+    / "app"
+    / "data"
+    / "Lista de Funcionarios Venttos 17.12.25 - Completo.xls"
+)
 
 if not EXCEL_PATH.exists():
     raise FileNotFoundError(f"Excel not found: {EXCEL_PATH}")
 
+
 # =========================
 # HELPERS
 # =========================
-def normalize_status(value: str) -> str:
-    if not value or pd.isna(value):
+def normalize_status(value) -> str:
+    if pd.isna(value):
         return "INACTIVE"
-    return "ACTIVE" if "ativo" in str(value).lower() else "INACTIVE"
+    v = str(value).lower()
+    return "ACTIVE" if "ativo" in v else "INACTIVE"
+
 
 # =========================
 # MAIN
@@ -30,27 +39,38 @@ def normalize_status(value: str) -> str:
 def main():
     print("📊 Reading Excel...")
 
-    df = pd.read_excel(EXCEL_PATH, engine="xlrd")
+    df = pd.read_excel(
+        EXCEL_PATH,
+        engine="openpyxl"  # ✔️ funciona
+    )
 
     df = df.rename(columns={
-        "Nome": "full_name",
-        "Nome Funcão": "job_title",
-        "Descrição Seção": "department",
-        "Data de Admissão": "hired_at",
-        "Descrição da Situação": "status",
-        "Nome da Filial": "branch_name",
+        df.columns[1]: "full_name",        # Coluna B
+        df.columns[2]: "job_title",        # Coluna C
+        df.columns[3]: "department",       # Coluna D
+        df.columns[4]: "hired_at",         # Coluna E
+        df.columns[5]: "status",            # Coluna F
+        df.columns[6]: "branch_name",       # Coluna G
     })
+
+    df = df[[
+        "full_name",
+        "job_title",
+        "department",
+        "hired_at",
+        "status",
+        "branch_name"
+    ]]
 
     df["status"] = df["status"].apply(normalize_status)
     df["hired_at"] = pd.to_datetime(
         df["hired_at"],
-        format="%d/%m/%Y",
         errors="coerce"
     ).dt.date
 
-    data = [
+    rows = [
         (
-            r.full_name,
+            r.full_name.strip(),
             r.job_title,
             r.department,
             r.hired_at,
@@ -58,9 +78,10 @@ def main():
             r.branch_name
         )
         for r in df.itertuples(index=False)
+        if r.full_name
     ]
 
-    print(f"🚀 Importing {len(data)} employees...")
+    print(f"🚀 Importing {len(rows)} employees...")
 
     with psycopg.connect(
         DATABASE_URL,
@@ -69,28 +90,25 @@ def main():
     ) as conn:
         with conn.cursor() as cur:
 
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS employees (
-                    id SERIAL PRIMARY KEY,
-                    full_name VARCHAR(150) NOT NULL,
-                    job_title VARCHAR(150),
-                    department VARCHAR(150),
-                    hired_at DATE,
-                    status VARCHAR(20),
-                    branch_name VARCHAR(150),
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            """)
+            # Evita duplicação
+            cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
 
             cur.executemany("""
-                INSERT INTO employees
-                (full_name, job_title, department, hired_at, status, branch_name)
+                INSERT INTO employees (
+                    full_name,
+                    job_title,
+                    department,
+                    hired_at,
+                    status,
+                    branch_name
+                )
                 VALUES (%s, %s, %s, %s, %s, %s)
-            """, data)
+            """, rows)
 
         conn.commit()
 
     print("✅ Employees imported successfully")
+
 
 if __name__ == "__main__":
     main()
