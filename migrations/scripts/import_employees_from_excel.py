@@ -22,7 +22,7 @@ for ext in ["xls", "xlsx", "XLS", "XLSX"]:
 
 if not EXCEL_PATH:
     raise FileNotFoundError(
-        "Excel not found in app/data: Lista de Funcionarios Venttos 17.12.25 - Completo.[xls,xlsx]"
+        "Excel not found in app/data: xxxxxxxxompleto.[xls,xlsx]"
     )
 
 # Escolhe engine automaticamente
