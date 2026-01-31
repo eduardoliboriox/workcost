@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 import psycopg
 
-
 # =========================
 # CONFIG
 # =========================
@@ -12,16 +11,22 @@ if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-EXCEL_PATH = (
-    BASE_DIR
-    / "app"
-    / "data"
-    / "Lista de Funcionarios Venttos 17.12.25 - Completo.xls"
-)
 
-if not EXCEL_PATH.exists():
-    raise FileNotFoundError(f"Excel not found: {EXCEL_PATH}")
+# Detecta arquivo XLS ou XLSX
+EXCEL_PATH = None
+for ext in ["xls", "xlsx", "XLS", "XLSX"]:
+    candidate = BASE_DIR / "app" / "data" / f"Lista de Funcionarios Venttos 17.12.25 - Completo.{ext}"
+    if candidate.exists():
+        EXCEL_PATH = candidate
+        break
 
+if not EXCEL_PATH:
+    raise FileNotFoundError(
+        "Excel not found in app/data: Lista de Funcionarios Venttos 17.12.25 - Completo.[xls,xlsx]"
+    )
+
+# Escolhe engine automaticamente
+engine = "xlrd" if EXCEL_PATH.suffix.lower() == ".xls" else "openpyxl"
 
 # =========================
 # HELPERS
@@ -32,25 +37,22 @@ def normalize_status(value) -> str:
     v = str(value).lower()
     return "ACTIVE" if "ativo" in v else "INACTIVE"
 
-
 # =========================
 # MAIN
 # =========================
 def main():
-    print("📊 Reading Excel...")
+    print(f"📊 Reading Excel: {EXCEL_PATH.name} ...")
+    
+    df = pd.read_excel(EXCEL_PATH, engine=engine)
 
-    df = pd.read_excel(
-        EXCEL_PATH,
-        engine="openpyxl"  # ✔️ funciona
-    )
-
+    # Renomeia colunas com base na posição (colunas B-G)
     df = df.rename(columns={
-        df.columns[1]: "full_name",        # Coluna B
-        df.columns[2]: "job_title",        # Coluna C
-        df.columns[3]: "department",       # Coluna D
-        df.columns[4]: "hired_at",         # Coluna E
-        df.columns[5]: "status",            # Coluna F
-        df.columns[6]: "branch_name",       # Coluna G
+        df.columns[1]: "full_name",    # Coluna B
+        df.columns[2]: "job_title",    # Coluna C
+        df.columns[3]: "department",   # Coluna D
+        df.columns[4]: "hired_at",     # Coluna E
+        df.columns[5]: "status",       # Coluna F
+        df.columns[6]: "branch_name",  # Coluna G
     })
 
     df = df[[
@@ -62,15 +64,14 @@ def main():
         "branch_name"
     ]]
 
+    # Normaliza status e datas
     df["status"] = df["status"].apply(normalize_status)
-    df["hired_at"] = pd.to_datetime(
-        df["hired_at"],
-        errors="coerce"
-    ).dt.date
+    df["hired_at"] = pd.to_datetime(df["hired_at"], errors="coerce").dt.date
 
+    # Remove linhas sem nome
     rows = [
         (
-            r.full_name.strip(),
+            str(r.full_name).strip(),
             r.job_title,
             r.department,
             r.hired_at,
@@ -78,21 +79,19 @@ def main():
             r.branch_name
         )
         for r in df.itertuples(index=False)
-        if r.full_name
+        if r.full_name and str(r.full_name).strip()
     ]
 
     print(f"🚀 Importing {len(rows)} employees...")
 
-    with psycopg.connect(
-        DATABASE_URL,
-        sslmode="require",
-        connect_timeout=15
-    ) as conn:
+    # Conecta no PostgreSQL
+    with psycopg.connect(DATABASE_URL, sslmode="require", connect_timeout=15) as conn:
         with conn.cursor() as cur:
 
-            # Evita duplicação
+            # Limpa tabela antes de inserir
             cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
 
+            # Insere dados
             cur.executemany("""
                 INSERT INTO employees (
                     full_name,
@@ -107,8 +106,10 @@ def main():
 
         conn.commit()
 
-    print("✅ Employees imported successfully")
+    print("✅ Employees imported successfully!")
 
-
+# =========================
+# ENTRYPOINT
+# =========================
 if __name__ == "__main__":
     main()
