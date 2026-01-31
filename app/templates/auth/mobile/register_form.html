@@ -1,5 +1,6 @@
 {% extends "layouts/auth.html" %}
 {% block title %}Cadastro{% endblock %}
+
 {% block content %}
 <section class="mobile-screen register-form"
   style="background-image:url('{{ url_for('static', filename='images/banners/bg-cad-form.jpg') }}')">
@@ -9,7 +10,33 @@
         class="mobile-form">
 
     <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
+
     <input name="matricula" class="form-control mb-2" placeholder="Matrícula" required>
+
+
+    <!-- ✅ NOVO: telefone com máscara -->
+    <input name="phone"
+           data-mask="phone"
+           class="form-control mb-2"
+           placeholder="(99) 99999-9999">
+
+
+    <!-- ✅ NOVO: endereço -->
+    <input name="street" class="form-control mb-2" placeholder="Rua">
+    <input name="number" class="form-control mb-2" placeholder="Número">
+    <input name="neighborhood" class="form-control mb-2" placeholder="Bairro">
+    <input name="city" class="form-control mb-2" placeholder="Cidade">
+    <input name="state" class="form-control mb-2" placeholder="UF">
+
+    <!-- ✅ NOVO: CEP com máscara -->
+    <input name="zip_code"
+           data-mask="zip"
+           class="form-control mb-2"
+           placeholder="00000-000">
+
+    <input name="complement" class="form-control mb-2" placeholder="Complemento">
+    <input name="reference" class="form-control mb-2" placeholder="Referência">
+
 
     <select name="setor" class="form-select mb-2" required>
       <option value="">Setor</option>
@@ -20,11 +47,20 @@
       <option>TI</option>
     </select>
 
+
     <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+
     <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
+
     <input type="password" name="password_confirm" class="form-control mb-3" placeholder="Confirmar senha" required>
 
+
     <button class="btn btn-outline-primary w-100">Cadastrar</button>
+
   </form>
 </section>
+
+<!-- ✅ script único reutilizável de máscaras -->
+<script src="{{ url_for('static', filename='js/input-masks.js') }}"></script>
+
 {% endblock %}
