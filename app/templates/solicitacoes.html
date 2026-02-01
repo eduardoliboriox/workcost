@@ -39,7 +39,6 @@
   </small>
 </div>
 
-
 <form id="formSolicitacao" method="post" action="{{ url_for('api.api_criar_solicitacao') }}">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
@@ -111,12 +110,12 @@
         <label class="form-label fw-bold">
           Setores envolvidos <small class="text-muted">/ Departments</small>
         </label>
-      
+
         <div class="multiselect" id="setoresSelect">
           <div class="multiselect-display" id="setoresDisplay">
             Selecione um ou mais setores envolvidos nesta extra
           </div>
-      
+
           <div class="multiselect-options">
             {% for setor in [
               'Direção',
@@ -138,22 +137,15 @@
         </div>
       </div>
 
-
       <!-- DESCRIÇÃO -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Descrição <small class="text-muted">/ Description</small>
         </label>
         <select name="descricao" class="form-select">
-          <option value="Hora Extra">
-            Hora Extra / Overtime
-          </option>
-          <option value="Banco de Horas">
-            Banco de Horas / Time Bank
-          </option>
-          <option value="Compensação">
-            Compensação / Compensation
-          </option>
+          <option value="Hora Extra">Hora Extra / Overtime</option>
+          <option value="Banco de Horas">Banco de Horas / Time Bank</option>
+          <option value="Compensação">Compensação / Compensation</option>
         </select>
       </div>
 
@@ -162,9 +154,8 @@
 
   <!-- FUNCIONÁRIOS -->
   <h5 class="fw-bold">
-  Lista de Funcionários <small class="text-muted">/ Employee List</small>
+    Lista de Funcionários <small class="text-muted">/ Employee List</small>
   </h5>
-
 
   <table class="table table-bordered align-middle" id="funcionariosTable">
     <thead>
@@ -177,11 +168,17 @@
         <th><div>Início</div><small class="text-muted">start</small></th>
         <th><div>Término</div><small class="text-muted">end</small></th>
         <th><div>Transporte</div><small class="text-muted">transport</small></th>
+        <th><div>Assinatura</div><small class="text-muted">signature</small></th>
         <th></th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <small class="text-muted d-block mb-4">
+    A assinatura do colaborador formaliza a ciência quanto à solicitação de horas extras,
+    assegurando o devido registro e o cumprimento dos trâmites administrativos previstos.
+  </small>
 
   <button type="button" class="btn btn-secondary btn-add-row mb-3" id="btnAddRow">
     Adicionar linha
@@ -192,6 +189,60 @@
       Atividades a realizar <small class="text-muted">/ Activities</small>
     </label>
     <textarea name="atividades" class="form-control" rows="3"></textarea>
+  </div>
+
+  <!-- =======================
+       FLUXO DE APROVAÇÃO
+       ======================= -->
+  <h5 class="fw-bold mt-4">
+    Fluxo de Aprovação <small class="text-muted">/ Approval</small>
+  </h5>
+
+  <div class="row g-3 mt-2 approval-flow">
+    {% for role in [
+      'Solicitante',
+      'Solicitante',
+      'Gestor',
+      'Gerente da Planta',
+      'Controladoria',
+      'Diretoria'
+    ] %}
+    <div class="col-md-2 text-center">
+      <div class="approval-box pending">
+        <small>{{ role }}</small>
+      </div>
+      <input type="password"
+             class="form-control form-control-sm mt-2 approval-password"
+             placeholder="Senha">
+      <button type="button"
+              class="btn btn-sm btn-outline-success mt-1 btn-approve">
+        OK
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+
+  <hr class="my-4">
+
+  <div class="row align-items-center g-3 mb-4">
+    <div class="col-md-4">
+      <label class="fw-bold">RECEBIDO EM <small class="text-muted">(Received date)</small></label>
+      <input type="date" class="form-control">
+    </div>
+
+    <div class="col-md-4 text-center">
+      <div class="approval-box pending">
+        Recursos Humanos
+      </div>
+      <input type="password"
+             class="form-control form-control-sm mt-2"
+             placeholder="Senha RH">
+    </div>
+
+    <div class="col-md-4">
+      <label class="fw-bold">LANÇADO <small class="text-muted">(Launched)</small></label>
+      <input type="text" class="form-control">
+    </div>
   </div>
 
   <button class="btn btn-primary w-100">
