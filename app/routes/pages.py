@@ -9,7 +9,7 @@ bp = Blueprint("pages", __name__)
 @bp.route("/")
 @login_required
 def inicio():
-    return render_template("inicio.html")
+    return render_template("inicio.html", active_menu="inicio")
 
 @bp.route("/dashboard")
 @login_required
@@ -140,9 +140,10 @@ def solicitacoes():
 @bp.route("/pedidos")
 @login_required
 def pedidos():
-    return render_template("pedidos.html")
+    return render_template("pedidos.html", active_menu="pedidos")
 
 @bp.route("/minhas-extras")
 @login_required
 def minhas_extras():
-    return render_template("minhasextras.html")
+    return render_template("minhasextras.html", active_menu="minhasextras")
+
