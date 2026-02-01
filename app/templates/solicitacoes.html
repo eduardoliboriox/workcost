@@ -12,8 +12,14 @@
       <i class="bi bi-person-circle"></i> Meu Perfil
     </a>
 
+    <!-- reaproveitando botão de atestados -->
     <a href="{{ url_for('pages.atestados') }}" class="btn btn-outline-warning">
-      <i class="bi bi-file-earmark-medical"></i> Atestados
+      <i class="bi bi-file-earmark-medical"></i> Abertas
+    </a>
+
+    <!-- página ainda será criada -->
+    <a href="#" class="btn btn-outline-warning">
+      <i class="bi bi-file-earmark-medical"></i> Fechadas
     </a>
 
     <button class="btn btn-outline-purple" type="button" onclick="toggleFullscreen()">
@@ -201,7 +207,6 @@
   <div class="row g-3 mt-2 approval-flow">
     {% for role in [
       'Solicitante',
-      'Solicitante',
       'Gestor',
       'Gerente da Planta',
       'Controladoria',
@@ -216,7 +221,7 @@
              placeholder="Senha">
       <button type="button"
               class="btn btn-sm btn-outline-success mt-1 btn-approve">
-        OK
+        CONFIRMAR
       </button>
     </div>
     {% endfor %}
@@ -226,7 +231,9 @@
 
   <div class="row align-items-center g-3 mb-4">
     <div class="col-md-4">
-      <label class="fw-bold">RECEBIDO EM <small class="text-muted">(Received date)</small></label>
+      <label class="fw-bold">
+        RECEBIDO EM <small class="text-muted">(Received date)</small>
+      </label>
       <input type="date" class="form-control">
     </div>
 
@@ -240,7 +247,9 @@
     </div>
 
     <div class="col-md-4">
-      <label class="fw-bold">LANÇADO <small class="text-muted">(Launched)</small></label>
+      <label class="fw-bold">
+        LANÇADO <small class="text-muted">(Launched)</small>
+      </label>
       <input type="text" class="form-control">
     </div>
   </div>
