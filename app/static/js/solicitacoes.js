@@ -50,6 +50,20 @@ function addRow() {
         <option value="VEICULO">Veículo próprio</option>
       </select>
     </td>
+
+    <!-- ASSINATURA -->
+    <td>
+      <div class="signature-box pending mb-1">pendente</div>
+      <input type="password"
+             class="form-control form-control-sm signature-password mb-1"
+             placeholder="Senha">
+      <button type="button"
+              class="btn btn-sm btn-outline-success btn-sign">
+        Confirmar
+      </button>
+    </td>
+
+    <!-- AÇÃO -->
     <td>
       <button type="button" class="btn btn-sm btn-danger">X</button>
     </td>
@@ -58,8 +72,6 @@ function addRow() {
   tbody.appendChild(row);
   atualizarIndices();
   bindRow(row);
-
-  // Se já houver turno selecionado, aplicar horário automaticamente
   aplicarHorarioPorTurno();
 }
 
