@@ -9,6 +9,8 @@ from app.services.pcp_service import ranking_linhas_ferias
 from app.services.atestados_service import registrar_atestado
 from app.services.relatorios_service import gerar_relatorio
 from app.services import hc_linhas_service
+from app.services.solicitacoes_service import criar_solicitacao
+
 
 bp = Blueprint("api", __name__)
 
@@ -187,3 +189,11 @@ def api_dashboard_resumo():
         "ranking_linhas_ferias": dados["ranking_linhas_ferias"],
         "ranking_cargos": dados["ranking_cargos"]
     })
+
+# =========================
+# SOLICITAÇÕES EXTRA
+# =========================
+@bp.route("/solicitacoes", methods=["POST"])
+def api_criar_solicitacao():
+    result = criar_solicitacao(request.form)
+    return jsonify(result), (200 if result["success"] else 400)

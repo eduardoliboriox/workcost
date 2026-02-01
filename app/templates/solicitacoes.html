@@ -1,0 +1,97 @@
+{% extends "layouts/app.html" %}
+{% block title %}Solicitações{% endblock %}
+
+{% block page_title %}
+<div class="fw-bold">
+  FORMULÁRIO DE CONTROLE DE EXTRA JORNADA
+  <small class="text-muted">(Overtime Control Form)</small>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<form id="formSolicitacao" method="post" action="{{ url_for('api.api_criar_solicitacao') }}">
+<input type="hidden" name="funcionarios_json" id="funcionariosJson">
+
+<div class="card p-4 shadow-sm mb-4">
+
+  <div class="row g-3">
+
+    <div class="col-md-3">
+      <label>Data (Date)</label>
+      <input type="date" name="data" class="form-control" required>
+    </div>
+
+    <div class="col-md-4">
+      <label>Turno (Work shift)</label><br>
+      <input type="checkbox" name="turnos" value="1T"> 1º
+      <input type="checkbox" name="turnos" value="2T"> 2º
+      <input type="checkbox" name="turnos" value="3T"> 3º
+    </div>
+
+    <div class="col-md-5">
+      <label>Setor (Sector)</label>
+      <select name="setores" class="form-select" multiple>
+        <option>TI</option>
+        <option>ENGENHARIA</option>
+        <option>MANUTENÇÃO</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label>Cliente (Customer)</label>
+      <select name="cliente" class="form-select">
+        <option>VTT</option>
+        <option>VTE</option>
+        <option>VAC</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label>Descrição (Description)</label>
+      <select name="descricao" class="form-select">
+        <option>Hora Extra</option>
+        <option>Banco de Horas</option>
+        <option>Compensação</option>
+      </select>
+    </div>
+
+  </div>
+</div>
+
+
+<h5 class="fw-bold">Funcionários da Extra</h5>
+
+<table class="table table-bordered align-middle" id="funcionariosTable">
+<thead>
+<tr>
+  <th>#</th>
+  <th>Matrícula</th>
+  <th>Colaborador</th>
+  <th>Endereço</th>
+  <th>Telefone</th>
+  <th>Início</th>
+  <th>Término</th>
+  <th>Transporte</th>
+  <th></th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<button type="button" class="btn btn-secondary mb-3" onclick="addFuncionario()">Adicionar linha</button>
+
+<div class="mb-4">
+  <label>Atividades a realizar (Activities to Do)</label>
+  <textarea name="atividades" class="form-control" rows="3"></textarea>
+</div>
+
+<button class="btn btn-primary w-100">Registrar Solicitação</button>
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
+{% endblock %}
