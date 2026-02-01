@@ -81,6 +81,11 @@
   cursor: pointer;
 }
 
+.multiselect-display.has-value {
+  font-weight: 700;
+  color: #212529;
+}
+
 .multiselect-option:hover {
   background: #f1f3f5;
 }
