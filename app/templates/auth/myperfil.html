@@ -4,15 +4,14 @@
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
   <span class="me-auto">
-    Venttos - Factory Metrics - Meu Perfil
+    WorkCost · Meu Perfil
   </span>
 
   <div class="ms-auto d-flex gap-2">
-
     <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
-    
+
     <button class="btn btn-outline-purple" onclick="toggleFullscreen()">
       <i class="bi bi-arrows-fullscreen"></i>
     </button>
@@ -23,7 +22,6 @@
   </div>
 </div>
 {% endblock %}
-
 
 {% block content %}
 <div class="card shadow-sm p-4" style="max-width: 640px">
@@ -63,39 +61,43 @@
     </div>
   </div>
 
-
   <form method="post">
-
     <h5 class="mb-3">Contato & Endereço</h5>
 
-    <input name="phone" data-mask="phone" class="form-control mb-2" placeholder="(99) 99999-9999">
+    <input name="phone"
+           data-mask="phone"
+           class="form-control mb-2"
+           placeholder="(99) 99999-9999"
+           value="{{ profile.phone if profile }}">
 
-    <input name="street" class="form-control mb-2" placeholder="Rua">
-    <input name="number" class="form-control mb-2" placeholder="Número">
-    <input name="neighborhood" class="form-control mb-2" placeholder="Bairro">
-    <input name="city" class="form-control mb-2" placeholder="Cidade">
-    <input name="state" class="form-control mb-2" placeholder="UF">
-    <input name="zip_code" data-mask="zip" class="form-control mb-2" placeholder="00000-000">
-    <input name="complement" class="form-control mb-2" placeholder="Complemento">
-    <input name="reference" class="form-control mb-4" placeholder="Referência">
-
+    <input name="street" class="form-control mb-2" placeholder="Rua"
+           value="{{ profile.street if profile }}">
+    <input name="number" class="form-control mb-2" placeholder="Número"
+           value="{{ profile.number if profile }}">
+    <input name="neighborhood" class="form-control mb-2" placeholder="Bairro"
+           value="{{ profile.neighborhood if profile }}">
+    <input name="city" class="form-control mb-2" placeholder="Cidade"
+           value="{{ profile.city if profile }}">
+    <input name="state" class="form-control mb-2" placeholder="UF"
+           value="{{ profile.state if profile }}">
+    <input name="zip_code" data-mask="zip" class="form-control mb-2"
+           placeholder="00000-000"
+           value="{{ profile.zip_code if profile }}">
+    <input name="complement" class="form-control mb-2" placeholder="Complemento"
+           value="{{ profile.complement if profile }}">
+    <input name="reference" class="form-control mb-4" placeholder="Referência"
+           value="{{ profile.reference if profile }}">
 
     <h5 class="mb-3">Alterar senha</h5>
 
-    <input type="password"
-           name="current_password"
-           class="form-control mb-2"
-           placeholder="Senha atual">
+    <input type="password" name="current_password"
+           class="form-control mb-2" placeholder="Senha atual">
 
-    <input type="password"
-           name="new_password"
-           class="form-control mb-2"
-           placeholder="Nova senha">
+    <input type="password" name="new_password"
+           class="form-control mb-2" placeholder="Nova senha">
 
-    <input type="password"
-           name="confirm_password"
-           class="form-control mb-3"
-           placeholder="Confirmar nova senha">
+    <input type="password" name="confirm_password"
+           class="form-control mb-3" placeholder="Confirmar nova senha">
 
     <small class="text-muted d-block mb-3">
       Deixe em branco para não alterar
@@ -104,9 +106,7 @@
     <button class="btn btn-outline-success">
       Salvar alterações
     </button>
-
   </form>
-
 </div>
 
 <script src="{{ url_for('static', filename='js/input-masks.js') }}"></script>

@@ -187,9 +187,9 @@ def my_profile():
     user_data = get_user_by_id(current_user.id)
 
     if request.method == "POST":
-    
+
         attach_employee_and_profile(current_user.id, request.form)
-    
+
         try:
             change_user_password(
                 user_id=current_user.id,
@@ -198,11 +198,19 @@ def my_profile():
                 confirm_password=request.form.get("confirm_password"),
             )
             flash("Dados atualizados com sucesso", "success")
-    
+
         except ValueError as e:
             flash(str(e), "danger")
-    
+
         return redirect(url_for("auth.my_profile"))
 
+    # 🔹 GET: carregar perfil de contato/endereço
+    from app.auth.profile_repository import get_profile
+    profile = get_profile(current_user.id)
 
-    return render_template("auth/myperfil.html", user=user_data)
+    return render_template(
+        "auth/myperfil.html",
+        user=user_data,
+        profile=profile
+    )
+
