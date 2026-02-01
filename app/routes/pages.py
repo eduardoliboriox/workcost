@@ -3,6 +3,7 @@ from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_pow
 from datetime import date
 from app.services import cargos_service
 from flask_login import login_required
+from app.services.solicitacoes_service import obter_solicitacoes_abertas
 
 bp = Blueprint("pages", __name__)
 
@@ -163,3 +164,14 @@ def solicitacoes_fechadas():
         active_menu="solicitacoes"
     )
 
+
+@bp.route("/solicitacoes/abertas")
+@login_required
+def solicitacoes_abertas():
+    solicitacoes = obter_solicitacoes_abertas()
+
+    return render_template(
+        "solicitacoes-abertas.html",
+        solicitacoes=solicitacoes,
+        active_menu="solicitacoes"
+    )
