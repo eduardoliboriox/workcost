@@ -211,7 +211,8 @@ def my_profile():
     return render_template(
         "auth/myperfil.html",
         user=user_data,
-        profile=profile
+        profile=profile,
+        active_menu="perfil"
     )
 
 @bp.route("/admin/users/<int:user_id>/role", methods=["POST"])
