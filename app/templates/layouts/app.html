@@ -61,9 +61,9 @@
       <i class="bi bi-house"></i> Início
     </a>
   
-    <a href="{{ url_for('pages.lancamento') }}"
+    <a href="{{ url_for('pages.solicitacoes') }}"
        class="{% if active_menu == 'lancamento' or request.endpoint == 'pages.lancamento' %}active{% endif %}">
-      <i class="bi bi-plus-square"></i> Lançamentos
+      <i class="bi bi-plus-square"></i> Solicitações
     </a>
   
     <a href="{{ url_for('pages.dashboard') }}"
@@ -104,9 +104,9 @@
     <small>Início</small>
   </a>
 
-  <a href="{{ url_for('pages.lancamento') }}" class="bottom-item">
+  <a href="{{ url_for('pages.solicitacoes') }}" class="bottom-item">
     <i class="bi bi-plus-circle bottom-icon"></i>
-    <small>Lançamentos</small>
+    <small>Solicitações</small>
   </a>
 
   <a href="{{ url_for('pages.dashboard') }}" class="bottom-item">
