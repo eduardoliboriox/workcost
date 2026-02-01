@@ -164,3 +164,30 @@ document.addEventListener("click", e => {
   }
 });
 
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("btn-sign")) {
+    const cell = e.target.closest("td");
+    const box = cell.querySelector(".signature-box");
+    const input = cell.querySelector(".signature-password");
+
+    if (input.value.trim().length > 0) {
+      box.textContent = "assinado";
+      box.classList.remove("pending");
+      box.classList.add("signed");
+      input.value = "";
+    }
+  }
+
+  if (e.target.classList.contains("btn-approve")) {
+    const container = e.target.closest(".col-md-2");
+    const box = container.querySelector(".approval-box");
+    const input = container.querySelector(".approval-password");
+
+    if (input.value.trim().length > 0) {
+      box.textContent = "aprovado";
+      box.classList.remove("pending");
+      box.classList.add("signed");
+      input.value = "";
+    }
+  }
+});
