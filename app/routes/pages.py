@@ -128,3 +128,11 @@ def atestados():
 @bp.route("/login")
 def login():
     return render_template("auth/login.html")
+
+@bp.route("/solicitacoes")
+@login_required
+def solicitacoes():
+    return render_template(
+        "solicitacoes.html",
+        active_menu="solicitacoes"
+    )
