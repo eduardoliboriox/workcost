@@ -105,24 +105,33 @@
         <label class="form-label fw-semibold">
           Setores envolvidos <small class="text-muted">/ Departments</small>
         </label>
-
-        <select name="setores"
-                class="form-select"
-                multiple
-                size="5">
-          <option>Direção</option>
-          <option>Engenharia</option>
-          <option>Estoque</option>
-          <option>Manutenção</option>
-          <option>PCP</option>
-          <option>Produção</option>
-          <option>TI</option>
-        </select>
-
-        <small class="text-muted">
-          Selecione um ou mais setores envolvidos nesta extra
-        </small>
+      
+        <div class="multiselect" id="setoresSelect">
+          <div class="multiselect-display" id="setoresDisplay">
+            Selecione um ou mais setores envolvidos nesta extra
+          </div>
+      
+          <div class="multiselect-options">
+            {% for setor in [
+              'Direção',
+              'Engenharia',
+              'Estoque',
+              'Manutenção',
+              'PCP',
+              'Produção',
+              'TI'
+            ] %}
+              <label class="multiselect-option">
+                <input type="checkbox"
+                       value="{{ setor }}"
+                       name="setores">
+                <span>{{ setor }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
       </div>
+
 
       <!-- DESCRIÇÃO -->
       <div class="col-md-4">
