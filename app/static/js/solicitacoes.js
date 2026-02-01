@@ -143,10 +143,15 @@ function updateDisplay() {
     .filter(cb => cb.checked)
     .map(cb => `${cb.value} ✓`);
 
-  display.textContent = selected.length
-    ? selected.join(" / ")
-    : "Selecione um ou mais setores envolvidos nesta extra";
+  if (selected.length) {
+    display.textContent = selected.join(" / ");
+    display.classList.add("has-value");
+  } else {
+    display.textContent = "Selecione um ou mais setores envolvidos nesta extra";
+    display.classList.remove("has-value");
+  }
 }
+
 
 checkboxes.forEach(cb => {
   cb.addEventListener("change", updateDisplay);
