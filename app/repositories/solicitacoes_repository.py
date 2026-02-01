@@ -54,3 +54,24 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                 ))
 
         conn.commit()
+
+
+def listar_solicitacoes_abertas():
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    s.id,
+                    s.data,
+                    u.username AS solicitante,
+                    s.atividades,
+                    COUNT(sa.id) FILTER (WHERE sa.signed_at IS NOT NULL) AS assinadas,
+                    COUNT(sa.id) AS total_aprovacoes
+                FROM solicitacoes s
+                JOIN users u ON u.id = s.solicitante_user_id
+                LEFT JOIN solicitacao_aprovacoes sa
+                  ON sa.solicitacao_id = s.id
+                GROUP BY s.id, u.username
+                ORDER BY s.id DESC
+            """)
+            return cur.fetchall()

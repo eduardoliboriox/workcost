@@ -35,50 +35,44 @@ WorkCost · Solicitações de Extra — Abertas
     </thead>
 
     <tbody>
+      {% for s in solicitacoes %}
       <tr>
-        <td>1</td>
-        <td>01/02/2026</td>
-        <td>marcos.oliveira</td>
-        <td>Produção SMT - Harman</td>
-
+        <td>{{ s.id }}</td>
+        <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
+        <td>{{ s.solicitante }}</td>
+        <td>{{ s.descricao }}</td>
+    
         <td>
           <button class="btn btn-sm btn-outline-info">
             Provisão de Gastos
           </button>
         </td>
-
+    
         <td>
-          <span class="badge bg-success">Confirmado</span>
+          {% if s.status_solicitacao == "Confirmado" %}
+            <span class="badge bg-success">Confirmado</span>
+          {% else %}
+            <span class="badge bg-secondary">Pendente</span>
+          {% endif %}
         </td>
-
+    
+        <!-- placeholders por enquanto -->
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+    
         <td>
-          <span class="badge bg-success">Confirmado</span>
-        </td>
-
-        <td>
-          <span class="badge bg-secondary">Pendente</span>
-        </td>
-
-        <td>
-          <span class="badge bg-secondary">Pendente</span>
-        </td>
-
-        <td>
-          <span class="badge bg-secondary">Pendente</span>
-        </td>
-
-        <td>
-          <span class="badge bg-secondary">Pendente</span>
-        </td>
-
-        <td>
-          <a href="#"
+          <a href="/solicitacoes/{{ s.id }}"
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
         </td>
       </tr>
+      {% endfor %}
     </tbody>
+
   </table>
 
 </div>
