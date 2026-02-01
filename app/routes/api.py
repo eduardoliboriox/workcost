@@ -11,6 +11,7 @@ from app.services.relatorios_service import gerar_relatorio
 from app.services import hc_linhas_service
 from app.services.solicitacoes_service import criar_solicitacao
 from app.services.employees_service import buscar_funcionario
+from app.auth.service import confirm_employee_extra
 
 bp = Blueprint("api", __name__)
 
@@ -204,4 +205,23 @@ def api_criar_solicitacao():
 @bp.route("/employees/<matricula>", methods=["GET"])
 def api_employee_lookup(matricula):
     return jsonify(buscar_funcionario(matricula))
+
+
+
+@bp.route("/auth/confirm-extra", methods=["POST"])
+def api_confirm_extra():
+    data = request.get_json() or {}
+
+    matricula = data.get("matricula")
+    password = data.get("password")
+
+    if not matricula or not password:
+        return jsonify({
+            "success": False,
+            "error": "Dados incompletos"
+        }), 400
+
+    result = confirm_employee_extra(matricula, password)
+    return jsonify(result), (200 if result["success"] else 401)
+
 
