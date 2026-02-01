@@ -1,0 +1,57 @@
+{% extends "layouts/app.html" %}
+{% block title %}Solicitações Abertas{% endblock %}
+
+{% block page_title %}
+WorkCost · Solicitações de Extra — Abertas
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4">
+
+  <div class="d-flex justify-content-between mb-3">
+    <input class="form-control w-25" placeholder="Pesquisar...">
+    <div class="d-flex gap-2">
+      <input type="date" class="form-control">
+      <input type="date" class="form-control">
+    </div>
+  </div>
+
+  <table class="table table-bordered align-middle text-center">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Solicitante</th>
+        <th>Descrição</th>
+        <th>Info</th>
+        <th>Solicitação</th>
+        <th>Gestor</th>
+        <th>Gerente</th>
+        <th>Controladoria</th>
+        <th>Diretoria</th>
+        <th>RH</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>01/02/2026</td>
+        <td>marcos.oliveira</td>
+        <td>Produção SMT - Harman</td>
+        <td>
+          <button class="btn btn-sm btn-outline-info">
+            Provisão de Gastos
+          </button>
+        </td>
+        <td><span class="badge bg-success">Confirmado</span></td>
+        <td><span class="badge bg-success">Confirmado</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+        <td><span class="badge bg-secondary">Pendente</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+{% endblock %}
