@@ -3,9 +3,6 @@ from psycopg.rows import dict_row
 
 
 def get_employee_by_matricula(matricula: str):
-    """
-    Busca funcionário completo para auto-fill da solicitação
-    """
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
@@ -27,3 +24,4 @@ def get_employee_by_matricula(matricula: str):
             """, (matricula,))
 
             return cur.fetchone()
+
