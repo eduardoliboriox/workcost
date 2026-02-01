@@ -9,6 +9,7 @@ from app.auth.repository import (
     count_users,
     get_user_by_id,
     update_user_password,
+    get_user_by_matricula
 )
 
 # profile / employee link
@@ -122,3 +123,21 @@ def attach_employee_and_profile(user_id: int, form):
         link_user_to_employee(user_id, employee["id"])
 
     upsert_profile(user_id, form)
+
+
+def confirm_employee_extra(matricula: str, password: str):
+    user = get_user_by_matricula(matricula)
+
+    if not user:
+        return {"success": False, "error": "Usuário não encontrado"}
+
+    if not user["is_active"]:
+        return {"success": False, "error": "Usuário inativo"}
+
+    if not check_password_hash(user["password_hash"], password):
+        return {"success": False, "error": "Senha inválida"}
+
+    return {
+        "success": True,
+        "username": user["username"]
+    }

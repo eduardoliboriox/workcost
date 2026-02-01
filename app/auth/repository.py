@@ -206,3 +206,14 @@ def update_user_role(user_id: int, role: str):
                     (user_id,)
                 )
         conn.commit()
+
+def get_user_by_matricula(matricula: str):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT id, username, password_hash, is_active
+                FROM users
+                WHERE matricula = %s
+                LIMIT 1
+            """, (matricula,))
+            return cur.fetchone()

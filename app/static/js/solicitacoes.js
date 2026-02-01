@@ -176,30 +176,43 @@ document.addEventListener("click", e => {
   }
 });
 
-document.addEventListener("click", e => {
-  if (e.target.classList.contains("btn-sign")) {
-    const cell = e.target.closest("td");
-    const box = cell.querySelector(".signature-box");
-    const input = cell.querySelector(".signature-password");
+document.addEventListener("click", async e => {
+  if (!e.target.classList.contains("btn-sign")) return;
 
-    if (input.value.trim().length > 0) {
-      box.textContent = "assinado";
-      box.classList.remove("pending");
-      box.classList.add("signed");
-      input.value = "";
-    }
+  const cell = e.target.closest("td");
+  const row = e.target.closest("tr");
+
+  const matricula = row.querySelector(".matricula").value.trim();
+  const passwordInput = cell.querySelector(".signature-password");
+  const password = passwordInput.value.trim();
+  const box = cell.querySelector(".signature-box");
+
+  if (!matricula || !password) {
+    alert("Informe matrícula e senha");
+    return;
   }
 
-  if (e.target.classList.contains("btn-approve")) {
-    const container = e.target.closest(".col-md-2");
-    const box = container.querySelector(".approval-box");
-    const input = container.querySelector(".approval-password");
+  const res = await fetch("/api/auth/confirm-extra", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      matricula,
+      password
+    })
+  });
 
-    if (input.value.trim().length > 0) {
-      box.textContent = "aprovado";
-      box.classList.remove("pending");
-      box.classList.add("signed");
-      input.value = "";
-    }
+  const data = await res.json();
+
+  if (!data.success) {
+    alert("Senha inválida");
+    return;
   }
+
+  // sucesso
+  box.textContent = data.username;
+  box.classList.remove("pending");
+  box.classList.add("signed");
+
+  passwordInput.remove();
+  e.target.remove();
 });
