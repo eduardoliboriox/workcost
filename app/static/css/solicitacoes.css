@@ -1,0 +1,29 @@
+/* ===============================
+   WorkCost - Solicitações
+   =============================== */
+
+.page-title-solicitacoes {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+#funcionariosTable th,
+#funcionariosTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#funcionariosTable input,
+#funcionariosTable select {
+    text-align: center;
+}
+
+.table thead {
+    background: #f5f7fa;
+    font-weight: 600;
+}
+
+.btn-add-row {
+    min-width: 180px;
+}

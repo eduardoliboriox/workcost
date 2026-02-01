@@ -10,7 +10,7 @@ from app.services.atestados_service import registrar_atestado
 from app.services.relatorios_service import gerar_relatorio
 from app.services import hc_linhas_service
 from app.services.solicitacoes_service import criar_solicitacao
-
+from app.services.employees_service import buscar_funcionario
 
 bp = Blueprint("api", __name__)
 
@@ -197,3 +197,11 @@ def api_dashboard_resumo():
 def api_criar_solicitacao():
     result = criar_solicitacao(request.form)
     return jsonify(result), (200 if result["success"] else 400)
+
+# =========================
+# EMPLOYEES (AUTO FILL)
+# =========================
+@bp.route("/employees/<matricula>", methods=["GET"])
+def api_employee_lookup(matricula):
+    return jsonify(buscar_funcionario(matricula))
+
