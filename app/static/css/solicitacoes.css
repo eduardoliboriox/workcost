@@ -90,3 +90,21 @@
   background: #f1f3f5;
 }
 
+.signature-box,
+.approval-box {
+  padding: 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.signature-box.pending,
+.approval-box.pending {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.signature-box.signed,
+.approval-box.signed {
+  background: #198754;
+  color: #fff;
+}
