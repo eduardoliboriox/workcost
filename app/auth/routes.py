@@ -202,7 +202,7 @@ def my_profile():
         except ValueError as e:
             flash(str(e), "danger")
 
-        return redirect(url_for("auth.my_profile", active_menu="perfil"))
+        return redirect(url_for("auth.my_profile"))
 
     # 🔹 GET: carregar perfil de contato/endereço
     from app.auth.profile_repository import get_profile
