@@ -37,54 +37,98 @@
 <form id="formSolicitacao" method="post" action="{{ url_for('api.api_criar_solicitacao') }}">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
-  <!-- DADOS GERAIS -->
+  <!-- =======================
+       DADOS GERAIS
+       ======================= -->
   <div class="card p-4 shadow-sm mb-4">
-    <div class="row g-3">
+    <div class="row g-4">
 
+      <!-- DATA -->
       <div class="col-md-3">
-        <label>Data</label>
-        <input type="date" name="data" class="form-control" required>
+        <label class="form-label fw-semibold">
+          Data <small class="text-muted">/ Date</small>
+        </label>
+        <input type="date"
+               name="data"
+               class="form-control"
+               value="{{ now().date() }}"
+               required>
       </div>
 
-      <div class="col-md-4">
-        <label class="d-block">Turno</label>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input turno-radio" type="radio" name="turnos" value="1T">
-          <label class="form-check-label">1º Turno</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input turno-radio" type="radio" name="turnos" value="2T">
-          <label class="form-check-label">2º Turno</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input turno-radio" type="radio" name="turnos" value="3T">
-          <label class="form-check-label">3º Turno</label>
-        </div>
-      </div>
-
+      <!-- TURNO -->
       <div class="col-md-5">
-        <label>Setor</label>
-        <select name="setores" class="form-select" multiple>
-          <option>TI</option>
-          <option>ENGENHARIA</option>
-          <option>MANUTENÇÃO</option>
-        </select>
+        <label class="form-label fw-semibold d-block">
+          Turno <small class="text-muted">/ Shift</small>
+        </label>
+
+        <div class="d-flex gap-3 mt-1">
+          <div class="form-check">
+            <input class="form-check-input turno-radio"
+                   type="radio"
+                   name="turnos"
+                   value="1T">
+            <label class="form-check-label">1º Turno</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input turno-radio"
+                   type="radio"
+                   name="turnos"
+                   value="2T">
+            <label class="form-check-label">2º Turno</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input turno-radio"
+                   type="radio"
+                   name="turnos"
+                   value="3T">
+            <label class="form-check-label">3º Turno</label>
+          </div>
+        </div>
       </div>
 
+      <!-- CLIENTE -->
       <div class="col-md-4">
-        <label>Cliente</label>
+        <label class="form-label fw-semibold">
+          Cliente <small class="text-muted">/ Client</small>
+        </label>
         <select name="cliente" class="form-select">
-          <option>VTT</option>
-          <option>VTE</option>
           <option>VAC</option>
+          <option>VTE</option>
+          <option>VTT</option>
         </select>
       </div>
 
+      <!-- SETORES -->
+      <div class="col-md-8">
+        <label class="form-label fw-semibold">
+          Setores envolvidos <small class="text-muted">/ Departments</small>
+        </label>
+
+        <select name="setores"
+                class="form-select"
+                multiple
+                size="5">
+          <option>Direção</option>
+          <option>Engenharia</option>
+          <option>Estoque</option>
+          <option>Manutenção</option>
+          <option>PCP</option>
+          <option>Produção</option>
+          <option>TI</option>
+        </select>
+
+        <small class="text-muted">
+          Selecione um ou mais setores envolvidos nesta extra
+        </small>
+      </div>
+
+      <!-- DESCRIÇÃO -->
       <div class="col-md-4">
-        <label>Descrição</label>
+        <label class="form-label fw-semibold">
+          Descrição <small class="text-muted">/ Description</small>
+        </label>
         <select name="descricao" class="form-select">
           <option>Hora Extra</option>
           <option>Banco de Horas</option>
@@ -120,7 +164,9 @@
   </button>
 
   <div class="mb-4">
-    <label>Atividades a realizar</label>
+    <label class="fw-semibold">
+      Atividades a realizar <small class="text-muted">/ Activities</small>
+    </label>
     <textarea name="atividades" class="form-control" rows="3"></textarea>
   </div>
 
