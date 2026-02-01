@@ -147,3 +147,19 @@ def pedidos():
 def minhas_extras():
     return render_template("minhasextras.html", active_menu="minhasextras")
 
+@bp.route("/solicitacoes/abertas")
+@login_required
+def solicitacoes_abertas():
+    return render_template(
+        "solicitacoes-abertas.html",
+        active_menu="solicitacoes"
+    )
+
+@bp.route("/solicitacoes/fechadas")
+@login_required
+def solicitacoes_fechadas():
+    return render_template(
+        "solicitacoes-fechadas.html",
+        active_menu="solicitacoes"
+    )
+
