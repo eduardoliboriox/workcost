@@ -123,3 +123,39 @@ form.addEventListener("submit", () => {
 
 // primeira linha
 addRow();
+
+// ===============================
+// MULTISELECT SETORES
+// ===============================
+const multiselect = document.getElementById("setoresSelect");
+const display = document.getElementById("setoresDisplay");
+const options = multiselect.querySelector(".multiselect-options");
+const checkboxes = multiselect.querySelectorAll("input[type='checkbox']");
+
+// abrir / fechar
+display.addEventListener("click", () => {
+  multiselect.classList.toggle("open");
+});
+
+// atualizar texto exibido
+function updateDisplay() {
+  const selected = [...checkboxes]
+    .filter(cb => cb.checked)
+    .map(cb => `${cb.value} ✓`);
+
+  display.textContent = selected.length
+    ? selected.join(" / ")
+    : "Selecione um ou mais setores envolvidos nesta extra";
+}
+
+checkboxes.forEach(cb => {
+  cb.addEventListener("change", updateDisplay);
+});
+
+// fechar ao clicar fora
+document.addEventListener("click", e => {
+  if (!multiselect.contains(e.target)) {
+    multiselect.classList.remove("open");
+  }
+});
+
