@@ -214,3 +214,13 @@ def my_profile():
         profile=profile
     )
 
+@bp.route("/admin/users/<int:user_id>/role", methods=["POST"])
+@login_required
+@admin_required
+def update_user_role_route(user_id):
+    role = request.form.get("role")
+    from app.auth.repository import update_user_role
+    update_user_role(user_id, role)
+    flash("Perfil do usuário atualizado", "success")
+    return redirect(url_for("auth.admin_users_all"))
+

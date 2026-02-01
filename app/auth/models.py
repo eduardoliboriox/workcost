@@ -8,9 +8,9 @@ class User(UserMixin):
         self.email = data.get("email")
         self.full_name = data.get("full_name")
 
-        # flags reais do banco
         self._is_active = data.get("is_active", False)
         self.is_admin = data.get("is_admin", False)
+        self.extra_authorized = data.get("extra_authorized", False)
 
     @property
     def is_active(self):

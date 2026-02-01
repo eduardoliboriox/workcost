@@ -136,3 +136,13 @@ def solicitacoes():
         "solicitacoes.html",
         active_menu="solicitacoes"
     )
+
+@bp.route("/pedidos")
+@login_required
+def pedidos():
+    return render_template("pedidos.html")
+
+@bp.route("/minhas-extras")
+@login_required
+def minhas_extras():
+    return render_template("minhasextras.html")

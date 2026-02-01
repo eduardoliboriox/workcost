@@ -56,27 +56,45 @@
     </div>
 
   <nav>
-    <a href="{{ url_for('pages.inicio') }}"
-       class="{% if request.endpoint == 'pages.inicio' %}active{% endif %}">
+  
+    <a href="{{ url_for('pages.inicio') }}">
       <i class="bi bi-house"></i> Início
     </a>
   
-    <a href="{{ url_for('pages.solicitacoes') }}"
-       class="{% if active_menu == 'solicitacoes' or request.endpoint == 'pages.solicitacoes' %}active{% endif %}">
-      <i class="bi bi-plus-square"></i> Solicitações
+    {% if current_user.is_admin %}
+      <a href="{{ url_for('pages.solicitacoes') }}">
+        <i class="bi bi-plus-square"></i> Solicitações
+      </a>
+      <a href="{{ url_for('pages.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="{{ url_for('pages.cargos') }}">
+        <i class="bi bi-database"></i> Database
+      </a>
+  
+    {% elif current_user.extra_authorized %}
+      <a href="{{ url_for('pages.solicitacoes') }}">
+        <i class="bi bi-plus-square"></i> Solicitações
+      </a>
+      <a href="{{ url_for('pages.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+  
+    {% else %}
+      <a href="{{ url_for('pages.pedidos') }}">
+        <i class="bi bi-journal-text"></i> Pedidos
+      </a>
+      <a href="{{ url_for('pages.minhas_extras') }}">
+        <i class="bi bi-clock-history"></i> Minhas Extras
+      </a>
+    {% endif %}
+  
+    <a href="{{ url_for('auth.my_profile') }}">
+      <i class="bi bi-person-circle"></i> Perfil
     </a>
   
-    <a href="{{ url_for('pages.dashboard') }}"
-       class="{% if active_menu == 'dashboard' %}active{% endif %}">
-      <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-  
-    <a href="{{ url_for('pages.cargos') }}"
-       class="{% if active_menu == 'cargos' or request.endpoint == 'pages.cargos' %}active{% endif %}">
-      <i class="bi bi-database"></i> Database
-    </a>
-        
   </nav>
+
 
   </aside>
 

@@ -175,3 +175,34 @@ def update_user_password(user_id: int, new_password: str):
                 (password_hash, user_id),
             )
             conn.commit()
+
+def update_user_role(user_id: int, role: str):
+    fields = {
+        "admin": ("is_admin", True),
+        "extra": ("extra_authorized", True),
+        "none": ("is_admin", False, "extra_authorized", False),
+    }
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            if role == "admin":
+                cur.execute(
+                    "UPDATE users SET is_admin=TRUE WHERE id=%s",
+                    (user_id,)
+                )
+            elif role == "extra":
+                cur.execute(
+                    "UPDATE users SET extra_authorized=TRUE WHERE id=%s",
+                    (user_id,)
+                )
+            else:
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET is_admin=FALSE,
+                        extra_authorized=FALSE
+                    WHERE id=%s
+                    """,
+                    (user_id,)
+                )
+        conn.commit()
