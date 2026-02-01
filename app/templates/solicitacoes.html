@@ -30,9 +30,15 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
 
-<h4 class="page-title-solicitacoes">
-  FORMULÁRIO DE CONTROLE DE EXTRA JORNADA (Overtime Control Form)
-</h4>
+<div class="page-title-solicitacoes text-center mb-4">
+  <div class="fw-bold">
+    FORMULÁRIO DE CONTROLE DE EXTRA JORNADA
+  </div>
+  <small class="text-muted">
+    Overtime Control Form
+  </small>
+</div>
+
 
 <form id="formSolicitacao" method="post" action="{{ url_for('api.api_criar_solicitacao') }}">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
