@@ -47,10 +47,22 @@
       </div>
 
       <div class="col-md-4">
-        <label>Turno</label><br>
-        <input type="checkbox" name="turnos" value="1T"> 1º
-        <input type="checkbox" name="turnos" value="2T"> 2º
-        <input type="checkbox" name="turnos" value="3T"> 3º
+        <label class="d-block">Turno</label>
+
+        <div class="form-check form-check-inline">
+          <input class="form-check-input turno-radio" type="radio" name="turnos" value="1T">
+          <label class="form-check-label">1º Turno</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+          <input class="form-check-input turno-radio" type="radio" name="turnos" value="2T">
+          <label class="form-check-label">2º Turno</label>
+        </div>
+
+        <div class="form-check form-check-inline">
+          <input class="form-check-input turno-radio" type="radio" name="turnos" value="3T">
+          <label class="form-check-label">3º Turno</label>
+        </div>
       </div>
 
       <div class="col-md-5">
@@ -90,42 +102,13 @@
     <thead>
       <tr>
         <th>Item</th>
-
-        <th>
-          <div>Matrícula</div>
-          <small class="text-muted">employee code</small>
-        </th>
-
-        <th>
-          <div>Colaborador</div>
-          <small class="text-muted">employee</small>
-        </th>
-
-        <th>
-          <div>Endereço</div>
-          <small class="text-muted">address</small>
-        </th>
-
-        <th>
-          <div>Telefone</div>
-          <small class="text-muted">phone</small>
-        </th>
-
-        <th>
-          <div>Início</div>
-          <small class="text-muted">start</small>
-        </th>
-
-        <th>
-          <div>Término</div>
-          <small class="text-muted">end</small>
-        </th>
-
-        <th>
-          <div>Transporte</div>
-          <small class="text-muted">transport</small>
-        </th>
-
+        <th><div>Matrícula</div><small class="text-muted">employee code</small></th>
+        <th><div>Colaborador</div><small class="text-muted">employee</small></th>
+        <th><div>Endereço</div><small class="text-muted">address</small></th>
+        <th><div>Telefone</div><small class="text-muted">phone</small></th>
+        <th><div>Início</div><small class="text-muted">start</small></th>
+        <th><div>Término</div><small class="text-muted">end</small></th>
+        <th><div>Transporte</div><small class="text-muted">transport</small></th>
         <th></th>
       </tr>
     </thead>

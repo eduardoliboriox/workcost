@@ -2,8 +2,35 @@ const tbody = document.querySelector("#funcionariosTable tbody");
 const funcionariosJson = document.getElementById("funcionariosJson");
 const form = document.getElementById("formSolicitacao");
 const btnAddRow = document.getElementById("btnAddRow");
+const turnoRadios = document.querySelectorAll(".turno-radio");
+
+/**
+ * Horários padrão para DIA DE EXTRA (sábado)
+ */
+const EXTRA_SHIFT_TIMES = {
+  "1T": { start: "07:00", end: "16:00" },
+  "2T": { start: "16:00", end: "01:00" },
+  "3T": { start: "01:00", end: "06:00" }
+};
 
 btnAddRow.addEventListener("click", addRow);
+
+turnoRadios.forEach(radio => {
+  radio.addEventListener("change", aplicarHorarioPorTurno);
+});
+
+function aplicarHorarioPorTurno() {
+  const turnoSelecionado = document.querySelector(".turno-radio:checked");
+  if (!turnoSelecionado) return;
+
+  const horarios = EXTRA_SHIFT_TIMES[turnoSelecionado.value];
+  if (!horarios) return;
+
+  [...tbody.querySelectorAll("tr")].forEach(row => {
+    row.querySelector(".inicio").value = horarios.start;
+    row.querySelector(".termino").value = horarios.end;
+  });
+}
 
 function addRow() {
   const row = document.createElement("tr");
@@ -31,6 +58,9 @@ function addRow() {
   tbody.appendChild(row);
   atualizarIndices();
   bindRow(row);
+
+  // Se já houver turno selecionado, aplicar horário automaticamente
+  aplicarHorarioPorTurno();
 }
 
 function bindRow(row) {
