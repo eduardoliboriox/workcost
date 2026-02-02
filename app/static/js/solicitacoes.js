@@ -212,3 +212,32 @@ document.addEventListener("click", async e => {
   passwordInput.remove();
   e.target.remove();
 });
+
+// ===============================
+// CONFIRMAÇÃO DE APROVAÇÃO (UI)
+// ===============================
+document.addEventListener("click", async e => {
+  if (!e.target.classList.contains("btn-approve")) return;
+
+  const container = e.target.closest(".approval-item");
+  const passwordInput = container.querySelector(".approval-password");
+  const box = container.querySelector(".approval-box");
+
+  const password = passwordInput.value.trim();
+
+  if (!password) {
+    alert("Informe a senha");
+    return;
+  }
+
+  const username = "confirmado"; 
+
+  // UI FINAL 
+  box.textContent = username;
+  box.classList.remove("pending");
+  box.classList.add("signed");
+
+  passwordInput.remove();
+  e.target.remove();
+});
+

@@ -108,3 +108,24 @@
   background: #198754;
   color: #fff;
 }
+
+/* ===============================
+   Approval Flow (Centralizado)
+   =============================== */
+
+.approval-flow {
+  text-align: center;
+}
+
+.approval-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.approval-item input,
+.approval-item button {
+  width: 100%;
+  max-width: 140px;
+}
+

@@ -193,14 +193,15 @@
     <textarea name="atividades" class="form-control" rows="3"></textarea>
   </div>
 
+  
   <!-- =======================
        FLUXO DE APROVAÇÃO
        ======================= -->
-  <h5 class="fw-bold mt-4">
+  <h5 class="fw-bold mt-4 text-center">
     Fluxo de Aprovação <small class="text-muted">/ Approval</small>
   </h5>
-
-  <div class="row g-3 mt-2 approval-flow">
+  
+  <div class="row justify-content-center g-4 mt-3 approval-flow">
     {% for role in [
       'Solicitante',
       'Gestor',
@@ -208,15 +209,17 @@
       'Controladoria',
       'Diretoria'
     ] %}
-    <div class="col-md-2 text-center">
-      <div class="approval-box pending">
-        <small>{{ role }}</small>
+    <div class="col-md-2 text-center approval-item" data-role="{{ role }}">
+      <div class="approval-box pending mb-1">
+        {{ role }}
       </div>
+  
       <input type="password"
-             class="form-control form-control-sm mt-2 approval-password"
+             class="form-control form-control-sm approval-password mb-1"
              placeholder="Senha">
+  
       <button type="button"
-              class="btn btn-sm btn-outline-success mt-1 btn-approve">
+              class="btn btn-sm btn-outline-success btn-approve">
         CONFIRMAR
       </button>
     </div>
