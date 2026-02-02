@@ -283,7 +283,7 @@
     {% endfor %}
   </div>
 
-  <hr class="my-4">
+   <hr class="my-4">
 
   <div class="row align-items-center g-3 mb-4">
     <div class="col-md-4">
@@ -293,13 +293,24 @@
       <input type="date" class="form-control">
     </div>
 
-    <div class="col-md-4 text-center">
-      <div class="approval-box pending">
+    <!-- =========================
+         RECURSOS HUMANOS (AJUSTADO)
+         ========================= -->
+    <div class="col-md-4 text-center approval-item" data-role="rh">
+      <div class="approval-box pending mb-1">
         Recursos Humanos
       </div>
-      <input type="password"
-             class="form-control form-control-sm mt-2"
-             placeholder="Senha RH">
+
+      <div class="approval-input-wrapper">
+        <input type="password"
+               class="form-control form-control-sm approval-password mb-1"
+               placeholder="Senha RH">
+      </div>
+
+      <button type="button"
+              class="btn btn-sm btn-outline-success btn-approve">
+        CONFIRMAR
+      </button>
     </div>
 
     <div class="col-md-4">
@@ -315,7 +326,6 @@
     Registrar Solicitação
   </button>
   {% endif %}
-
 </form>
 {% endblock %}
 
