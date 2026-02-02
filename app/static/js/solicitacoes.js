@@ -221,7 +221,8 @@ document.addEventListener("click", async e => {
 
   const container = e.target.closest(".approval-item");
   const passwordInput = container.querySelector(".approval-password");
-  const box = container.querySelector(".approval-box");
+  const inputWrapper = container.querySelector(".approval-input-wrapper");
+  const button = e.target;
 
   const password = passwordInput.value.trim();
 
@@ -230,14 +231,18 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const username = "confirmado"; 
+  const username = "eduardo.liborio"; // mock visual
 
-  // UI FINAL 
-  box.textContent = username;
-  box.classList.remove("pending");
-  box.classList.add("signed");
+  // Criar badge visual IGUAL ao de funcionários
+  const badge = document.createElement("div");
+  badge.className = "approval-box signed mb-1";
+  badge.textContent = username;
 
-  passwordInput.remove();
-  e.target.remove();
+  // Substituir input pelo badge
+  inputWrapper.replaceWith(badge);
+
+  // Remover botão
+  button.remove();
 });
+
 
