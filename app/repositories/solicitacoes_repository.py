@@ -75,3 +75,17 @@ def listar_solicitacoes_abertas():
                 ORDER BY s.id DESC
             """)
             return cur.fetchall()
+
+def listar_aprovacoes_por_solicitacao():
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    sa.solicitacao_id,
+                    sa.role,
+                    u.username,
+                    sa.signed_at
+                FROM solicitacao_aprovacoes sa
+                JOIN users u ON u.id = sa.user_id
+            """)
+            return cur.fetchall()
