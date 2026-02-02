@@ -40,8 +40,7 @@
   </small>
 </div>
 
-<form id="formSolicitacao"
-      data-mode="{{ modo | default('create') }}">
+<form id="formSolicitacao">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
   <!-- =======================
@@ -58,8 +57,7 @@
         <input type="date"
                name="data"
                class="form-control"
-               value="{{ solicitacao.data if modo == 'view' else now().date() }}"
-               {% if modo == 'view' %}disabled{% endif %}
+               value="{{ now().date() }}"
                required>
       </div>
 
@@ -70,17 +68,29 @@
         </label>
 
         <div class="d-flex gap-3 mt-1">
-          {% for t in ['1T','2T','3T'] %}
           <div class="form-check">
             <input class="form-check-input turno-radio"
                    type="radio"
                    name="turnos"
-                   value="{{ t }}"
-                   {% if modo == 'view' and t in solicitacao.turnos %}checked{% endif %}
-                   {% if modo == 'view' %}disabled{% endif %}>
-            <label class="form-check-label">{{ t }}</label>
+                   value="1T">
+            <label class="form-check-label">1º Turno</label>
           </div>
-          {% endfor %}
+
+          <div class="form-check">
+            <input class="form-check-input turno-radio"
+                   type="radio"
+                   name="turnos"
+                   value="2T">
+            <label class="form-check-label">2º Turno</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input turno-radio"
+                   type="radio"
+                   name="turnos"
+                   value="3T">
+            <label class="form-check-label">3º Turno</label>
+          </div>
         </div>
       </div>
 
@@ -89,15 +99,10 @@
         <label class="form-label fw-bold">
           Cliente <small class="text-muted">/ Client</small>
         </label>
-        <select name="cliente"
-                class="form-select"
-                {% if modo == 'view' %}disabled{% endif %}>
-          {% for c in ['VAC','VTE','VTT'] %}
-          <option value="{{ c }}"
-            {% if modo == 'view' and solicitacao.cliente == c %}selected{% endif %}>
-            {{ c }}
-          </option>
-          {% endfor %}
+        <select name="cliente" class="form-select">
+          <option>VAC</option>
+          <option>VTE</option>
+          <option>VTT</option>
         </select>
       </div>
 
@@ -109,25 +114,27 @@
 
         <div class="multiselect" id="setoresSelect">
           <div class="multiselect-display" id="setoresDisplay">
-            {% if modo == 'view' %}
-              {{ solicitacao.setores }}
-            {% else %}
-              Selecione um ou mais setores envolvidos nesta extra
-            {% endif %}
+            Selecione um ou mais setores envolvidos nesta extra
           </div>
 
-          {% if modo != 'view' %}
           <div class="multiselect-options">
             {% for setor in [
-              'Direção','Engenharia','Estoque','Manutenção','PCP','Produção','TI'
+              'Direção',
+              'Engenharia',
+              'Estoque',
+              'Manutenção',
+              'PCP',
+              'Produção',
+              'TI'
             ] %}
               <label class="multiselect-option">
-                <input type="checkbox" value="{{ setor }}" name="setores">
+                <input type="checkbox"
+                       value="{{ setor }}"
+                       name="setores">
                 <span>{{ setor }}</span>
               </label>
             {% endfor %}
           </div>
-          {% endif %}
         </div>
       </div>
 
@@ -136,15 +143,10 @@
         <label class="form-label fw-bold">
           Descrição <small class="text-muted">/ Description</small>
         </label>
-        <select name="descricao"
-                class="form-select"
-                {% if modo == 'view' %}disabled{% endif %}>
-          {% for d in ['Hora Extra','Banco de Horas','Compensação'] %}
-          <option value="{{ d }}"
-            {% if modo == 'view' and solicitacao.descricao == d %}selected{% endif %}>
-            {{ d }}
-          </option>
-          {% endfor %}
+        <select name="descricao" class="form-select">
+          <option value="Hora Extra">Hora Extra / Overtime</option>
+          <option value="Banco de Horas">Banco de Horas / Time Bank</option>
+          <option value="Compensação">Compensação / Compensation</option>
         </select>
       </div>
 
@@ -156,65 +158,107 @@
   Lista de Funcionários <small class="text-muted">/ Employee List</small>
 </h5>
 
-<table class="table table-bordered align-middle" id="funcionariosTable">
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Matrícula</th>
-      <th>Colaborador</th>
-      <th>Endereço</th>
-      <th>Telefone</th>
-      <th>Início</th>
-      <th>Término</th>
-      <th>Transporte</th>
-      <th>Assinatura</th>
-      <th></th>
-    </tr>
-  </thead>
+  <table class="table table-bordered align-middle" id="funcionariosTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th><div>Matrícula</div><small class="text-muted">employee code</small></th>
+        <th><div>Colaborador</div><small class="text-muted">employee</small></th>
+        <th><div>Endereço</div><small class="text-muted">address</small></th>
+        <th><div>Telefone</div><small class="text-muted">phone</small></th>
+        <th><div>Início</div><small class="text-muted">start</small></th>
+        <th><div>Término</div><small class="text-muted">end</small></th>
+        <th><div>Transporte</div><small class="text-muted">transport</small></th>
+        <th><div>Assinatura</div><small class="text-muted">signature</small></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-  <tbody>
-  {% if modo == 'view' %}
-    {% for f in funcionarios %}
-    <tr>
-      <td>{{ loop.index }}</td>
-      <td><input class="form-control" value="{{ f.matricula }}" disabled></td>
-      <td><input class="form-control" value="{{ f.nome }}" disabled></td>
-      <td><input class="form-control" value="{{ f.endereco }}" disabled></td>
-      <td><input class="form-control" value="{{ f.telefone }}" disabled></td>
-      <td><input class="form-control" value="{{ f.inicio }}" disabled></td>
-      <td><input class="form-control" value="{{ f.termino }}" disabled></td>
-      <td><input class="form-control" value="{{ f.transporte }}" disabled></td>
-      <td>
-        <div class="signature-box signed">{{ f.nome }}</div>
-      </td>
-      <td></td>
-    </tr>
+
+  <small class="text-muted d-block mb-4">
+    A assinatura do colaborador formaliza a ciência quanto à solicitação de horas extras,
+    assegurando o devido registro e o cumprimento dos trâmites administrativos previstos.
+  </small>
+
+  <button type="button" class="btn btn-secondary btn-add-row mb-3" id="btnAddRow">
+    Adicionar linha
+  </button>
+
+  <div class="mb-4">
+    <label class="fw-semibold">
+      Atividades a realizar <small class="text-muted">/ Activities</small>
+    </label>
+    <textarea name="atividades" class="form-control" rows="3"></textarea>
+  </div>
+
+  
+  <!-- =======================
+       FLUXO DE APROVAÇÃO
+       ======================= -->
+  <h5 class="fw-bold mt-4">
+    Fluxo de Aprovação <small class="text-muted">/ Approval</small>
+  </h5>
+  
+  <div class="row justify-content-center g-4 mt-3 approval-flow">
+    {% for role in [
+      'Solicitante',
+      'Gestor',
+      'Gerente da Planta',
+      'Controladoria',
+      'Diretoria'
+    ] %}
+    <div class="col-md-2 text-center approval-item" data-role="{{ role }}">
+      <div class="approval-box pending mb-1">
+        {{ role }}
+      </div>
+      
+      <div class="approval-input-wrapper">
+        <input type="password"
+               class="form-control form-control-sm approval-password mb-1"
+               placeholder="Senha">
+      </div>
+      
+      <button type="button"
+              class="btn btn-sm btn-outline-success btn-approve">
+        CONFIRMAR
+      </button>
+
+    </div>
     {% endfor %}
-  {% endif %}
-  </tbody>
-</table>
+  </div>
 
-{% if modo != 'view' %}
-<button type="button" class="btn btn-secondary btn-add-row mb-3" id="btnAddRow">
-  Adicionar linha
-</button>
-{% endif %}
+  <hr class="my-4">
 
-<div class="mb-4">
-  <label class="fw-semibold">
-    Atividades a realizar <small class="text-muted">/ Activities</small>
-  </label>
-  <textarea name="atividades"
-            class="form-control"
-            rows="3"
-            {% if modo == 'view' %}disabled{% endif %}>{{ solicitacao.atividades if modo == 'view' }}</textarea>
-</div>
+  <div class="row align-items-center g-3 mb-4">
+    <div class="col-md-4">
+      <label class="fw-bold">
+        RECEBIDO EM <small class="text-muted">(Received date)</small>
+      </label>
+      <input type="date" class="form-control">
+    </div>
 
-{% if modo != 'view' %}
-<button class="btn btn-primary w-100">
-  Registrar Solicitação
-</button>
-{% endif %}
+    <div class="col-md-4 text-center">
+      <div class="approval-box pending">
+        Recursos Humanos
+      </div>
+      <input type="password"
+             class="form-control form-control-sm mt-2"
+             placeholder="Senha RH">
+    </div>
+
+    <div class="col-md-4">
+      <label class="fw-bold">
+        LANÇADO <small class="text-muted">(Launched)</small>
+      </label>
+      <input type="text" class="form-control">
+    </div>
+  </div>
+
+  <button class="btn btn-primary w-100">
+    Registrar Solicitação
+  </button>
 </form>
 {% endblock %}
 
