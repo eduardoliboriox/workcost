@@ -87,7 +87,6 @@ def obter_detalhe_solicitacao(solicitacao_id: int):
         "aprovacoes": aprov_map
     }
 
-
 def aprovar_solicitacao(solicitacao_id: int, role: str):
     registrar_aprovacao(
         solicitacao_id=solicitacao_id,
