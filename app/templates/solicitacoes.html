@@ -40,7 +40,7 @@
   </small>
 </div>
 
-<form id="formSolicitacao">
+<form id="formSolicitacao" data-mode="{{ modo | default('create') }}">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
   <!-- =======================
@@ -57,7 +57,8 @@
         <input type="date"
                name="data"
                class="form-control"
-               value="{{ now().date() }}"
+               value="{{ solicitacao.data if modo == 'view' else now().date() }}"
+               {% if modo == 'view' %}disabled{% endif %}
                required>
       </div>
 
@@ -173,7 +174,27 @@
         <th></th>
       </tr>
     </thead>
-    <tbody></tbody>
+      <tbody>
+  {% if modo == 'view' %}
+    {% for f in funcionarios %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><input class="form-control" value="{{ f.matricula }}" disabled></td>
+      <td><input class="form-control" value="{{ f.nome }}" disabled></td>
+      <td><input class="form-control" value="{{ f.endereco }}" disabled></td>
+      <td><input class="form-control" value="{{ f.telefone }}" disabled></td>
+      <td><input class="form-control" value="{{ f.inicio }}" disabled></td>
+      <td><input class="form-control" value="{{ f.termino }}" disabled></td>
+      <td><input class="form-control" value="{{ f.transporte }}" disabled></td>
+      <td>
+        <div class="signature-box signed">{{ f.nome }}</div>
+      </td>
+      <td></td>
+    </tr>
+    {% endfor %}
+  {% endif %}
+  </tbody>
+
   </table>
 
 
@@ -256,9 +277,12 @@
     </div>
   </div>
 
+  {% if modo != 'view' %}
   <button class="btn btn-primary w-100">
     Registrar Solicitação
   </button>
+  {% endif %}
+
 </form>
 {% endblock %}
 
