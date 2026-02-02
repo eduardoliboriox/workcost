@@ -1,19 +1,30 @@
-const formMode = document
-  .getElementById("formSolicitacao")
-  ?.dataset.mode || "create";
+const form = document.getElementById("formSolicitacao");
+const btnAddRow = document.getElementById("btnAddRow");
+const tbody = document.querySelector("#funcionariosTable tbody");
+const funcionariosJson = document.getElementById("funcionariosJson");
+const turnoRadios = document.querySelectorAll(".turno-radio");
 
+const formMode = form?.dataset.mode || "create";
+
+/* ===============================
+   BLOQUEIOS DO MODO VIEW
+   =============================== */
 if (formMode !== "create") {
   btnAddRow?.remove();
   form?.addEventListener("submit", e => e.preventDefault());
-  return;
+} else {
+  /* ===============================
+     SOMENTE CREATE MODE
+     =============================== */
+  btnAddRow.addEventListener("click", addRow);
+  turnoRadios.forEach(radio =>
+    radio.addEventListener("change", aplicarHorarioPorTurno)
+  );
+
+  // primeira linha
+  addRow();
 }
 
-
-const tbody = document.querySelector("#funcionariosTable tbody");
-const funcionariosJson = document.getElementById("funcionariosJson");
-const form = document.getElementById("formSolicitacao");
-const btnAddRow = document.getElementById("btnAddRow");
-const turnoRadios = document.querySelectorAll(".turno-radio");
 
 /**
  * Horários padrão para DIA DE EXTRA
