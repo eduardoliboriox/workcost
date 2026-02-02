@@ -23,7 +23,6 @@ WorkCost · Solicitações de Extra — Abertas
         <th>Data</th>
         <th>Solicitante</th>
         <th>Descrição</th>
-        <th>Info</th>
         <th>Solicitação</th>
         <th>Gestor</th>
         <th>Gerente</th>
@@ -41,13 +40,7 @@ WorkCost · Solicitações de Extra — Abertas
         <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
         <td>{{ s.solicitante }}</td>
         <td>{{ s.descricao }}</td>
-    
-        <td>
-          <button class="btn btn-sm btn-outline-info">
-            Provisão de Gastos
-          </button>
-        </td>
-    
+
         <td>
           {% if s.status_solicitacao == "Confirmado" %}
             <span class="badge bg-success">Confirmado</span>
@@ -55,14 +48,19 @@ WorkCost · Solicitações de Extra — Abertas
             <span class="badge bg-secondary">Pendente</span>
           {% endif %}
         </td>
-    
-        <!-- placeholders por enquanto -->
-        <td><span class="badge bg-secondary">Pendente</span></td>
-        <td><span class="badge bg-secondary">Pendente</span></td>
-        <td><span class="badge bg-secondary">Pendente</span></td>
-        <td><span class="badge bg-secondary">Pendente</span></td>
-        <td><span class="badge bg-secondary">Pendente</span></td>
-    
+
+        {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
+          <td>
+            {% if s.aprovacoes[role] %}
+              <span class="badge bg-success">
+                {{ s.aprovacoes[role] }}
+              </span>
+            {% else %}
+              <span class="badge bg-secondary">Pendente</span>
+            {% endif %}
+          </td>
+        {% endfor %}
+
         <td>
           <a href="/solicitacoes/{{ s.id }}"
              class="btn btn-sm btn-outline-primary">
@@ -72,7 +70,6 @@ WorkCost · Solicitações de Extra — Abertas
       </tr>
       {% endfor %}
     </tbody>
-
   </table>
 
 </div>
