@@ -4,6 +4,8 @@ from app.repositories.solicitacoes_repository import (
     listar_solicitacoes_abertas,
     listar_aprovacoes_por_solicitacao
 )
+from flask_login import current_user
+
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
@@ -18,7 +20,8 @@ def criar_solicitacao(form):
             "setores": ",".join(form.getlist("setores")),
             "cliente": form["cliente"],
             "descricao": form["descricao"],
-            "atividades": form["atividades"]
+            "atividades": form["atividades"],
+            "solicitante_user_id": current_user.id
         }
 
         inserir_solicitacao(dados, funcionarios)
