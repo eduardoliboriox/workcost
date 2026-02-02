@@ -1,3 +1,14 @@
+const formMode = document
+  .getElementById("formSolicitacao")
+  ?.dataset.mode || "create";
+
+if (formMode !== "create") {
+  btnAddRow?.remove();
+  form?.addEventListener("submit", e => e.preventDefault());
+  return;
+}
+
+
 const tbody = document.querySelector("#funcionariosTable tbody");
 const funcionariosJson = document.getElementById("funcionariosJson");
 const form = document.getElementById("formSolicitacao");
