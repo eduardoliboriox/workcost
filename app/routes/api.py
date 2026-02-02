@@ -237,3 +237,9 @@ def api_aprovar_solicitacao(solicitacao_id):
 
     aprovar_solicitacao(solicitacao_id, role)
     return jsonify({"success": True})
+
+
+@bp.route("/solicitacoes/<int:solicitacao_id>/provisao", methods=["GET"])
+def api_provisao_gastos_extra(solicitacao_id):
+    from app.services.relatorios_service import gerar_provisao_gastos_extra
+    return jsonify(gerar_provisao_gastos_extra(solicitacao_id))
