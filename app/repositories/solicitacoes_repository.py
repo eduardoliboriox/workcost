@@ -111,11 +111,16 @@ def listar_funcionarios_por_solicitacao(solicitacao_id: int):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
-                SELECT *
-                FROM solicitacao_funcionarios
-                WHERE solicitacao_id = %s
+                SELECT
+                    sf.*,
+                    u.username AS signed_by
+                FROM solicitacao_funcionarios sf
+                LEFT JOIN users u
+                  ON ltrim(u.matricula, '0') = ltrim(sf.matricula, '0')
+                WHERE sf.solicitacao_id = %s
             """, (solicitacao_id,))
             return cur.fetchall()
+
 
 
 def listar_aprovacoes_por_solicitacao_id(solicitacao_id: int):
