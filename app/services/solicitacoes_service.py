@@ -2,10 +2,13 @@ import json
 from app.repositories.solicitacoes_repository import (
     inserir_solicitacao,
     listar_solicitacoes_abertas,
-    listar_aprovacoes_por_solicitacao
+    listar_aprovacoes_por_solicitacao, 
+    buscar_solicitacao_por_id,
+    listar_funcionarios_por_solicitacao,
+    listar_aprovacoes_por_solicitacao_id,
+    registrar_aprovacao
 )
 from flask_login import current_user
-
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
@@ -67,3 +70,28 @@ def obter_solicitacoes_abertas():
         })
 
     return resultado
+
+
+
+def obter_detalhe_solicitacao(solicitacao_id: int):
+    solicitacao = buscar_solicitacao_por_id(solicitacao_id)
+
+    funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
+    aprovacoes = listar_aprovacoes_por_solicitacao_id(solicitacao_id)
+
+    aprov_map = {a["role"]: a for a in aprovacoes}
+
+    return {
+        "solicitacao": solicitacao,
+        "funcionarios": funcionarios,
+        "aprovacoes": aprov_map
+    }
+
+
+def aprovar_solicitacao(solicitacao_id: int, role: str):
+    registrar_aprovacao(
+        solicitacao_id=solicitacao_id,
+        user_id=current_user.id,
+        role=role
+    )
+
