@@ -116,7 +116,9 @@ function atualizarIndices() {
   });
 }
 
-form.addEventListener("submit", () => {
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
   const rows = [...tbody.querySelectorAll("tr")];
 
   const funcionarios = rows.map(r => ({
@@ -130,7 +132,24 @@ form.addEventListener("submit", () => {
   }));
 
   funcionariosJson.value = JSON.stringify(funcionarios);
+
+  const formData = new FormData(form);
+
+  const res = await fetch("/api/solicitacoes", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert("Erro ao registrar solicitação");
+    return;
+  }
+
+  window.location.href = "/solicitacoes/abertas";
 });
+
 
 // primeira linha
 addRow();
