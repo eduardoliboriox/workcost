@@ -43,10 +43,10 @@
 <form id="formSolicitacao" data-mode="{{ modo | default('create') }}">
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
-    {# =======================
-     VARIÁVEIS DE CONTROLE (JINJA)
-     ======================= #} 
-    {% set setores_selecionados = solicitacao.setores.split(',') if modo == 'view' else [] %} 
+  {# =======================
+   VARIÁVEIS DE CONTROLE (JINJA)
+   ======================= #}
+  {% set setores_selecionados = solicitacao.setores.split(',') if modo == 'view' else [] %}
   
   <!-- =======================
        DADOS GERAIS
@@ -128,10 +128,14 @@
         </label>
 
         <div class="multiselect {% if modo == 'view' %}disabled{% endif %}" id="setoresSelect">
-          <div class="multiselect-display" id="setoresDisplay">
-            Selecione um ou mais setores envolvidos nesta extra
+          <div class="multiselect-display {% if setores_selecionados %}has-value{% endif %}" id="setoresDisplay">
+            {% if modo == 'view' and setores_selecionados %}
+              {{ setores_selecionados | join(' / ') }}
+            {% else %}
+              Selecione um ou mais setores envolvidos nesta extra
+            {% endif %}
           </div>
-
+        
           <div class="multiselect-options">
             {% for setor in [
               'Direção',
@@ -153,6 +157,7 @@
             {% endfor %}
           </div>
         </div>
+
       </div>
 
       <!-- DESCRIÇÃO -->
