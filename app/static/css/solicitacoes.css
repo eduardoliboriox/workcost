@@ -99,8 +99,8 @@
 
 .signature-box.pending,
 .approval-box.pending {
-  background: #e9ecef;
-  color: #6c757d;
+  background: #e9ecef;   /* e9ecef */ 
+  color: #0c0d08;      /* 6c757d */
 }
 
 .signature-box.signed,
