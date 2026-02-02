@@ -141,7 +141,13 @@ def solicitacoes():
 @bp.route("/pedidos")
 @login_required
 def pedidos():
-    return render_template("pedidos.html", active_menu="pedidos")
+    solicitacoes = obter_solicitacoes_abertas()
+
+    return render_template(
+        "pedidos.html",
+        solicitacoes=solicitacoes,
+        active_menu="pedidos"
+    )
 
 @bp.route("/minhas-extras")
 @login_required
