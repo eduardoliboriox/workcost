@@ -1,5 +1,6 @@
 {% extends "layouts/app.html" %}
 {% block title %}Início{% endblock %}
+
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
   <span class="me-auto">
@@ -7,7 +8,6 @@
   </span>
 
   <div class="ms-auto d-flex gap-2">
-    
     <button class="btn btn-outline-purple"
             type="button"
             onclick="toggleFullscreen()">
@@ -20,7 +20,6 @@
       <i class="bi bi-box-arrow-right"></i> Sair
     </a>
     {% endif %}
-
   </div>
 </div>
 {% endblock %}
@@ -32,60 +31,56 @@
   <div class="card p-4 shadow-sm text-center mb-4">
     <h5 class="fw-bold">Bem-vindo ao Venttos WorkCost</h5>
     <p class="text-muted mb-0">
-      Acompanhe indicadores de produção, absenteísmo e desempenho operacional.
+      Sistema de apoio ao controle de jornada extra, absenteísmo
+      e acompanhamento operacional.
     </p>
   </div>
 
-  <!-- Orientação sobre Lançamentos -->
-  <div class="alert alert-primary shadow-sm mb-4">
+  <!-- Orientação geral sobre Extras -->
+  <div class="alert alert-success shadow-sm mb-4">
     <h6 class="fw-bold mb-2">
-      <i class="bi bi-info-circle"></i>
-      Orientação sobre Lançamento de Absenteísmo
+      <i class="bi bi-clock-history"></i>
+      Como funciona a Extra no sistema
     </h6>
 
     <p class="mb-2">
-      Na tela de <strong>Lançamentos</strong>, o <strong>HC Real não é digitável</strong>.
-      Ele é <strong>calculado automaticamente pelo sistema</strong>.
+      A solicitação de <strong>hora extra</strong> passa por um fluxo controlado
+      para garantir transparência, rastreabilidade e conformidade interna.
     </p>
 
     <ul class="mb-2">
-      <li>O <strong>HC Padrão</strong> da linha também é preenchido <strong>automaticamente pelo sistema</strong>.</li>
-      <li>Adicione apenas os absenteísmos selecionando o <strong>cargo</strong> e a <strong>quantidade</strong></li>
-      <li>A cada cargo adicionado, o sistema:</li>
-    </ul>
-
-    <ul class="ms-3">
-      <li>✔️ Soma automaticamente as faltas</li>
-      <li>✔️ Reduz o HC Real para o valor correto</li>
-      <li>✔️ Calcula o absenteísmo sem ação manual</li>
+      <li>As <strong>solicitações de extra</strong> são criadas pelos responsáveis autorizados</li>
+      <li>O colaborador <strong>confirma a ciência</strong> da extra informando sua senha</li>
+      <li>Todas as confirmações ficam <strong>registradas no sistema</strong></li>
     </ul>
 
     <p class="mb-0">
-      Isso garante <strong>padronização, precisão e evita erros de lançamento</strong>.
+      Você pode acompanhar suas horas extras registradas a qualquer momento
+      na tela <strong>“Minhas Extras”</strong>.
     </p>
   </div>
 
-  <!-- Orientação de Cadastro de Cargos -->
-  <div class="alert alert-info shadow-sm">
+  <!-- Orientação sobre Pedidos -->
+  <div class="alert alert-warning shadow-sm mb-4">
     <h6 class="fw-bold mb-2">
-      <i class="bi bi-people"></i>
-      Orientação para cadastro de cargos (database)
+      <i class="bi bi-journal-text"></i>
+      Orientação sobre Pedidos de Extra
     </h6>
 
     <p class="mb-2">
-      Para garantir a correta consolidação dos dados no sistema, os cargos devem
-      ser cadastrados <strong>sempre com o setor ao final do nome</strong>.
+      Na tela de <strong>Pedidos</strong>, você visualiza as <strong>extras em aberto</strong>
+      que ainda estão em andamento.
     </p>
 
     <ul class="mb-2">
-      <li><strong>Correto:</strong> Revisor(a) AOI <strong>SMT</strong></li>
-      <li><strong>Incorreto:</strong> Revisor(a) AOI</li>
-      <li><strong>Correto:</strong> Revisor(a) Pré Máquina <strong>IM</strong></li>
-      <li><strong>Incorreto:</strong> Revisor(a) Pré Máquina</li>
+      <li>Verifique sempre os <strong>dados da solicitação</strong></li>
+      <li>Confirme apenas se estiver de acordo com a extra informada</li>
+      <li>Em caso de dúvida, procure seu gestor antes de confirmar</li>
     </ul>
 
     <p class="mb-0">
-      Essa padronização é essencial para relatórios, rankings e análises do dashboard.
+      A confirmação representa <strong>ciência e concordância</strong>
+      com a realização da hora extra.
     </p>
   </div>
 
