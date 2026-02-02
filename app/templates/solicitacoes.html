@@ -215,7 +215,9 @@
       <td><input class="form-control" value="{{ f.termino }}" disabled></td>
       <td><input class="form-control" value="{{ f.transporte }}" disabled></td>
       <td>
-        <div class="signature-box signed">{{ f.nome }}</div>
+        <div class="signature-box signed">
+          {{ f.signed_by or f.nome }}
+        </div>
       </td>
       <td></td>
     </tr>
