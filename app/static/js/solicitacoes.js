@@ -12,19 +12,7 @@ const formMode = form?.dataset.mode || "create";
 if (formMode !== "create") {
   btnAddRow?.remove();
   form?.addEventListener("submit", e => e.preventDefault());
-} else {
-  /* ===============================
-     SOMENTE CREATE MODE
-     =============================== */
-  btnAddRow.addEventListener("click", addRow);
-  turnoRadios.forEach(radio =>
-    radio.addEventListener("change", aplicarHorarioPorTurno)
-  );
-
-  // primeira linha
-  addRow();
 }
-
 
 /**
  * Horários padrão para DIA DE EXTRA
@@ -35,10 +23,58 @@ const EXTRA_SHIFT_TIMES = {
   "3T": { start: "01:00", end: "06:00" }
 };
 
-btnAddRow.addEventListener("click", addRow);
-turnoRadios.forEach(radio =>
-  radio.addEventListener("change", aplicarHorarioPorTurno)
-);
+/* ===============================
+   SOMENTE CREATE MODE
+   =============================== */
+if (formMode === "create") {
+
+  btnAddRow.addEventListener("click", addRow);
+
+  turnoRadios.forEach(radio =>
+    radio.addEventListener("change", aplicarHorarioPorTurno)
+  );
+
+  // primeira linha
+  addRow();
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const rows = [...tbody.querySelectorAll("tr")];
+
+    const funcionarios = rows.map(r => ({
+      matricula: r.querySelector(".matricula").value,
+      nome: r.querySelector(".nome").value,
+      endereco: r.querySelector(".endereco").value,
+      telefone: r.querySelector(".telefone").value,
+      inicio: r.querySelector(".inicio").value,
+      termino: r.querySelector(".termino").value,
+      transporte: r.querySelector(".transporte").value
+    }));
+
+    funcionariosJson.value = JSON.stringify(funcionarios);
+
+    const formData = new FormData(form);
+
+    const res = await fetch("/api/solicitacoes", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert("Erro ao registrar solicitação");
+      return;
+    }
+
+    window.location.href = "/solicitacoes/abertas";
+  });
+}
+
+/* ===============================
+   FUNÇÕES
+   =============================== */
 
 function aplicarHorarioPorTurno() {
   const turnoSelecionado = document.querySelector(".turno-radio:checked");
@@ -71,8 +107,6 @@ function addRow() {
         <option value="VEICULO">Veículo próprio</option>
       </select>
     </td>
-
-    <!-- ASSINATURA -->
     <td>
       <div class="signature-box pending mb-1">pendente</div>
       <input type="password"
@@ -83,8 +117,6 @@ function addRow() {
         Confirmar
       </button>
     </td>
-
-    <!-- AÇÃO -->
     <td>
       <button type="button" class="btn btn-sm btn-danger">X</button>
     </td>
@@ -124,11 +156,8 @@ async function buscarFuncionario(row) {
 }
 
 function aplicarTransporte(row) {
-  const transporte = row.querySelector(".transporte").value;
-  const endereco = row.querySelector(".endereco");
-
-  if (transporte === "VEICULO") {
-    endereco.value = "Veículo próprio";
+  if (row.querySelector(".transporte").value === "VEICULO") {
+    row.querySelector(".endereco").value = "Veículo próprio";
   }
 }
 
@@ -138,53 +167,14 @@ function atualizarIndices() {
   });
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const rows = [...tbody.querySelectorAll("tr")];
-
-  const funcionarios = rows.map(r => ({
-    matricula: r.querySelector(".matricula").value,
-    nome: r.querySelector(".nome").value,
-    endereco: r.querySelector(".endereco").value,
-    telefone: r.querySelector(".telefone").value,
-    inicio: r.querySelector(".inicio").value,
-    termino: r.querySelector(".termino").value,
-    transporte: r.querySelector(".transporte").value
-  }));
-
-  funcionariosJson.value = JSON.stringify(funcionarios);
-
-  const formData = new FormData(form);
-
-  const res = await fetch("/api/solicitacoes", {
-    method: "POST",
-    body: formData
-  });
-
-  const data = await res.json();
-
-  if (!data.success) {
-    alert("Erro ao registrar solicitação");
-    return;
-  }
-
-  window.location.href = "/solicitacoes/abertas";
-});
-
-
-// primeira linha
-addRow();
-
-// ===============================
-// MULTISELECT SETORES (MANTIDO)
-// ===============================
+/* ===============================
+   MULTISELECT SETORES (MANTIDO)
+   =============================== */
 const multiselect = document.getElementById("setoresSelect");
 const display = document.getElementById("setoresDisplay");
-const options = multiselect.querySelector(".multiselect-options");
-const checkboxes = multiselect.querySelectorAll("input[type='checkbox']");
+const checkboxes = multiselect?.querySelectorAll("input[type='checkbox']") || [];
 
-display.addEventListener("click", () => {
+display?.addEventListener("click", () => {
   multiselect.classList.toggle("open");
 });
 
@@ -193,14 +183,11 @@ function updateDisplay() {
     .filter(cb => cb.checked)
     .map(cb => `${cb.value} ✓`);
 
-  if (selected.length) {
-    display.textContent = selected.join(" / ");
-    display.classList.add("has-value");
-  } else {
-    display.textContent =
-      "Selecione um ou mais setores envolvidos nesta extra";
-    display.classList.remove("has-value");
-  }
+  display.textContent = selected.length
+    ? selected.join(" / ")
+    : "Selecione um ou mais setores envolvidos nesta extra";
+
+  display.classList.toggle("has-value", selected.length > 0);
 }
 
 checkboxes.forEach(cb =>
@@ -208,10 +195,11 @@ checkboxes.forEach(cb =>
 );
 
 document.addEventListener("click", e => {
-  if (!multiselect.contains(e.target)) {
+  if (multiselect && !multiselect.contains(e.target)) {
     multiselect.classList.remove("open");
   }
 });
+
 
 // ===============================
 // CONFIRMAÇÃO DE ASSINATURA EXTRA
