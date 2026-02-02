@@ -91,3 +91,66 @@ def listar_aprovacoes_por_solicitacao():
                 JOIN users u ON u.id = sa.user_id
             """)
             return cur.fetchall()
+
+
+def buscar_solicitacao_por_id(solicitacao_id: int):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    s.*,
+                    u.username AS solicitante
+                FROM solicitacoes s
+                JOIN users u ON u.id = s.solicitante_user_id
+                WHERE s.id = %s
+            """, (solicitacao_id,))
+            return cur.fetchone()
+
+
+def listar_funcionarios_por_solicitacao(solicitacao_id: int):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT *
+                FROM solicitacao_funcionarios
+                WHERE solicitacao_id = %s
+            """, (solicitacao_id,))
+            return cur.fetchall()
+
+
+def listar_aprovacoes_por_solicitacao_id(solicitacao_id: int):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    sa.role,
+                    sa.signed_at,
+                    u.username
+                FROM solicitacao_aprovacoes sa
+                JOIN users u ON u.id = sa.user_id
+                WHERE sa.solicitacao_id = %s
+            """, (solicitacao_id,))
+            return cur.fetchall()
+
+
+def registrar_aprovacao(
+    solicitacao_id: int,
+    user_id: int,
+    role: str
+):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO solicitacao_aprovacoes (
+                    solicitacao_id,
+                    user_id,
+                    role,
+                    signed_at
+                )
+                VALUES (%s,%s,%s, now())
+                ON CONFLICT (solicitacao_id, role)
+                DO UPDATE SET
+                    user_id = EXCLUDED.user_id,
+                    signed_at = now()
+            """, (solicitacao_id, user_id, role))
+        conn.commit()
