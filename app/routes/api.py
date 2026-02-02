@@ -243,3 +243,33 @@ def api_aprovar_solicitacao(solicitacao_id):
 def api_provisao_gastos_extra(solicitacao_id):
     from app.services.relatorios_service import gerar_provisao_gastos_extra
     return jsonify(gerar_provisao_gastos_extra(solicitacao_id))
+
+
+@bp.route(
+    "/solicitacoes/<int:solicitacao_id>/confirmar-presenca",
+    methods=["POST"]
+)
+def api_confirmar_presenca_funcionario(solicitacao_id):
+    data = request.get_json() or {}
+
+    matricula = data.get("matricula")
+    password = data.get("password")
+
+    if not matricula or not password:
+        return jsonify({
+            "success": False,
+            "error": "Dados incompletos"
+        }), 400
+
+    from app.services.solicitacoes_service import (
+        confirmar_presenca_funcionario
+    )
+
+    result = confirmar_presenca_funcionario(
+        solicitacao_id,
+        matricula,
+        password
+    )
+
+    return jsonify(result), (200 if result["success"] else 401)
+
