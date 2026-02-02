@@ -159,3 +159,20 @@ def registrar_aprovacao(
                     signed_at = now()
             """, (solicitacao_id, user_id, role))
         conn.commit()
+
+def registrar_assinatura_funcionario(
+    solicitacao_id: int,
+    matricula: str,
+    username: str
+):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE solicitacao_funcionarios
+                SET signed_at = now(),
+                    signed_by = %s
+                WHERE solicitacao_id = %s
+                  AND ltrim(matricula, '0') = ltrim(%s, '0')
+            """, (username, solicitacao_id, matricula))
+        conn.commit()
+
