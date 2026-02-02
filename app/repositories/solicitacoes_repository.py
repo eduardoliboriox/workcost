@@ -14,9 +14,10 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                     setores,
                     cliente,
                     descricao,
-                    atividades
+                    atividades,
+                    solicitante_user_id
                 )
-                VALUES (%s,%s,%s,%s,%s,%s)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
                 RETURNING id
             """, (
                 dados["data"],
@@ -24,7 +25,8 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                 dados["setores"],
                 dados["cliente"],
                 dados["descricao"],
-                dados["atividades"]
+                dados["atividades"],
+                dados["solicitante_user_id"]
             ))
 
             solicitacao_id = cur.fetchone()["id"]
