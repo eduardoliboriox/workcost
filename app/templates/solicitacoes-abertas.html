@@ -89,10 +89,10 @@
         {% endfor %}
 
       <td>
-        <a href="/solicitacoes/{{ s.id }}"
-           class="btn btn-sm btn-outline-primary">
-          Acessar
-        </a>
+      <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+         class="btn btn-sm btn-outline-primary">
+        Acessar
+      </a>
       
         <button class="btn btn-sm btn-outline-warning ms-1"
                 onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao')">
