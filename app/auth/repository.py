@@ -208,12 +208,19 @@ def update_user_role(user_id: int, role: str):
         conn.commit()
 
 def get_user_by_matricula(matricula: str):
+    """
+    Normaliza matrícula removendo zeros à esquerda
+    para evitar inconsistência entre cadastro e uso.
+    """
+    matricula_normalizada = matricula.lstrip("0")
+
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT id, username, password_hash, is_active
                 FROM users
-                WHERE matricula = %s
+                WHERE ltrim(matricula, '0') = %s
                 LIMIT 1
-            """, (matricula,))
+            """, (matricula_normalizada,))
             return cur.fetchone()
+
