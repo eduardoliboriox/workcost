@@ -73,7 +73,9 @@
             <input class="form-check-input turno-radio"
                    type="radio"
                    name="turnos"
-                   value="1T">
+                   value="1T"
+                   {% if modo == 'view' and '1T' in solicitacao.turnos %}checked{% endif %}
+                   {% if modo == 'view' %}disabled{% endif %}>
             <label class="form-check-label">1º Turno</label>
           </div>
 
@@ -81,7 +83,9 @@
             <input class="form-check-input turno-radio"
                    type="radio"
                    name="turnos"
-                   value="2T">
+                   value="2T"
+                   {% if modo == 'view' and '2T' in solicitacao.turnos %}checked{% endif %}
+                   {% if modo == 'view' %}disabled{% endif %}>
             <label class="form-check-label">2º Turno</label>
           </div>
 
@@ -89,7 +93,9 @@
             <input class="form-check-input turno-radio"
                    type="radio"
                    name="turnos"
-                   value="3T">
+                   value="3T"
+                   {% if modo == 'view' and '3T' in solicitacao.turnos %}checked{% endif %}
+                   {% if modo == 'view' %}disabled{% endif %}>
             <label class="form-check-label">3º Turno</label>
           </div>
         </div>
@@ -100,10 +106,13 @@
         <label class="form-label fw-bold">
           Cliente <small class="text-muted">/ Client</small>
         </label>
-        <select name="cliente" class="form-select">
-          <option>VAC</option>
-          <option>VTE</option>
-          <option>VTT</option>
+        <select name="cliente" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
+          {% for c in ['VAC','VTE','VTT'] %}
+            <option value="{{ c }}"
+              {% if modo == 'view' and solicitacao.cliente == c %}selected{% endif %}>
+              {{ c }}
+            </option>
+          {% endfor %}
         </select>
       </div>
 
@@ -144,11 +153,18 @@
         <label class="form-label fw-bold">
           Descrição <small class="text-muted">/ Description</small>
         </label>
-        <select name="descricao" class="form-select">
-          <option value="Hora Extra">Hora Extra / Overtime</option>
-          <option value="Banco de Horas">Banco de Horas / Time Bank</option>
-          <option value="Compensação">Compensação / Compensation</option>
-        </select>
+          <select name="descricao" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
+            {% for d in [
+              ('Hora Extra','Hora Extra / Overtime'),
+              ('Banco de Horas','Banco de Horas / Time Bank'),
+              ('Compensação','Compensação / Compensation')
+            ] %}
+              <option value="{{ d[0] }}"
+                {% if modo == 'view' and solicitacao.descricao == d[0] %}selected{% endif %}>
+                {{ d[1] }}
+              </option>
+            {% endfor %}
+          </select>
       </div>
 
     </div>
@@ -211,7 +227,10 @@
     <label class="fw-semibold">
       Atividades a realizar <small class="text-muted">/ Activities</small>
     </label>
-    <textarea name="atividades" class="form-control" rows="3"></textarea>
+    <textarea name="atividades"
+          class="form-control"
+          rows="3"
+          {% if modo == 'view' %}disabled{% endif %}>{{ solicitacao.atividades if modo == 'view' else '' }}</textarea>
   </div>
 
   
