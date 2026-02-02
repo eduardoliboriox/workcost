@@ -125,7 +125,11 @@ def attach_employee_and_profile(user_id: int, form):
     upsert_profile(user_id, form)
 
 
+
 def confirm_employee_extra(matricula: str, password: str):
+    # Blindagem de entrada
+    matricula = matricula.strip()
+
     user = get_user_by_matricula(matricula)
 
     if not user:
