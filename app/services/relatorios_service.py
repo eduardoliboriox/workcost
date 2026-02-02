@@ -132,3 +132,16 @@ def gerar_relatorio(setor, tipo):
         "linhas": linhas,
         "cargo_critico": cargo_critico_global,
     }
+
+@bp.route("/solicitacoes/<int:solicitacao_id>/aprovar", methods=["POST"])
+def api_aprovar_solicitacao(solicitacao_id):
+    data = request.get_json() or {}
+    role = data.get("role")
+
+    if not role:
+        return jsonify({"success": False}), 400
+
+    from app.services.solicitacoes_service import aprovar_solicitacao
+
+    aprovar_solicitacao(solicitacao_id, role)
+    return jsonify({"success": True})

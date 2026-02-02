@@ -88,13 +88,17 @@
           </td>
         {% endfor %}
 
-        <td>
-          <a href="/solicitacoes/{{ s.id }}"
-             class="btn btn-sm btn-outline-primary">
-            Acessar
-          </a>
-        </td>
-      </tr>
+      <td>
+        <a href="/solicitacoes/{{ s.id }}"
+           class="btn btn-sm btn-outline-primary">
+          Acessar
+        </a>
+      
+        <button class="btn btn-sm btn-outline-warning ms-1"
+                onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao')">
+          Provisão
+        </button>
+      </td>
       {% endfor %}
     </tbody>
   </table>

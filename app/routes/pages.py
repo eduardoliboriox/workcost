@@ -174,3 +174,18 @@ def solicitacoes_abertas():
         solicitacoes=solicitacoes,
         active_menu="solicitacoes"
     )
+
+
+
+@bp.route("/solicitacoes/<int:solicitacao_id>")
+@login_required
+def solicitacao_detalhe(solicitacao_id):
+    from app.services.solicitacoes_service import obter_detalhe_solicitacao
+
+    dados = obter_detalhe_solicitacao(solicitacao_id)
+
+    return render_template(
+        "solicitacao_detalhe.html",
+        **dados,
+        active_menu="solicitacoes"
+    )
