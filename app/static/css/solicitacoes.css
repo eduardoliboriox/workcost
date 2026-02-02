@@ -110,12 +110,8 @@
 }
 
 /* ===============================
-   Approval Flow (Centralizado)
+   Approval Flow - Alignment Fix
    =============================== */
-
-.approval-flow {
-  text-align: center;
-}
 
 .approval-item {
   display: flex;
@@ -123,9 +119,13 @@
   align-items: center;
 }
 
-.approval-item input,
-.approval-item button {
-  width: 100%;
-  max-width: 140px;
+.approval-input-wrapper {
+  width: 140px;
+  display: flex;
+  justify-content: center;
 }
 
+.approval-input-wrapper input {
+  width: 100%;
+  text-align: center;
+}
