@@ -220,20 +220,25 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const res = await fetch("/api/auth/confirm-extra", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ matricula, password })
-  });
+  const solicitacaoId = window.location.pathname.split("/").pop();
+
+  const res = await fetch(
+    `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matricula, password })
+    }
+  );
 
   const data = await res.json();
 
-  if (!data.success) {
-    alert("Senha inválida");
+  if (!res.ok || !data.success) {
+    alert(data.error || "Senha inválida");
     return;
   }
 
-  // UI FINAL
+  // UI FINAL (somente após persistir no banco)
   box.textContent = data.username;
   box.classList.remove("pending");
   box.classList.add("signed");
@@ -241,6 +246,7 @@ document.addEventListener("click", async e => {
   passwordInput.remove();
   e.target.remove();
 });
+
 
 // ===============================
 // CONFIRMAÇÃO DE APROVAÇÃO (UI)

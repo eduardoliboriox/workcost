@@ -6,9 +6,11 @@ from app.repositories.solicitacoes_repository import (
     buscar_solicitacao_por_id,
     listar_funcionarios_por_solicitacao,
     listar_aprovacoes_por_solicitacao_id,
-    registrar_aprovacao
+    registrar_aprovacao, 
+    registrar_assinatura_funcionario
 )
 from flask_login import current_user
+
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
@@ -93,4 +95,29 @@ def aprovar_solicitacao(solicitacao_id: int, role: str):
         user_id=current_user.id,
         role=role
     )
+
+
+
+def confirmar_presenca_funcionario(
+    solicitacao_id: int,
+    matricula: str,
+    password: str
+):
+    from app.auth.service import confirm_employee_extra
+
+    result = confirm_employee_extra(matricula, password)
+
+    if not result["success"]:
+        return result
+
+    registrar_assinatura_funcionario(
+        solicitacao_id=solicitacao_id,
+        matricula=matricula,
+        username=result["username"]
+    )
+
+    return {
+        "success": True,
+        "username": result["username"]
+    }
 
