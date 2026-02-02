@@ -213,15 +213,18 @@
       <div class="approval-box pending mb-1">
         {{ role }}
       </div>
-  
-      <input type="password"
-             class="form-control form-control-sm approval-password mb-1"
-             placeholder="Senha">
-  
+      
+      <div class="approval-input-wrapper w-100">
+        <input type="password"
+               class="form-control form-control-sm approval-password mb-1"
+               placeholder="Senha">
+      </div>
+      
       <button type="button"
               class="btn btn-sm btn-outline-success btn-approve">
         CONFIRMAR
       </button>
+
     </div>
     {% endfor %}
   </div>
