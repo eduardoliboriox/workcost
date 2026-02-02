@@ -132,3 +132,23 @@ def gerar_relatorio(setor, tipo):
         "linhas": linhas,
         "cargo_critico": cargo_critico_global,
     }
+
+
+def gerar_provisao_gastos_extra(solicitacao_id: int):
+    from app.repositories.solicitacoes_repository import (
+        listar_funcionarios_por_solicitacao
+    )
+
+    funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
+    quantidade = len(funcionarios)
+
+    custo_rota = 500 if quantidade > 0 else 0
+    custo_alimentacao = quantidade * 35
+
+    return {
+        "quantidade_pessoas": quantidade,
+        "custo_rota": custo_rota,
+        "custo_alimentacao": custo_alimentacao,
+        "total": custo_rota + custo_alimentacao
+    }
+
