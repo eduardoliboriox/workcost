@@ -135,8 +135,10 @@ def login():
 def solicitacoes():
     return render_template(
         "solicitacoes.html",
+        modo="create",
         active_menu="solicitacoes"
     )
+
 
 @bp.route("/pedidos")
 @login_required
