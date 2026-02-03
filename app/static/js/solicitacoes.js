@@ -1,9 +1,3 @@
-/**
- * solicitacoes.js
- * Script base da página de solicitações
- * Contém apenas funcionalidades comuns (neutras)
- */
-
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
