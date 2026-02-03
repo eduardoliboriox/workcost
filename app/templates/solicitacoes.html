@@ -42,9 +42,7 @@
 
 <form id="formSolicitacao"
       data-mode="{{ modo | default('create') }}"
-      {% if modo == 'view' %}
-      data-solicitacao-id="{{ solicitacao.id }}"
-      {% endif %}>
+      data-solicitacao-id="{{ solicitacao.id if modo == 'view' else '' }}">
 
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
