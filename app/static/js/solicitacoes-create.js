@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // primeira linha
   addRow();
 
+  /* ===============================
+     SUBMIT FORM
+     =============================== */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -125,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const matricula = row.querySelector(".matricula");
     const transporte = row.querySelector(".transporte");
     const btnRemove = row.querySelector(".btn-danger");
+    const btnSign = row.querySelector(".btn-sign");
 
     matricula.addEventListener("blur",
       () => buscarFuncionario(row)
@@ -138,6 +142,45 @@ document.addEventListener("DOMContentLoaded", () => {
       row.remove();
       atualizarIndices();
     });
+
+    // 🔑 ASSINATURA - MODO CREATE
+    btnSign.addEventListener("click", () =>
+      confirmarAssinaturaFuncionario(row)
+    );
+  }
+
+  async function confirmarAssinaturaFuncionario(row) {
+    const matricula = row.querySelector(".matricula")?.value?.trim();
+    const password = row.querySelector(".signature-password")?.value?.trim();
+    const box = row.querySelector(".signature-box");
+    const btn = row.querySelector(".btn-sign");
+    const input = row.querySelector(".signature-password");
+
+    if (!matricula || !password) {
+      alert("Informe matrícula e senha");
+      return;
+    }
+
+    const res = await fetch("/api/auth/confirm-extra", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matricula, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      alert(data.error || "Senha inválida");
+      return;
+    }
+
+    // Feedback visual (como especificado)
+    box.textContent = data.username;
+    box.classList.remove("pending");
+    box.classList.add("signed");
+
+    input.remove();
+    btn.remove();
   }
 
   async function buscarFuncionario(row) {
