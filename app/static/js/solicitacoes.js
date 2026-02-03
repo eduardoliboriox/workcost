@@ -210,7 +210,12 @@ document.addEventListener("click", async e => {
   const row = e.target.closest("tr");
   const cell = e.target.closest("td");
 
-  const matricula = row.querySelector(".matricula").value.trim();
+  const matriculaInput = row.querySelector(".matricula");
+
+   const matricula =
+     matriculaInput.dataset.matricula ||
+     matriculaInput.value.trim();
+
   const passwordInput = cell.querySelector(".signature-password");
   const password = passwordInput.value.trim();
   const box = cell.querySelector(".signature-box");
@@ -220,8 +225,8 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const solicitacaoId = window.location.pathname.split("/").pop();
-
+  const solicitacaoId =
+  window.location.pathname.split("/").filter(Boolean).pop();
   const res = await fetch(
     `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
     {
