@@ -361,10 +361,13 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
+
 {% if modo == 'create' %}
-  <script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/solicitacoes-create.js') }}"></script>
 {% else %}
   <script src="{{ url_for('static', filename='js/solicitacoes-view.js') }}"></script>
 {% endif %}
 {% endblock %}
+
 
