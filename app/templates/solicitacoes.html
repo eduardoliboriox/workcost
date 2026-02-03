@@ -40,7 +40,12 @@
   </small>
 </div>
 
-<form id="formSolicitacao" data-mode="{{ modo | default('create') }}">
+<form id="formSolicitacao"
+      data-mode="{{ modo | default('create') }}"
+      {% if modo == 'view' %}
+      data-solicitacao-id="{{ solicitacao.id }}"
+      {% endif %}>
+
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
   {# =======================
