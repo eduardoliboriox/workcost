@@ -11,15 +11,8 @@ const formMode = form?.dataset.mode || "create";
    =============================== */
 if (formMode !== "create") {
   btnAddRow?.remove();
-
-  // Bloqueia APENAS submit real do formulário,
-  // sem interferir em botões internos (assinatura, aprovação etc.)
-  form?.addEventListener("submit", e => {
-    if (e.target === form) {
-      e.preventDefault();
-    }
-  });
 }
+
 
 /**
  * Horários padrão para DIA DE EXTRA
