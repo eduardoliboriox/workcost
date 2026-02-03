@@ -201,9 +201,9 @@ document.addEventListener("click", e => {
 });
 
 
-// ===============================
-// CONFIRMAÇÃO DE ASSINATURA EXTRA
-// ===============================
+/* ===============================
+   CONFIRMAÇÃO DE ASSINATURA EXTRA
+   =============================== */
 document.addEventListener("click", async e => {
   if (!e.target.classList.contains("btn-sign")) return;
 
@@ -212,9 +212,9 @@ document.addEventListener("click", async e => {
 
   const matriculaInput = row.querySelector(".matricula");
 
-   const matricula =
-     matriculaInput.dataset.matricula ||
-     matriculaInput.value.trim();
+  const matricula =
+    matriculaInput.dataset.matricula ||
+    matriculaInput.value.trim();
 
   const passwordInput = cell.querySelector(".signature-password");
   const password = passwordInput.value.trim();
@@ -225,8 +225,13 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const solicitacaoId =
-  window.location.pathname.split("/").filter(Boolean).pop();
+  const solicitacaoId = form?.dataset.solicitacaoId;
+
+  if (!solicitacaoId) {
+    alert("ID da solicitação não encontrado.");
+    return;
+  }
+
   const res = await fetch(
     `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
     {
@@ -243,7 +248,7 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  // UI FINAL (somente após persistir no banco)
+  // UI FINAL
   box.textContent = data.username;
   box.classList.remove("pending");
   box.classList.add("signed");
