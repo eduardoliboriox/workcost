@@ -1,29 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   const form = document.getElementById("formSolicitacao");
   const solicitacaoId = form?.dataset.solicitacaoId;
 
-  if (!solicitacaoId) return;
+  if (!form || !solicitacaoId) return;
 
-  // ===============================
-  // ASSINATURA DE FUNCIONÁRIO (VIEW)
-  // ===============================
   document.querySelectorAll(".btn-sign").forEach(button => {
-
     button.addEventListener("click", async () => {
-
       const row = button.closest("tr");
       const cell = button.closest("td");
 
       const matricula =
         row.querySelector(".matricula")?.dataset.matricula;
 
-      const passwordInput = cell.querySelector(".signature-password");
+      const passwordInput =
+        cell.querySelector(".signature-password");
+
       const password = passwordInput?.value?.trim();
       const box = cell.querySelector(".signature-box");
 
       if (!matricula || !password) {
-        alert("Informe matrícula e senha");
+        alert("Informe a senha");
         return;
       }
 
@@ -50,7 +46,5 @@ document.addEventListener("DOMContentLoaded", () => {
       passwordInput.remove();
       button.remove();
     });
-
   });
-
 });
