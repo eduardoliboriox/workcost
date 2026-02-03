@@ -207,24 +207,12 @@ document.addEventListener("click", e => {
 document.addEventListener("click", async e => {
   if (!e.target.classList.contains("btn-sign")) return;
 
-  // 🔒 Assinatura só é permitida em modo VIEW
-  if (formMode !== "view") {
-    alert("A assinatura só pode ser realizada após salvar a solicitação.");
-    return;
-  }
-
-  const solicitacaoId = form?.dataset.solicitacaoId;
-
-  if (!solicitacaoId) {
-    alert("Solicitação ainda não registrada.");
-    return;
-  }
-
   const row = e.target.closest("tr");
   const cell = e.target.closest("td");
 
   const matricula =
-    row.querySelector(".matricula")?.dataset.matricula;
+    row.querySelector(".matricula")?.dataset.matricula ||
+    row.querySelector(".matricula")?.value?.trim();
 
   const passwordInput = cell.querySelector(".signature-password");
   const password = passwordInput.value.trim();
@@ -232,6 +220,43 @@ document.addEventListener("click", async e => {
 
   if (!matricula || !password) {
     alert("Informe matrícula e senha");
+    return;
+  }
+
+  // ===============================
+  // CREATE → apenas valida usuário
+  // ===============================
+  if (formMode === "create") {
+    const res = await fetch("/api/auth/confirm-extra", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matricula, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      alert(data.error || "Senha inválida");
+      return;
+    }
+
+    // UI apenas visual (não persiste)
+    box.textContent = data.username;
+    box.classList.remove("pending");
+    box.classList.add("signed");
+
+    passwordInput.remove();
+    e.target.remove();
+    return;
+  }
+
+  // ===============================
+  // VIEW → assinatura oficial
+  // ===============================
+  const solicitacaoId = form?.dataset.solicitacaoId;
+
+  if (!solicitacaoId) {
+    alert("ID da solicitação não encontrado.");
     return;
   }
 
@@ -258,7 +283,6 @@ document.addEventListener("click", async e => {
   passwordInput.remove();
   e.target.remove();
 });
-
 
 
 // ===============================
