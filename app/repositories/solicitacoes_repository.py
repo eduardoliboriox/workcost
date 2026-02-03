@@ -2,7 +2,6 @@ from app.extensions import get_db
 from psycopg.rows import dict_row
 import json
 
-
 def inserir_solicitacao(dados: dict, funcionarios: list):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -67,16 +66,17 @@ def listar_solicitacoes_abertas():
                     s.data,
                     u.username AS solicitante,
                     s.atividades,
-                    COUNT(sa.id) FILTER (WHERE sa.signed_at IS NOT NULL) AS assinadas,
-                    COUNT(sa.id) AS total_aprovacoes
+                    COUNT(sf.id) FILTER (WHERE sf.signed_at IS NOT NULL) AS assinadas,
+                    COUNT(sf.id) AS total_funcionarios
                 FROM solicitacoes s
                 JOIN users u ON u.id = s.solicitante_user_id
-                LEFT JOIN solicitacao_aprovacoes sa
-                  ON sa.solicitacao_id = s.id
+                LEFT JOIN solicitacao_funcionarios sf
+                  ON sf.solicitacao_id = s.id
                 GROUP BY s.id, u.username
                 ORDER BY s.id DESC
             """)
             return cur.fetchall()
+
 
 def listar_aprovacoes_por_solicitacao():
     with get_db() as conn:
@@ -108,19 +108,21 @@ def buscar_solicitacao_por_id(solicitacao_id: int):
 
 
 def listar_funcionarios_por_solicitacao(solicitacao_id: int):
+    """
+    REGRA:
+    - funcionário só está confirmado se signed_at IS NOT NULL
+    - NÃO inferir confirmação via tabela users
+    """
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT
-                    sf.*,
-                    u.username AS signed_by
+                    sf.*
                 FROM solicitacao_funcionarios sf
-                LEFT JOIN users u
-                  ON ltrim(u.matricula, '0') = ltrim(sf.matricula, '0')
                 WHERE sf.solicitacao_id = %s
+                ORDER BY sf.id
             """, (solicitacao_id,))
             return cur.fetchall()
-
 
 
 def listar_aprovacoes_por_solicitacao_id(solicitacao_id: int):
@@ -138,11 +140,7 @@ def listar_aprovacoes_por_solicitacao_id(solicitacao_id: int):
             return cur.fetchall()
 
 
-def registrar_aprovacao(
-    solicitacao_id: int,
-    user_id: int,
-    role: str
-):
+def registrar_aprovacao(solicitacao_id: int, user_id: int, role: str):
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -160,6 +158,7 @@ def registrar_aprovacao(
             """, (solicitacao_id, user_id, role))
         conn.commit()
 
+
 def registrar_assinatura_funcionario(
     solicitacao_id: int,
     matricula: str,
@@ -175,4 +174,3 @@ def registrar_assinatura_funcionario(
                   AND ltrim(matricula, '0') = ltrim(%s, '0')
             """, (username, solicitacao_id, matricula))
         conn.commit()
-
