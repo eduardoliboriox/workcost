@@ -10,24 +10,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const funcionariosJson = document.getElementById("funcionariosJson");
   const turnoRadios = document.querySelectorAll(".turno-radio");
 
-  // Se não estiver na página correta, aborta
   if (!form || !btnAddRow || !tbody) return;
 
   /* ======================================================
      MATRÍCULA DO USUÁRIO LOGADO
-     Usada EXCLUSIVAMENTE no Fluxo de Aprovação (create)
+     (usada no Fluxo de Aprovação)
      ====================================================== */
 
   const loggedUserMatricula = form.dataset.userMatricula;
 
   if (!loggedUserMatricula) {
-    console.warn(
-      "⚠️ Matrícula do usuário logado não encontrada (data-user-matricula)"
-    );
+    console.warn("Matrícula do usuário logado não encontrada");
   }
 
   /* ======================================================
-     HORÁRIOS PADRÃO POR TURNO (DIA DE EXTRA)
+     HORÁRIOS PADRÃO POR TURNO
      ====================================================== */
 
   const EXTRA_SHIFT_TIMES = {
@@ -42,11 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
     radio.addEventListener("change", aplicarHorarioPorTurno)
   );
 
-  // Primeira linha sempre criada no modo create
   addRow();
 
   /* ======================================================
-     SUBMIT DO FORMULÁRIO (CRIAR SOLICITAÇÃO)
+     SUBMIT DO FORMULÁRIO
      ====================================================== */
 
   form.addEventListener("submit", async (e) => {
@@ -83,23 +79,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      FLUXO DE APROVAÇÃO — MODO CREATE
-     - Usa usuário LOGADO
-     - NÃO grava no banco
-     - Apenas valida senha
      ====================================================== */
 
   document.querySelectorAll(".btn-approve").forEach(button => {
     button.addEventListener("click", async () => {
       const container = button.closest(".approval-item");
+      const inputWrapper =
+        container.querySelector(".approval-input-wrapper");
       const passwordInput =
         container.querySelector(".approval-password");
-      const box =
-        container.querySelector(".approval-box");
 
-      // Evita dupla assinatura
-      if (box.classList.contains("signed")) return;
+      if (!passwordInput) return;
 
-      const password = passwordInput?.value?.trim();
+      const password = passwordInput.value.trim();
 
       if (!password) {
         alert("Informe a senha");
@@ -122,18 +114,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Feedback visual conforme regra de negócio
-      box.textContent = data.username;
-      box.classList.remove("pending");
-      box.classList.add("signed");
+      /* 🎯 AJUSTE CORRETO:
+         - mantém o título (approval-box)
+         - substitui APENAS o campo de senha
+      */
+      inputWrapper.innerHTML = `
+        <div class="approval-box signed">
+          ${data.username}
+        </div>
+      `;
 
-      passwordInput.remove();
       button.remove();
     });
   });
 
   /* ======================================================
-     MANIPULAÇÃO DAS LINHAS DE FUNCIONÁRIOS
+     FUNCIONÁRIOS
      ====================================================== */
 
   function addRow() {
@@ -189,16 +185,11 @@ document.addEventListener("DOMContentLoaded", () => {
         atualizarIndices();
       });
 
-    // Assinatura do FUNCIONÁRIO (create)
     row.querySelector(".btn-sign")
       .addEventListener("click", () =>
         confirmarAssinaturaFuncionario(row)
       );
   }
-
-  /* ======================================================
-     ASSINATURA DO FUNCIONÁRIO — MODO CREATE
-     ====================================================== */
 
   async function confirmarAssinaturaFuncionario(row) {
     const matricula =
@@ -237,14 +228,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.remove();
   }
 
-  /* ======================================================
-     AUTO-PREENCHIMENTO DO FUNCIONÁRIO
-     ====================================================== */
-
   async function buscarFuncionario(row) {
-    const matricula =
-      row.querySelector(".matricula").value.trim();
-
+    const matricula = row.querySelector(".matricula").value.trim();
     if (!matricula) return;
 
     const res = await fetch(`/api/employees/${matricula}`);
@@ -262,10 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
       row.querySelector(".endereco").value = "Veículo próprio";
     }
   }
-
-  /* ======================================================
-     TURNO → HORÁRIO AUTOMÁTICO
-     ====================================================== */
 
   function aplicarHorarioPorTurno() {
     const turnoSelecionado =
