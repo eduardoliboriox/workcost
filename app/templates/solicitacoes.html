@@ -222,27 +222,33 @@
             <td><input class="form-control" value="{{ f.inicio }}" disabled></td>
             <td><input class="form-control" value="{{ f.termino }}" disabled></td>
             <td><input class="form-control" value="{{ f.transporte }}" disabled></td>
-        
-            <td>
-              {% if f.signed_at %}
-                <div class="signature-box signed">
-                  {{ f.signed_by }}
-                </div>
+                    <td>
+              {% if modo == 'view' %}
+                {% if f.signed_at %}
+                  <div class="signature-box signed">
+                    {{ f.signed_by }}
+                  </div>
+                {% else %}
+                  <div class="signature-box pending mb-1">
+                    pendente
+                  </div>
+            
+                  <input type="password"
+                         class="form-control form-control-sm signature-password mb-1"
+                         placeholder="Senha">
+            
+                  <button type="button"
+                          class="btn btn-sm btn-outline-success btn-sign">
+                    Confirmar
+                  </button>
+                {% endif %}
               {% else %}
-                <div class="signature-box pending mb-1">
+                <div class="signature-box pending">
                   pendente
                 </div>
-        
-                <input type="password"
-                       class="form-control form-control-sm signature-password mb-1"
-                       placeholder="Senha">
-        
-                <button type="button"
-                        class="btn btn-sm btn-outline-success btn-sign">
-                  Confirmar
-                </button>
               {% endif %}
             </td>
+
         
             <td></td>
           </tr>
