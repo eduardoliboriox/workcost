@@ -4,16 +4,6 @@ const tbody = document.querySelector("#funcionariosTable tbody");
 const funcionariosJson = document.getElementById("funcionariosJson");
 const turnoRadios = document.querySelectorAll(".turno-radio");
 
-const formMode = form?.dataset.mode || "create";
-
-/* ===============================
-   BLOQUEIOS DO MODO VIEW
-   =============================== */
-if (formMode !== "create") {
-  btnAddRow?.remove();
-}
-
-
 /**
  * Horários padrão para DIA DE EXTRA
  */
@@ -24,53 +14,51 @@ const EXTRA_SHIFT_TIMES = {
 };
 
 /* ===============================
-   SOMENTE CREATE MODE
+   CREATE MODE (EXCLUSIVO)
    =============================== */
-if (formMode === "create") {
 
-  btnAddRow.addEventListener("click", addRow);
+btnAddRow.addEventListener("click", addRow);
 
-  turnoRadios.forEach(radio =>
-    radio.addEventListener("change", aplicarHorarioPorTurno)
-  );
+turnoRadios.forEach(radio =>
+  radio.addEventListener("change", aplicarHorarioPorTurno)
+);
 
-  // primeira linha
-  addRow();
+// primeira linha
+addRow();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const rows = [...tbody.querySelectorAll("tr")];
+  const rows = [...tbody.querySelectorAll("tr")];
 
-    const funcionarios = rows.map(r => ({
-      matricula: r.querySelector(".matricula").value,
-      nome: r.querySelector(".nome").value,
-      endereco: r.querySelector(".endereco").value,
-      telefone: r.querySelector(".telefone").value,
-      inicio: r.querySelector(".inicio").value,
-      termino: r.querySelector(".termino").value,
-      transporte: r.querySelector(".transporte").value
-    }));
+  const funcionarios = rows.map(r => ({
+    matricula: r.querySelector(".matricula").value,
+    nome: r.querySelector(".nome").value,
+    endereco: r.querySelector(".endereco").value,
+    telefone: r.querySelector(".telefone").value,
+    inicio: r.querySelector(".inicio").value,
+    termino: r.querySelector(".termino").value,
+    transporte: r.querySelector(".transporte").value
+  }));
 
-    funcionariosJson.value = JSON.stringify(funcionarios);
+  funcionariosJson.value = JSON.stringify(funcionarios);
 
-    const formData = new FormData(form);
+  const formData = new FormData(form);
 
-    const res = await fetch("/api/solicitacoes", {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      alert("Erro ao registrar solicitação");
-      return;
-    }
-
-    window.location.href = "/solicitacoes/abertas";
+  const res = await fetch("/api/solicitacoes", {
+    method: "POST",
+    body: formData
   });
-}
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert("Erro ao registrar solicitação");
+    return;
+  }
+
+  window.location.href = "/solicitacoes/abertas";
+});
 
 /* ===============================
    FUNÇÕES
@@ -170,6 +158,7 @@ function atualizarIndices() {
 /* ===============================
    MULTISELECT SETORES (MANTIDO)
    =============================== */
+
 const multiselect = document.getElementById("setoresSelect");
 const display = document.getElementById("setoresDisplay");
 const checkboxes = multiselect?.querySelectorAll("input[type='checkbox']") || [];
@@ -198,123 +187,4 @@ document.addEventListener("click", e => {
   if (multiselect && !multiselect.contains(e.target)) {
     multiselect.classList.remove("open");
   }
-});
-
-
-/* ===============================
-   CONFIRMAÇÃO DE ASSINATURA EXTRA
-   =============================== */
-document.addEventListener("click", async e => {
-  if (!e.target.classList.contains("btn-sign")) return;
-
-  const row = e.target.closest("tr");
-  const cell = e.target.closest("td");
-
-  const matricula =
-    row.querySelector(".matricula")?.dataset.matricula ||
-    row.querySelector(".matricula")?.value?.trim();
-
-  const passwordInput = cell.querySelector(".signature-password");
-  const password = passwordInput.value.trim();
-  const box = cell.querySelector(".signature-box");
-
-  if (!matricula || !password) {
-    alert("Informe matrícula e senha");
-    return;
-  }
-
-  // ===============================
-  // CREATE → apenas valida usuário
-  // ===============================
-  if (formMode === "create") {
-    const res = await fetch("/api/auth/confirm-extra", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matricula, password })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      alert(data.error || "Senha inválida");
-      return;
-    }
-
-    // UI apenas visual (não persiste)
-    box.textContent = data.username;
-    box.classList.remove("pending");
-    box.classList.add("signed");
-
-    passwordInput.remove();
-    e.target.remove();
-    return;
-  }
-
-  // ===============================
-  // VIEW → assinatura oficial
-  // ===============================
-  const solicitacaoId =
-  form?.dataset.solicitacaoId ||
-  document.querySelector("[data-solicitacao-id]")?.dataset.solicitacaoId;
-
-  if (!solicitacaoId) {
-    alert("ID da solicitação não encontrado.");
-    return;
-  }
-
-  const res = await fetch(
-    `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matricula, password })
-    }
-  );
-
-  const data = await res.json();
-
-  if (!res.ok || !data.success) {
-    alert(data.error || "Senha inválida");
-    return;
-  }
-
-  box.textContent = data.username;
-  box.classList.remove("pending");
-  box.classList.add("signed");
-
-  passwordInput.remove();
-  e.target.remove();
-});
-
-
-// ===============================
-// CONFIRMAÇÃO DE APROVAÇÃO (UI)
-// ===============================
-document.addEventListener("click", async e => {
-  if (!e.target.classList.contains("btn-approve")) return;
-
-  const container = e.target.closest(".approval-item");
-  const passwordInput = container.querySelector(".approval-password");
-  const inputWrapper = container.querySelector(".approval-input-wrapper");
-  const button = e.target;
-
-  const password = passwordInput.value.trim();
-
-  if (!password) {
-    alert("Informe a senha");
-    return;
-  }
-
-  const username = "eduardo.liborio"; // mock visual
-
-  // Criar badge visual IGUAL ao de funcionários
-  const badge = document.createElement("div");
-  badge.className = "approval-box signed mb-1";
-  badge.textContent = username;
-
-  // Substituir input pelo badge
-  inputWrapper.replaceWith(badge);
-
-  // Remover botão
-  button.remove();
 });
