@@ -43,6 +43,7 @@
 <form id="formSolicitacao"
       data-mode="{{ modo | default('create') }}"
       data-solicitacao-id="{{ solicitacao.id if modo == 'view' else '' }}"
+      data-user-matricula="{{ current_user.matricula }}"
       {% if modo == 'view' %}novalidate{% endif %}>
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 

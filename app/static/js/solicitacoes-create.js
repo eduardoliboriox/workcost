@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnAddRow || !tbody) return;
 
+  const loggedUserMatricula = form.dataset.userMatricula;
+
+  if (!loggedUserMatricula) {
+    console.warn(
+      "⚠️ Matrícula do usuário logado não encontrada (data-user-matricula)"
+    );
+  }
+
   const EXTRA_SHIFT_TIMES = {
     "1T": { start: "07:00", end: "16:00" },
     "2T": { start: "16:00", end: "01:00" },
@@ -56,6 +64,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.location.href = "/solicitacoes/abertas";
   });
+
+  /* ===============================
+     ASSINATURA – FLUXO DE APROVAÇÃO
+     (MODO CREATE)
+     =============================== */
+
+  document.querySelectorAll(".btn-approve").forEach(button => {
+    button.addEventListener("click", async () => {
+      const container = button.closest(".approval-item");
+      const passwordInput =
+        container.querySelector(".approval-password");
+      const box = container.querySelector(".approval-box");
+
+      const password = passwordInput?.value?.trim();
+
+      if (!password) {
+        alert("Informe a senha");
+        return;
+      }
+
+      const res = await fetch("/api/auth/confirm-extra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matricula: loggedUserMatricula,
+          password
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        alert(data.error || "Senha inválida");
+        return;
+      }
+
+      // Feedback visual
+      box.textContent = data.username;
+      box.classList.remove("pending");
+      box.classList.add("signed");
+
+      passwordInput.remove();
+      button.remove();
+    });
+  });  
 
   /* ===============================
      ROW HANDLING
