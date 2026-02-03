@@ -192,6 +192,5 @@ document.addEventListener("DOMContentLoaded", () => {
       tr.children[0].textContent = i + 1;
     });
   }
-  
 
 });
