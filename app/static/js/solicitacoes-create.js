@@ -8,9 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnAddRow || !tbody) return;
 
-  /**
-   * Horários padrão para DIA DE EXTRA
-   */
   const EXTRA_SHIFT_TIMES = {
     "1T": { start: "07:00", end: "16:00" },
     "2T": { start: "16:00", end: "01:00" },
@@ -23,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     radio.addEventListener("change", aplicarHorarioPorTurno)
   );
 
-  // primeira linha
   addRow();
 
   /* ===============================
@@ -46,11 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     funcionariosJson.value = JSON.stringify(funcionarios);
 
-    const formData = new FormData(form);
-
     const res = await fetch("/api/solicitacoes", {
       method: "POST",
-      body: formData
+      body: new FormData(form)
     });
 
     const data = await res.json();
@@ -64,25 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===============================
-     FUNÇÕES
+     ROW HANDLING
      =============================== */
-
-  function aplicarHorarioPorTurno() {
-    const turnoSelecionado =
-      document.querySelector(".turno-radio:checked");
-
-    if (!turnoSelecionado) return;
-
-    const horarios =
-      EXTRA_SHIFT_TIMES[turnoSelecionado.value];
-
-    if (!horarios) return;
-
-    [...tbody.querySelectorAll("tr")].forEach(row => {
-      row.querySelector(".inicio").value = horarios.start;
-      row.querySelector(".termino").value = horarios.end;
-    });
-  }
 
   function addRow() {
     const row = document.createElement("tr");
@@ -113,8 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
       </td>
       <td>
-        <button type="button"
-                class="btn btn-sm btn-danger">X</button>
+        <button type="button" class="btn btn-sm btn-danger">X</button>
       </td>
     `;
 
@@ -125,28 +101,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function bindRow(row) {
-    const matricula = row.querySelector(".matricula");
-    const transporte = row.querySelector(".transporte");
-    const btnRemove = row.querySelector(".btn-danger");
-    const btnSign = row.querySelector(".btn-sign");
+    row.querySelector(".matricula")
+      .addEventListener("blur", () => buscarFuncionario(row));
 
-    matricula.addEventListener("blur",
-      () => buscarFuncionario(row)
-    );
+    row.querySelector(".transporte")
+      .addEventListener("change", () => aplicarTransporte(row));
 
-    transporte.addEventListener("change",
-      () => aplicarTransporte(row)
-    );
+    row.querySelector(".btn-danger")
+      .addEventListener("click", () => {
+        row.remove();
+        atualizarIndices();
+      });
 
-    btnRemove.addEventListener("click", () => {
-      row.remove();
-      atualizarIndices();
-    });
-
-    // 🔑 ASSINATURA - MODO CREATE
-    btnSign.addEventListener("click", () =>
-      confirmarAssinaturaFuncionario(row)
-    );
+    // 🔑 ASSINATURA — CREATE MODE
+    row.querySelector(".btn-sign")
+      .addEventListener("click", () => confirmarAssinaturaFuncionario(row));
   }
 
   async function confirmarAssinaturaFuncionario(row) {
@@ -174,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Feedback visual (como especificado)
+    // 🎯 FEEDBACK VISUAL EXATO COMO ESPECIFICADO
     box.textContent = data.username;
     box.classList.remove("pending");
     box.classList.add("signed");
@@ -184,9 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function buscarFuncionario(row) {
-    const matricula =
-      row.querySelector(".matricula").value.trim();
-
+    const matricula = row.querySelector(".matricula").value.trim();
     if (!matricula) return;
 
     const res = await fetch(`/api/employees/${matricula}`);
@@ -203,6 +170,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (row.querySelector(".transporte").value === "VEICULO") {
       row.querySelector(".endereco").value = "Veículo próprio";
     }
+  }
+
+  function aplicarHorarioPorTurno() {
+    const turnoSelecionado =
+      document.querySelector(".turno-radio:checked");
+
+    if (!turnoSelecionado) return;
+
+    const horarios = EXTRA_SHIFT_TIMES[turnoSelecionado.value];
+    if (!horarios) return;
+
+    [...tbody.querySelectorAll("tr")].forEach(row => {
+      row.querySelector(".inicio").value = horarios.start;
+      row.querySelector(".termino").value = horarios.end;
+    });
   }
 
   function atualizarIndices() {
