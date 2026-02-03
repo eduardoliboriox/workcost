@@ -14,6 +14,7 @@ from flask_login import current_user
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
+
 def criar_solicitacao(form):
 
     try:
@@ -58,6 +59,9 @@ def obter_solicitacoes_abertas():
                 else None
             )
 
+        total_funcionarios = r["total_funcionarios"]
+        assinadas = r["assinadas"]
+
         resultado.append({
             "id": r["id"],
             "data": r["data"],
@@ -65,14 +69,13 @@ def obter_solicitacoes_abertas():
             "descricao": r["atividades"],
             "status_solicitacao": (
                 "Confirmado"
-                if r["assinadas"] == r["total_aprovacoes"] and r["total_aprovacoes"] > 0
+                if total_funcionarios > 0 and assinadas == total_funcionarios
                 else "Pendente"
             ),
             "aprovacoes": status_roles
         })
 
     return resultado
-
 
 
 def obter_detalhe_solicitacao(solicitacao_id: int):
@@ -89,13 +92,13 @@ def obter_detalhe_solicitacao(solicitacao_id: int):
         "aprovacoes": aprov_map
     }
 
+
 def aprovar_solicitacao(solicitacao_id: int, role: str):
     registrar_aprovacao(
         solicitacao_id=solicitacao_id,
         user_id=current_user.id,
         role=role
     )
-
 
 
 def confirmar_presenca_funcionario(
@@ -120,4 +123,3 @@ def confirmar_presenca_funcionario(
         "success": True,
         "username": result["username"]
     }
-
