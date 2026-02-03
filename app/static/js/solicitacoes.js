@@ -21,7 +21,6 @@ if (formMode !== "create") {
   });
 }
 
-
 /**
  * Horários padrão para DIA DE EXTRA
  */
@@ -261,7 +260,9 @@ document.addEventListener("click", async e => {
   // ===============================
   // VIEW → assinatura oficial
   // ===============================
-  const solicitacaoId = form?.dataset.solicitacaoId;
+  const solicitacaoId =
+  form?.dataset.solicitacaoId ||
+  document.querySelector("[data-solicitacao-id]")?.dataset.solicitacaoId;
 
   if (!solicitacaoId) {
     alert("ID da solicitação não encontrado.");
