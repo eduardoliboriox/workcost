@@ -36,12 +36,24 @@
 <div class="card shadow-sm p-4">
 
   <div class="d-flex justify-content-between mb-3">
-    <input class="form-control w-25" placeholder="Pesquisar...">
+    <input
+      id="filterSearch"
+      class="form-control w-25"
+      placeholder="Pesquisar...">
+  
     <div class="d-flex gap-2">
-      <input type="date" class="form-control">
-      <input type="date" class="form-control">
+      <input
+        type="date"
+        id="filterStartDate"
+        class="form-control">
+  
+      <input
+        type="date"
+        id="filterEndDate"
+        class="form-control">
     </div>
   </div>
+
 
   <table class="table table-bordered align-middle text-center">
     <thead>
