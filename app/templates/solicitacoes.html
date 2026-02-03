@@ -208,9 +208,10 @@
           <tr>
             <td>{{ loop.index }}</td>
             <td>
-              <input class="form-control matricula"
-                     value="{{ f.matricula }}"
-                     disabled>
+            <input class="form-control matricula"
+                   value="{{ f.matricula }}"
+                   data-matricula="{{ f.matricula }}"
+                   disabled>
             </td>
             <td><input class="form-control" value="{{ f.nome }}" disabled></td>
             <td><input class="form-control" value="{{ f.endereco }}" disabled></td>
