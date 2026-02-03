@@ -207,7 +207,11 @@
           {% for f in funcionarios %}
           <tr>
             <td>{{ loop.index }}</td>
-            <td><input class="form-control" value="{{ f.matricula }}" disabled></td>
+            <td>
+              <input class="form-control matricula"
+                     value="{{ f.matricula }}"
+                     disabled>
+            </td>
             <td><input class="form-control" value="{{ f.nome }}" disabled></td>
             <td><input class="form-control" value="{{ f.endereco }}" disabled></td>
             <td><input class="form-control" value="{{ f.telefone }}" disabled></td>
