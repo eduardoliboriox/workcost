@@ -207,14 +207,24 @@ document.addEventListener("click", e => {
 document.addEventListener("click", async e => {
   if (!e.target.classList.contains("btn-sign")) return;
 
+  // 🔒 Assinatura só é permitida em modo VIEW
+  if (formMode !== "view") {
+    alert("A assinatura só pode ser realizada após salvar a solicitação.");
+    return;
+  }
+
+  const solicitacaoId = form?.dataset.solicitacaoId;
+
+  if (!solicitacaoId) {
+    alert("Solicitação ainda não registrada.");
+    return;
+  }
+
   const row = e.target.closest("tr");
   const cell = e.target.closest("td");
 
-  const matriculaInput = row.querySelector(".matricula");
-
   const matricula =
-    matriculaInput.dataset.matricula ||
-    matriculaInput.value.trim();
+    row.querySelector(".matricula")?.dataset.matricula;
 
   const passwordInput = cell.querySelector(".signature-password");
   const password = passwordInput.value.trim();
@@ -222,13 +232,6 @@ document.addEventListener("click", async e => {
 
   if (!matricula || !password) {
     alert("Informe matrícula e senha");
-    return;
-  }
-
-  const solicitacaoId = form?.dataset.solicitacaoId;
-
-  if (!solicitacaoId) {
-    alert("ID da solicitação não encontrado.");
     return;
   }
 
@@ -248,7 +251,6 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  // UI FINAL
   box.textContent = data.username;
   box.classList.remove("pending");
   box.classList.add("signed");
@@ -256,6 +258,7 @@ document.addEventListener("click", async e => {
   passwordInput.remove();
   e.target.remove();
 });
+
 
 
 // ===============================
