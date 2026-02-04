@@ -5,6 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!form || !solicitacaoId) return;
 
   /* ======================================================
+     HELPERS
+     ====================================================== */
+  async function parseJsonSafe(response) {
+    const text = await response.text();
+    if (!text) return null;
+    try {
+      return JSON.parse(text);
+    } catch {
+      return null;
+    }
+  }
+
+  /* ======================================================
      ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
      ====================================================== */
   document.addEventListener("click", async (event) => {
@@ -20,9 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    // ✅ FIX DEFINITIVO:
-    // - não confiar em dataset de input disabled
-    // - fallback seguro para value
     const matricula =
       matriculaInput?.dataset?.matricula ||
       matriculaInput?.value?.trim();
@@ -48,10 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
 
-      const data = await res.json();
+      const data = await parseJsonSafe(res);
 
-      if (!res.ok || !data.success) {
-        alert(data.error || "Senha inválida");
+      if (!res.ok || !data || !data.success) {
+        alert(data?.error || "Senha inválida");
         return;
       }
 
@@ -101,10 +111,10 @@ document.addEventListener("DOMContentLoaded", () => {
           })
         });
 
-        const authData = await resAuth.json();
+        const authData = await parseJsonSafe(resAuth);
 
-        if (!resAuth.ok || !authData.success) {
-          alert(authData.error || "Senha inválida");
+        if (!resAuth.ok || !authData?.success) {
+          alert(authData?.error || "Senha inválida");
           return;
         }
 
