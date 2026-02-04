@@ -4,132 +4,119 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !solicitacaoId) return;
 
-  async function parseJsonSafe(response) {
-    const text = await response.text();
-    if (!text) return null;
-    try {
-      return JSON.parse(text);
-    } catch {
-      return null;
-    }
-  }
+  const pendingApprovals = [];
+  const pendingEmployees = [];
 
-  /* ======================================================
-     ASSINATURA DE FUNCIONÁRIO — VIEW
-     ====================================================== */
-  document.addEventListener("click", async (event) => {
-    const button = event.target.closest(".btn-sign");
-    if (!button) return;
-
-    event.preventDefault();
-
-    const row = button.closest("tr");
-    if (!row) return;
-
-    const matriculaInput = row.querySelector(".matricula");
-    const passwordInput = row.querySelector(".signature-password");
-    const box = row.querySelector(".signature-box");
-
-    const matricula =
-      String(matriculaInput?.dataset?.matricula || "").trim();
-    const password = passwordInput?.value?.trim();
-
-    if (!matricula || !password) {
-      alert("Informe a senha do funcionário");
-      return;
-    }
-
-    try {
-      const res = await fetch(
-        `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
-        {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ matricula, password })
-        }
-      );
-
-      const data = await parseJsonSafe(res);
-
-      if (!res.ok || !data?.success) {
-        alert(data?.error || "Senha inválida");
-        return;
-      }
-
-      box.textContent = data.username;
-      box.classList.remove("pending");
-      box.classList.add("signed");
-
-      passwordInput.remove();
-      button.remove();
-
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao confirmar assinatura");
-    }
-  });
-
-  /* ======================================================
-     FLUXO DE APROVAÇÃO — VIEW
-     ====================================================== */
+  /* ============================
+     APROVAÇÃO (VIEW)
+     ============================ */
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
     if (!btn) return;
 
     btn.addEventListener("click", async () => {
-      const role = item.dataset.role;
+      const role = item.dataset.role?.toLowerCase();
       const passwordInput = item.querySelector(".approval-password");
       const password = passwordInput?.value?.trim();
 
-      if (!role || !password) {
+      if (!password || !role) {
         alert("Informe a senha");
         return;
       }
 
-      try {
-        const authRes = await fetch("/api/auth/confirm-extra", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            matricula: form.dataset.userMatricula,
-            password
-          })
-        });
+      const res = await fetch("/api/auth/confirm-extra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matricula: form.dataset.userMatricula,
+          password
+        })
+      });
 
-        const authData = await parseJsonSafe(authRes);
-
-        if (!authRes.ok || !authData?.success) {
-          alert(authData?.error || "Senha inválida");
-          return;
-        }
-
-        const res = await fetch(
-          `/api/solicitacoes/${solicitacaoId}/aprovar`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role })
-          }
-        );
-
-        if (!res.ok) {
-          alert("Erro ao registrar aprovação");
-          return;
-        }
-
-        item.querySelector(".approval-input-wrapper").innerHTML = `
-          <div class="approval-box signed">
-            ${authData.username}
-          </div>
-        `;
-
-        btn.remove();
-
-      } catch (err) {
-        console.error(err);
-        alert("Erro no fluxo de aprovação");
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(data.error || "Senha inválida");
+        return;
       }
+
+      pendingApprovals.push({
+        role,
+        user_id: form.dataset.userId
+      });
+
+      item.querySelector(".approval-input-wrapper").innerHTML = `
+        <div class="approval-box signed">${data.username}</div>
+      `;
+      btn.remove();
     });
+  });
+
+  /* ============================
+     FUNCIONÁRIOS (VIEW)
+     ============================ */
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".btn-sign");
+    if (!btn) return;
+
+    const row = btn.closest("tr");
+    const matricula = row.querySelector(".matricula")?.dataset?.matricula;
+    const password =
+      row.querySelector(".signature-password")?.value?.trim();
+
+    if (!matricula || !password) return;
+
+    const res = await fetch(
+      `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matricula, password })
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      alert(data.error || "Senha inválida");
+      return;
+    }
+
+    pendingEmployees.push({
+      matricula,
+      username: data.username
+    });
+
+    row.querySelector(".signature-box").classList.replace(
+      "pending", "signed"
+    );
+    row.querySelector(".signature-box").textContent = data.username;
+
+    row.querySelector(".signature-password").remove();
+    btn.remove();
+  });
+
+  /* ============================
+     SALVAR VIEW
+     ============================ */
+  document.getElementById("btnSaveView")
+    ?.addEventListener("click", async () => {
+
+    const res = await fetch(
+      `/api/solicitacoes/${solicitacaoId}/salvar-view`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          aprovacoes: pendingApprovals,
+          funcionarios: pendingEmployees
+        })
+      }
+    );
+
+    if (!res.ok) {
+      alert("Erro ao salvar");
+      return;
+    }
+
+    location.reload();
   });
 });
