@@ -110,15 +110,25 @@
 }
 
 /* ===============================
-   Approval Flow - Alignment Fix
+   Approval Flow - Spacing Fix
    =============================== */
 
+/* Container do fluxo */
+.approval-flow {
+  display: flex;
+  justify-content: center;
+  gap: 32px; 
+}
+
+/* Cada assinatura */
 .approval-item {
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Input centralizado */
 .approval-input-wrapper {
   width: 140px;
   display: flex;
