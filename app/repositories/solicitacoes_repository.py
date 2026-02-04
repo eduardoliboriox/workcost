@@ -2,6 +2,10 @@ from app.extensions import get_db
 from psycopg.rows import dict_row
 import json 
 
+from app.extensions import get_db
+from psycopg.rows import dict_row
+import json
+
 def inserir_solicitacao(dados: dict, funcionarios: list):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -40,11 +44,9 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                         telefone,
                         inicio,
                         termino,
-                        transporte,
-                        signed_at,
-                        signed_by
+                        transporte
                     )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     solicitacao_id,
                     f["matricula"],
@@ -53,9 +55,7 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                     f["telefone"],
                     f["inicio"],
                     f["termino"],
-                    f["transporte"],
-                    "now()" if f.get("signed") else None,
-                    f.get("signed_by")
+                    f["transporte"]
                 ))
 
         conn.commit()
