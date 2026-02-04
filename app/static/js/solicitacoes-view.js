@@ -20,7 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    const matricula = matriculaInput?.dataset?.matricula;
+    // ✅ FIX DEFINITIVO:
+    // - não confiar em dataset de input disabled
+    // - fallback seguro para value
+    const matricula =
+      matriculaInput?.dataset?.matricula ||
+      matriculaInput?.value?.trim();
+
     const password = passwordInput?.value?.trim();
 
     if (!matricula || !password) {
@@ -42,12 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
 
-      const contentType = res.headers.get("content-type") || "";
-
-      if (!contentType.includes("application/json")) {
-        throw new Error("Resposta não é JSON (sessão expirada ou redirect)");
-      }
-
       const data = await res.json();
 
       if (!res.ok || !data.success) {
@@ -64,10 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       console.error("Erro ao confirmar assinatura:", err);
-      alert(
-        "Não foi possível confirmar a assinatura.\n" +
-        "Verifique se sua sessão ainda está ativa."
-      );
+      alert("Erro ao confirmar assinatura");
     }
   });
 
@@ -104,12 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
           })
         });
 
-        const authType = resAuth.headers.get("content-type") || "";
-
-        if (!authType.includes("application/json")) {
-          throw new Error("Resposta não JSON na autenticação");
-        }
-
         const authData = await resAuth.json();
 
         if (!resAuth.ok || !authData.success) {
@@ -145,10 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       } catch (err) {
         console.error("Erro no fluxo de aprovação:", err);
-        alert(
-          "Não foi possível registrar a aprovação.\n" +
-          "Verifique sua sessão."
-        );
+        alert("Erro no fluxo de aprovação");
       }
     });
   });
