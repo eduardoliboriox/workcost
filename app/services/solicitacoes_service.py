@@ -123,3 +123,29 @@ def confirmar_presenca_funcionario(
         "success": True,
         "username": result["username"]
     }
+
+
+def salvar_view_solicitacao(
+    solicitacao_id: int,
+    aprovacoes: list,
+    funcionarios: list
+):
+    """
+    Commit explícito do modo VIEW.
+    Nada aqui valida senha.
+    Apenas persiste o que já foi confirmado no frontend.
+    """
+
+    for a in aprovacoes:
+        registrar_aprovacao(
+            solicitacao_id=solicitacao_id,
+            user_id=a["user_id"],
+            role=a["role"]
+        )
+
+    for f in funcionarios:
+        registrar_assinatura_funcionario(
+            solicitacao_id=solicitacao_id,
+            matricula=f["matricula"],
+            username=f["username"]
+        )
