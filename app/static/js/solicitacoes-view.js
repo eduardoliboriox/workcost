@@ -33,9 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    const matricula =
-      matriculaInput?.dataset?.matricula ||
-      matriculaInput?.value?.trim();
+    // ✅ FIX DEFINITIVO:
+    // - ignorar dataset
+    // - ignorar estado disabled
+    // - usar SOMENTE value
+    const matricula = String(
+      matriculaInput?.value || ""
+    ).trim();
 
     const password = passwordInput?.value?.trim();
 
@@ -60,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await parseJsonSafe(res);
 
-      if (!res.ok || !data || !data.success) {
+      if (!res.ok || !data?.success) {
         alert(data?.error || "Senha inválida");
         return;
       }
