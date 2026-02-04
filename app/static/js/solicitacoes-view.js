@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
         {
           method: "POST",
+          credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -40,6 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ matricula, password })
         }
       );
+
+      const contentType = res.headers.get("content-type") || "";
+
+      if (!contentType.includes("application/json")) {
+        throw new Error("Resposta não é JSON (sessão expirada ou redirect)");
+      }
 
       const data = await res.json();
 
@@ -57,7 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       console.error("Erro ao confirmar assinatura:", err);
-      alert("Erro ao confirmar assinatura");
+      alert(
+        "Não foi possível confirmar a assinatura.\n" +
+        "Verifique se sua sessão ainda está ativa."
+      );
     }
   });
 
@@ -72,9 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
 
       const role = item.dataset.role?.toLowerCase();
-      const passwordInput =
-        item.querySelector(".approval-password");
-
+      const passwordInput = item.querySelector(".approval-password");
       const password = passwordInput?.value?.trim();
 
       if (!password || !role) {
@@ -85,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const resAuth = await fetch("/api/auth/confirm-extra", {
           method: "POST",
+          credentials: "same-origin",
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -94,6 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
             password
           })
         });
+
+        const authType = resAuth.headers.get("content-type") || "";
+
+        if (!authType.includes("application/json")) {
+          throw new Error("Resposta não JSON na autenticação");
+        }
 
         const authData = await resAuth.json();
 
@@ -106,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
           `/api/solicitacoes/${solicitacaoId}/aprovar`,
           {
             method: "POST",
+            credentials: "same-origin",
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json"
@@ -129,7 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       } catch (err) {
         console.error("Erro no fluxo de aprovação:", err);
-        alert("Erro no fluxo de aprovação");
+        alert(
+          "Não foi possível registrar a aprovação.\n" +
+          "Verifique sua sessão."
+        );
       }
     });
   });
