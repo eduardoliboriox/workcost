@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !solicitacaoId) return;
 
+  /* ======================================================
+     ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
+     ====================================================== */
   document.querySelectorAll(".btn-sign").forEach(button => {
     button.addEventListener("click", async () => {
       const row = button.closest("tr");
@@ -45,6 +48,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
       passwordInput.remove();
       button.remove();
+    });
+  });
+
+  /* ======================================================
+     FLUXO DE APROVAÇÃO (MODO VIEW)
+     ====================================================== */
+  document.querySelectorAll(".approval-item").forEach(item => {
+    const btn = item.querySelector(".btn-approve");
+    if (!btn) return;
+
+    btn.addEventListener("click", async () => {
+      const role = item.dataset.role?.toLowerCase();
+      const passwordInput =
+        item.querySelector(".approval-password");
+
+      const password = passwordInput?.value?.trim();
+
+      if (!password || !role) {
+        alert("Senha obrigatória");
+        return;
+      }
+
+      const resAuth = await fetch("/api/auth/confirm-extra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matricula: form.dataset.userMatricula,
+          password
+        })
+      });
+
+      const authData = await resAuth.json();
+
+      if (!resAuth.ok || !authData.success) {
+        alert(authData.error || "Senha inválida");
+        return;
+      }
+
+      const res = await fetch(
+        `/api/solicitacoes/${solicitacaoId}/aprovar`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role })
+        }
+      );
+
+      if (!res.ok) {
+        alert("Erro ao registrar aprovação");
+        return;
+      }
+
+      item.querySelector(".approval-input-wrapper").innerHTML = `
+        <div class="approval-box signed">
+          ${authData.username}
+        </div>
+      `;
+
+      btn.remove();
     });
   });
 });
