@@ -4,9 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !solicitacaoId) return;
 
-  /* ======================================================
-     HELPERS
-     ====================================================== */
   async function parseJsonSafe(response) {
     const text = await response.text();
     if (!text) return null;
@@ -18,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ======================================================
-     ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
+     ASSINATURA DE FUNCIONÁRIO — VIEW
      ====================================================== */
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".btn-sign");
@@ -33,12 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    // ✅ REGRA CORRETA NO VIEW:
-    // matrícula vem do data-matricula, não do value
-    const matricula = String(
-      matriculaInput?.dataset?.matricula || ""
-    ).trim();
-
+    const matricula =
+      String(matriculaInput?.dataset?.matricula || "").trim();
     const password = passwordInput?.value?.trim();
 
     if (!matricula || !password) {
@@ -52,10 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           method: "POST",
           credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ matricula, password })
         }
       );
@@ -75,47 +65,41 @@ document.addEventListener("DOMContentLoaded", () => {
       button.remove();
 
     } catch (err) {
-      console.error("Erro ao confirmar assinatura:", err);
+      console.error(err);
       alert("Erro ao confirmar assinatura");
     }
   });
 
   /* ======================================================
-     FLUXO DE APROVAÇÃO (MODO VIEW)
+     FLUXO DE APROVAÇÃO — VIEW
      ====================================================== */
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
     if (!btn) return;
 
-    btn.addEventListener("click", async (event) => {
-      event.preventDefault();
-
-      const role = item.dataset.role?.toLowerCase();
+    btn.addEventListener("click", async () => {
+      const role = item.dataset.role;
       const passwordInput = item.querySelector(".approval-password");
       const password = passwordInput?.value?.trim();
 
-      if (!password || !role) {
+      if (!role || !password) {
         alert("Informe a senha");
         return;
       }
 
       try {
-        const resAuth = await fetch("/api/auth/confirm-extra", {
+        const authRes = await fetch("/api/auth/confirm-extra", {
           method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             matricula: form.dataset.userMatricula,
             password
           })
         });
 
-        const authData = await parseJsonSafe(resAuth);
+        const authData = await parseJsonSafe(authRes);
 
-        if (!resAuth.ok || !authData?.success) {
+        if (!authRes.ok || !authData?.success) {
           alert(authData?.error || "Senha inválida");
           return;
         }
@@ -124,11 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
           `/api/solicitacoes/${solicitacaoId}/aprovar`,
           {
             method: "POST",
-            credentials: "same-origin",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role })
           }
         );
@@ -147,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.remove();
 
       } catch (err) {
-        console.error("Erro no fluxo de aprovação:", err);
+        console.error(err);
         alert("Erro no fluxo de aprovação");
       }
     });
