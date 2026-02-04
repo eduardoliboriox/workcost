@@ -273,3 +273,22 @@ def api_confirmar_presenca_funcionario(solicitacao_id):
 
     return jsonify(result), (200 if result["success"] else 401)
 
+
+@bp.route(
+    "/solicitacoes/<int:solicitacao_id>/salvar-view",
+    methods=["POST"]
+)
+def api_salvar_view_solicitacao(solicitacao_id):
+    data = request.get_json() or {}
+
+    from app.services.solicitacoes_service import (
+        salvar_view_solicitacao
+    )
+
+    salvar_view_solicitacao(
+        solicitacao_id=solicitacao_id,
+        aprovacoes=data.get("aprovacoes", []),
+        funcionarios=data.get("funcionarios", [])
+    )
+
+    return jsonify({"success": True})
