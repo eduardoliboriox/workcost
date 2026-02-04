@@ -1,6 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
-import json
+import json 
 
 def inserir_solicitacao(dados: dict, funcionarios: list):
     with get_db() as conn:
