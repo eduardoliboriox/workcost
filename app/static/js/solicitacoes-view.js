@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
-     - FLUXO CORRETO: UMA CHAMADA
      ====================================================== */
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".btn-sign");
@@ -34,7 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    const matricula = String(matriculaInput?.value || "").trim();
+    // ✅ REGRA CORRETA NO VIEW:
+    // matrícula vem do data-matricula, não do value
+    const matricula = String(
+      matriculaInput?.dataset?.matricula || ""
+    ).trim();
+
     const password = passwordInput?.value?.trim();
 
     if (!matricula || !password) {
