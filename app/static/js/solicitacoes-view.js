@@ -6,8 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
-     - delegação de evento (robusto)
-     - preventDefault explícito
      ====================================================== */
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".btn-sign");
@@ -16,16 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
 
     const row = button.closest("tr");
-    const cell = button.closest("td");
+    if (!row) return;
 
-    const matricula =
-      row.querySelector(".matricula")?.dataset.matricula;
+    const matriculaInput = row.querySelector(".matricula");
+    const passwordInput = row.querySelector(".signature-password");
+    const box = row.querySelector(".signature-box");
 
-    const passwordInput =
-      cell.querySelector(".signature-password");
-
+    const matricula = matriculaInput?.dataset?.matricula;
     const password = passwordInput?.value?.trim();
-    const box = cell.querySelector(".signature-box");
 
     if (!matricula || !password) {
       alert("Informe a senha do funcionário");
@@ -37,7 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
           body: JSON.stringify({ matricula, password })
         }
       );
@@ -57,15 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
       button.remove();
 
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao confirmar assinatura:", err);
       alert("Erro ao confirmar assinatura");
     }
   });
 
   /* ======================================================
      FLUXO DE APROVAÇÃO (MODO VIEW)
-     - valida usuário logado
-     - persiste no banco
      ====================================================== */
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
@@ -88,7 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const resAuth = await fetch("/api/auth/confirm-extra", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
           body: JSON.stringify({
             matricula: form.dataset.userMatricula,
             password
@@ -106,7 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
           `/api/solicitacoes/${solicitacaoId}/aprovar`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
             body: JSON.stringify({ role })
           }
         );
@@ -125,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.remove();
 
       } catch (err) {
-        console.error(err);
+        console.error("Erro no fluxo de aprovação:", err);
         alert("Erro no fluxo de aprovação");
       }
     });
