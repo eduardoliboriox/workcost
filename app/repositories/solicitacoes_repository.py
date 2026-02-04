@@ -40,9 +40,11 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                         telefone,
                         inicio,
                         termino,
-                        transporte
+                        transporte,
+                        signed_at,
+                        signed_by
                     )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     solicitacao_id,
                     f["matricula"],
@@ -51,7 +53,9 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                     f["telefone"],
                     f["inicio"],
                     f["termino"],
-                    f["transporte"]
+                    f["transporte"],
+                    "now()" if f.get("signed") else None,
+                    f.get("signed_by")
                 ))
 
         conn.commit()
