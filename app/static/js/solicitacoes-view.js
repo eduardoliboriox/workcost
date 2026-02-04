@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
-     - MESMO FLUXO DO CREATE
+     - FLUXO CORRETO: UMA CHAMADA
      ====================================================== */
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".btn-sign");
@@ -43,25 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      /* 🔐 PASSO 1 — AUTENTICA (IGUAL AO CREATE) */
-      const resAuth = await fetch("/api/auth/confirm-extra", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ matricula, password })
-      });
-
-      const authData = await parseJsonSafe(resAuth);
-
-      if (!resAuth.ok || !authData?.success) {
-        alert(authData?.error || "Senha inválida");
-        return;
-      }
-
-      /* 💾 PASSO 2 — PERSISTE ASSINATURA */
       const res = await fetch(
         `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
         {
@@ -78,11 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await parseJsonSafe(res);
 
       if (!res.ok || !data?.success) {
-        alert(data?.error || "Erro ao registrar assinatura");
+        alert(data?.error || "Senha inválida");
         return;
       }
 
-      box.textContent = authData.username;
+      box.textContent = data.username;
       box.classList.remove("pending");
       box.classList.add("signed");
 
@@ -97,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      FLUXO DE APROVAÇÃO (MODO VIEW)
-     (permanece correto)
      ====================================================== */
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
