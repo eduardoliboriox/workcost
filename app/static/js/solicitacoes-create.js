@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* ======================================================
+     ELEMENTOS PRINCIPAIS DA PÁGINA (MODO CREATE)
+     ====================================================== */
+
   const form = document.getElementById("formSolicitacao");
   const btnAddRow = document.getElementById("btnAddRow");
   const tbody = document.querySelector("#funcionariosTable tbody");
@@ -8,7 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnAddRow || !tbody) return;
 
+  /* ======================================================
+     MATRÍCULA DO USUÁRIO LOGADO
+     (usada no Fluxo de Aprovação)
+     ====================================================== */
+
   const loggedUserMatricula = form.dataset.userMatricula;
+
+  if (!loggedUserMatricula) {
+    console.warn("Matrícula do usuário logado não encontrada");
+  }
+
+  /* ======================================================
+     HORÁRIOS PADRÃO POR TURNO
+     ====================================================== */
 
   const EXTRA_SHIFT_TIMES = {
     "1T": { start: "07:00", end: "16:00" },
@@ -17,15 +34,17 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   btnAddRow.addEventListener("click", addRow);
+
   turnoRadios.forEach(radio =>
     radio.addEventListener("change", aplicarHorarioPorTurno)
   );
 
   addRow();
 
-  /* ==========================
-     SUBMIT
-     ========================== */
+  /* ======================================================
+     SUBMIT DO FORMULÁRIO
+     ====================================================== */
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -38,9 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       telefone: r.querySelector(".telefone").value,
       inicio: r.querySelector(".inicio").value,
       termino: r.querySelector(".termino").value,
-      transporte: r.querySelector(".transporte").value,
-      signed: r.dataset.signed === "true",
-      signed_by: r.dataset.signedBy || null
+      transporte: r.querySelector(".transporte").value
     }));
 
     funcionariosJson.value = JSON.stringify(funcionarios);
@@ -60,12 +77,63 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/solicitacoes/abertas";
   });
 
-  /* ==========================
+  /* ======================================================
+     FLUXO DE APROVAÇÃO — MODO CREATE
+     ====================================================== */
+
+  document.querySelectorAll(".btn-approve").forEach(button => {
+    button.addEventListener("click", async () => {
+      const container = button.closest(".approval-item");
+      const inputWrapper =
+        container.querySelector(".approval-input-wrapper");
+      const passwordInput =
+        container.querySelector(".approval-password");
+
+      if (!passwordInput) return;
+
+      const password = passwordInput.value.trim();
+
+      if (!password) {
+        alert("Informe a senha");
+        return;
+      }
+
+      const res = await fetch("/api/auth/confirm-extra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matricula: loggedUserMatricula,
+          password
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        alert(data.error || "Senha inválida");
+        return;
+      }
+
+      /* 🎯 AJUSTE CORRETO:
+         - mantém o título (approval-box)
+         - substitui APENAS o campo de senha
+      */
+      inputWrapper.innerHTML = `
+        <div class="approval-box signed">
+          ${data.username}
+        </div>
+      `;
+
+      button.remove();
+    });
+  });
+
+  /* ======================================================
      FUNCIONÁRIOS
-     ========================== */
+     ====================================================== */
+
   function addRow() {
     const row = document.createElement("tr");
-    row.dataset.signed = "false";
 
     row.innerHTML = `
       <td></td>
@@ -124,8 +192,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function confirmarAssinaturaFuncionario(row) {
-    const matricula = row.querySelector(".matricula").value.trim();
-    const password = row.querySelector(".signature-password").value.trim();
+    const matricula =
+      row.querySelector(".matricula")?.value?.trim();
+
+    const password =
+      row.querySelector(".signature-password")?.value?.trim();
+
+    const box = row.querySelector(".signature-box");
+    const btn = row.querySelector(".btn-sign");
+    const input = row.querySelector(".signature-password");
 
     if (!matricula || !password) {
       alert("Informe matrícula e senha");
@@ -145,16 +220,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    row.dataset.signed = "true";
-    row.dataset.signedBy = data.username;
-
-    const box = row.querySelector(".signature-box");
     box.textContent = data.username;
     box.classList.remove("pending");
     box.classList.add("signed");
 
-    row.querySelector(".signature-password").remove();
-    row.querySelector(".btn-sign").remove();
+    input.remove();
+    btn.remove();
   }
 
   async function buscarFuncionario(row) {
@@ -178,10 +249,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function aplicarHorarioPorTurno() {
-    const turnoSelecionado = document.querySelector(".turno-radio:checked");
+    const turnoSelecionado =
+      document.querySelector(".turno-radio:checked");
+
     if (!turnoSelecionado) return;
 
-    const horarios = EXTRA_SHIFT_TIMES[turnoSelecionado.value];
+    const horarios =
+      EXTRA_SHIFT_TIMES[turnoSelecionado.value];
+
     if (!horarios) return;
 
     [...tbody.querySelectorAll("tr")].forEach(row => {
@@ -197,4 +272,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-  
