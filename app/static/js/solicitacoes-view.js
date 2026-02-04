@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      ASSINATURA DE FUNCIONÁRIO (MODO VIEW)
+     - MESMO FLUXO DO CREATE
      ====================================================== */
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".btn-sign");
@@ -33,14 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = row.querySelector(".signature-password");
     const box = row.querySelector(".signature-box");
 
-    // ✅ FIX DEFINITIVO:
-    // - ignorar dataset
-    // - ignorar estado disabled
-    // - usar SOMENTE value
-    const matricula = String(
-      matriculaInput?.value || ""
-    ).trim();
-
+    const matricula = String(matriculaInput?.value || "").trim();
     const password = passwordInput?.value?.trim();
 
     if (!matricula || !password) {
@@ -49,6 +43,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      /* 🔐 PASSO 1 — AUTENTICA (IGUAL AO CREATE) */
+      const resAuth = await fetch("/api/auth/confirm-extra", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ matricula, password })
+      });
+
+      const authData = await parseJsonSafe(resAuth);
+
+      if (!resAuth.ok || !authData?.success) {
+        alert(authData?.error || "Senha inválida");
+        return;
+      }
+
+      /* 💾 PASSO 2 — PERSISTE ASSINATURA */
       const res = await fetch(
         `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
         {
@@ -65,11 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await parseJsonSafe(res);
 
       if (!res.ok || !data?.success) {
-        alert(data?.error || "Senha inválida");
+        alert(data?.error || "Erro ao registrar assinatura");
         return;
       }
 
-      box.textContent = data.username;
+      box.textContent = authData.username;
       box.classList.remove("pending");
       box.classList.add("signed");
 
@@ -84,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      FLUXO DE APROVAÇÃO (MODO VIEW)
+     (permanece correto)
      ====================================================== */
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
