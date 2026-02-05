@@ -1,4 +1,7 @@
-from app.repositories.employees_repository import get_employee_by_code
+from app.repositories.employees_repository import (
+    get_employee_by_code,
+    get_employee_by_matricula
+)
 from app.auth.repository import get_user_by_matricula
 from app.auth.profile_repository import get_profile
 
