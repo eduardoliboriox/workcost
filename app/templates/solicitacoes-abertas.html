@@ -4,29 +4,24 @@
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
   <span class="me-auto">
-  WorkCost · Solicitações de Extra — Abertas
+    WorkCost · Solicitações de Extra — Abertas
   </span>
 
   <div class="ms-auto d-flex gap-2">
-
     <a href="{{ url_for('pages.solicitacoes') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
-    </a>    
+    </a>
 
     <a href="{{ url_for('pages.solicitacoes_abertas') }}" class="btn btn-outline-primary active">
-      <i class="bi bi-file-earmark-medical"></i> Abertas
+      Abertas
     </a>
 
     <a href="{{ url_for('pages.solicitacoes_fechadas') }}" class="btn btn-outline-success">
-      <i class="bi bi-file-earmark-medical"></i> Fechadas
+      Fechadas
     </a>
 
-    <button class="btn btn-outline-purple" type="button" onclick="toggleFullscreen()">
-      <i class="bi bi-arrows-fullscreen"></i>
-    </button>
-
     <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
-      <i class="bi bi-box-arrow-right"></i> Sair
+      Sair
     </a>
   </div>
 </div>
@@ -35,26 +30,31 @@
 {% block content %}
 <div class="card shadow-sm p-4">
 
-  <div class="d-flex justify-content-between mb-3">
+  <!-- FILTROS -->
+  <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
     <input
       id="filterSearch"
       class="form-control w-25"
       placeholder="Pesquisar...">
-  
+
+    <select id="filterEstado" class="form-select w-25">
+      <option value="">Todos os estados</option>
+      <option value="solicitante">Pendente Solicitante</option>
+      <option value="gestor">Pendente Gestor</option>
+      <option value="gerente">Pendente Gerente</option>
+      <option value="controladoria">Pendente Controladoria</option>
+      <option value="diretoria">Pendente Diretoria</option>
+      <option value="rh">Pendente RH</option>
+      <option value="concluida">Concluída</option>
+    </select>
+
     <div class="d-flex gap-2">
-      <input
-        type="date"
-        id="filterStartDate"
-        class="form-control">
-  
-      <input
-        type="date"
-        id="filterEndDate"
-        class="form-control">
+      <input type="date" id="filterStartDate" class="form-control">
+      <input type="date" id="filterEndDate" class="form-control">
     </div>
   </div>
 
-
+  <!-- TABELA -->
   <table class="table table-bordered align-middle text-center">
     <thead>
       <tr>
@@ -89,29 +89,22 @@
         </td>
 
         {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
-          <td>
-            {% if s.aprovacoes[role] %}
-              <span class="badge bg-success">
-                {{ s.aprovacoes[role] }}
-              </span>
-            {% else %}
-              <span class="badge bg-secondary">Pendente</span>
-            {% endif %}
-          </td>
+        <td>
+          {% if s.aprovacoes[role] %}
+            <span class="badge bg-success">{{ s.aprovacoes[role] }}</span>
+          {% else %}
+            <span class="badge bg-secondary">Pendente</span>
+          {% endif %}
+        </td>
         {% endfor %}
 
-      <td>
-        <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
-           class="btn btn-sm btn-outline-primary">
-          Acessar
-        </a>
-
-      
-        <button class="btn btn-sm btn-outline-warning ms-1"
-                onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao')">
-          Provisão
-        </button>
-      </td>
+        <td>
+          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+             class="btn btn-sm btn-outline-primary">
+            Acessar
+          </a>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
