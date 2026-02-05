@@ -9,10 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !solicitacaoId) return;
 
+  /* 🔒 FIX DEFINITIVO:
+     Em modo VIEW, o form NÃO pode submeter nem reagir
+  */
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return false;
+  });
+
   const pendingApprovals = [];
 
   /* ======================================================
-     FLUXO DE APROVAÇÃO (VIEW) — JÁ FUNCIONAVA
+     FLUXO DE APROVAÇÃO (VIEW)
      ====================================================== */
 
   document.querySelectorAll(".approval-item").forEach(item => {
@@ -24,8 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.stopPropagation();
 
       const role = item.dataset.role?.toLowerCase();
-      const passwordInput = item.querySelector(".approval-password");
-      const password = passwordInput?.value?.trim();
+      const password = item.querySelector(".approval-password")?.value?.trim();
 
       if (!password || !role) {
         alert("Informe a senha");
@@ -42,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await res.json();
-
       if (!res.ok || !data.success) {
         alert(data.error || "Senha inválida");
         return;
@@ -54,22 +61,17 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.remove();
 
       const box = item.querySelector(".approval-box");
-      box.classList.remove("pending");
-      box.classList.add("signed");
+      box.classList.replace("pending", "signed");
 
-      let usernameDiv = box.querySelector(".approval-username");
-      if (!usernameDiv) {
-        usernameDiv = document.createElement("div");
-        usernameDiv.className = "approval-username";
-        box.appendChild(usernameDiv);
-      }
-
+      const usernameDiv = document.createElement("div");
+      usernameDiv.className = "approval-username";
       usernameDiv.textContent = data.username;
+      box.appendChild(usernameDiv);
     });
   });
 
   /* ======================================================
-     FUNCIONÁRIOS — ASSINATURA (VIEW) ✅ FIX DEFINITIVO
+     FUNCIONÁRIOS — ASSINATURA (VIEW)
      ====================================================== */
 
   document.querySelectorAll("#funcionariosTable .btn-sign")
@@ -102,17 +104,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         const data = await res.json();
-
         if (!res.ok || !data.success) {
           alert(data.error || "Senha inválida");
           return;
         }
 
         const box = row.querySelector(".signature-box");
-
         box.textContent = data.username;
-        box.classList.remove("pending");
-        box.classList.add("signed");
+        box.classList.replace("pending", "signed");
 
         row.querySelector(".signature-password")?.remove();
         btn.remove();
@@ -120,28 +119,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   /* ======================================================
-     SALVAR VIEW (somente aprovações)
+     SALVAR VIEW
      ====================================================== */
 
   document.getElementById("btnSaveView")
     ?.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      const res = await fetch(
+      await fetch(
         `/api/solicitacoes/${solicitacaoId}/salvar-view`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            aprovacoes: pendingApprovals
-          })
+          body: JSON.stringify({ aprovacoes: pendingApprovals })
         }
       );
-
-      if (!res.ok) {
-        alert("Erro ao salvar");
-        return;
-      }
 
       window.location.href = `/solicitacoes/${solicitacaoId}`;
     });
