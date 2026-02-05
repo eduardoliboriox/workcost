@@ -125,6 +125,7 @@ def confirmar_presenca_funcionario(
     }
 
 
+
 def salvar_view_solicitacao(
     solicitacao_id: int,
     aprovacoes: list,
@@ -139,7 +140,7 @@ def salvar_view_solicitacao(
     for a in aprovacoes:
         registrar_aprovacao(
             solicitacao_id=solicitacao_id,
-            user_id=a["user_id"],
+            user_id=current_user.id,
             role=a["role"]
         )
 
