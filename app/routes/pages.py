@@ -136,6 +136,7 @@ def solicitacoes():
     return render_template(
         "solicitacoes.html",
         modo="create",
+        aprovacoes={},
         active_menu="solicitacoes"
     )
 
