@@ -60,54 +60,52 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ============================
-     FUNCIONÁRIOS (VIEW) — FIX DEFINITIVO
+     FUNCIONÁRIOS (VIEW) — FIX REAL
      ============================ */
-  document.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".btn-sign");
-    if (!btn) return;
+  document.querySelectorAll(".btn-sign").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-    e.preventDefault();
+      const row = btn.closest("tr");
 
-    const row = btn.closest("tr");
+      const matricula =
+        row.querySelector(".matricula")?.value?.trim();
 
-    // ✅ FIX REAL: usar VALUE, não dataset
-    const matricula =
-      row.querySelector(".matricula")?.value?.trim();
+      const password =
+        row.querySelector(".signature-password")?.value?.trim();
 
-    const password =
-      row.querySelector(".signature-password")?.value?.trim();
-
-    if (!matricula || !password) {
-      alert("Informe a senha");
-      return;
-    }
-
-    const res = await fetch(
-      `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matricula, password })
+      if (!matricula || !password) {
+        alert("Informe a senha");
+        return;
       }
-    );
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      alert(data.error || "Senha inválida");
-      return;
-    }
+      const res = await fetch(
+        `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ matricula, password })
+        }
+      );
 
-    const box = row.querySelector(".signature-box");
-    box.classList.remove("pending");
-    box.classList.add("signed");
-    box.textContent = data.username;
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(data.error || "Senha inválida");
+        return;
+      }
 
-    row.querySelector(".signature-password")?.remove();
-    btn.remove();
+      const box = row.querySelector(".signature-box");
+      box.textContent = data.username;
+      box.classList.remove("pending");
+      box.classList.add("signed");
+
+      row.querySelector(".signature-password")?.remove();
+      btn.remove();
+    });
   });
 
   /* ============================
-     SALVAR VIEW (somente aprovações)
+     SALVAR VIEW
      ============================ */
   document.getElementById("btnSaveView")
     ?.addEventListener("click", async (e) => {
