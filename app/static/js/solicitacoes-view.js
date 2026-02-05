@@ -9,11 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !solicitacaoId) return;
 
+  /* ======================================================
+     🔒 FIX CRÍTICO
+     Em modo VIEW, o form NÃO pode submeter nem interferir
+     ====================================================== */
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return false;
+  });
+
   const pendingApprovals = [];
-  const signedEmployees = [];   // ✅ NOVO ESTADO LOCAL
+  const signedEmployees = [];
 
   /* ======================================================
-     FLUXO DE APROVAÇÃO (VIEW) — JÁ FUNCIONAVA
+     FLUXO DE APROVAÇÃO (VIEW) — MANTIDO
      ====================================================== */
 
   document.querySelectorAll(".approval-item").forEach(item => {
@@ -22,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
+      e.stopPropagation();
 
       const role = item.dataset.role?.toLowerCase();
       const password = item.querySelector(".approval-password")?.value?.trim();
@@ -62,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ======================================================
-     FUNCIONÁRIOS — ASSINATURA (VIEW) ✅ FIX FINAL
+     FUNCIONÁRIOS — ASSINATURA (VIEW) ✅ FIX DEFINITIVO
      ====================================================== */
 
   document.querySelectorAll("#funcionariosTable .btn-sign")
@@ -70,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
+        e.stopPropagation();
 
         const row = btn.closest("tr");
 
@@ -99,15 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        // ✅ Atualiza UI
+        /* ✅ ATUALIZA VISUAL GARANTIDA */
         const box = row.querySelector(".signature-box");
         box.textContent = data.username;
-        box.classList.replace("pending", "signed");
+        box.classList.remove("pending");
+        box.classList.add("signed");
 
         row.querySelector(".signature-password")?.remove();
         btn.remove();
 
-        // ✅ Atualiza estado local
         signedEmployees.push({
           matricula,
           username: data.username
@@ -116,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   /* ======================================================
-     SALVAR VIEW (aprovações + funcionários)
+     SALVAR VIEW
      ====================================================== */
 
   document.getElementById("btnSaveView")
@@ -130,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             aprovacoes: pendingApprovals,
-            funcionarios: signedEmployees   // ✅ AGORA ENVIADO
+            funcionarios: signedEmployees
           })
         }
       );
