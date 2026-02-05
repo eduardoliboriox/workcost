@@ -107,9 +107,11 @@ def confirmar_presenca_funcionario(
     password: str
 ):
     from app.auth.service import confirm_employee_extra
+    from app.repositories.solicitacoes_repository import (
+        listar_funcionarios_por_solicitacao
+    )
 
     result = confirm_employee_extra(matricula, password)
-
     if not result["success"]:
         return result
 
@@ -119,9 +121,17 @@ def confirmar_presenca_funcionario(
         username=result["username"]
     )
 
+    # 🔑 Fonte da verdade: banco
+    funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
+
+    funcionario = next(
+        f for f in funcionarios
+        if f["matricula"].lstrip("0") == matricula.lstrip("0")
+    )
+
     return {
         "success": True,
-        "username": result["username"]
+        "funcionario": funcionario
     }
 
 
