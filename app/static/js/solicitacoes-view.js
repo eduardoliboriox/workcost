@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!form || !solicitacaoId) return;
 
   const pendingApprovals = [];
-  const pendingEmployees = [];
 
   /* ============================
      APROVAÇÃO (VIEW)
@@ -44,20 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
       item.querySelector(".approval-input-wrapper")?.remove();
       btn.remove();
 
-      item.querySelector(".approval-box")
-        .classList.replace("pending", "signed");
-
       const box = item.querySelector(".approval-box");
-      
       box.classList.replace("pending", "signed");
-      
+
       let usernameDiv = box.querySelector(".approval-username");
       if (!usernameDiv) {
         usernameDiv = document.createElement("div");
         usernameDiv.className = "approval-username";
         box.appendChild(usernameDiv);
       }
-      
+
       usernameDiv.textContent = data.username;
     });
   });
@@ -77,9 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const password =
       row.querySelector(".signature-password")?.value?.trim();
 
-    if (!matricula || !password) return;
+    if (!matricula || !password) {
+      alert("Informe a senha");
+      return;
+    }
 
-    // 🔐 NORMALIZAÇÃO DEFENSIVA
     matricula = matricula.trim().replace(/^0+/, "");
 
     const res = await fetch(
@@ -97,23 +94,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    pendingEmployees.push({
-      matricula,
-      username: data.username
-    });
-
-    row.querySelector(".signature-box")
-      .classList.replace("pending", "signed");
-
-    row.querySelector(".signature-box").textContent =
-      data.username;
+    const box = row.querySelector(".signature-box");
+    box.classList.replace("pending", "signed");
+    box.textContent = data.username;
 
     row.querySelector(".signature-password").remove();
     btn.remove();
   });
 
   /* ============================
-     SALVAR VIEW
+     SALVAR VIEW (somente aprovações)
      ============================ */
   document.getElementById("btnSaveView")
     ?.addEventListener("click", async () => {
@@ -124,8 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          aprovacoes: pendingApprovals,
-          funcionarios: pendingEmployees
+          aprovacoes: pendingApprovals
         })
       }
     );
@@ -135,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 🔁 força renderização baseada no banco
     window.location.href = `/solicitacoes/${solicitacaoId}`;
   });
 });
