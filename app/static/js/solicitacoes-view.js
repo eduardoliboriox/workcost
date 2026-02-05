@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = item.querySelector(".btn-approve");
     if (!btn) return;
 
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault(); // 🔒 IMPORTANTE
+
       const role = item.dataset.role?.toLowerCase();
       const passwordInput = item.querySelector(".approval-password");
       const password = passwordInput?.value?.trim();
@@ -58,11 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ============================
-     FUNCIONÁRIOS (VIEW) — FIX
+     FUNCIONÁRIOS (VIEW) — FIX REAL
      ============================ */
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-sign");
     if (!btn) return;
+
+    e.preventDefault(); // 🔒 ESTE ERA O BUG
 
     const row = btn.closest("tr");
 
@@ -92,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    /* 🎯 ATUALIZAÇÃO VISUAL CORRETA */
     const box = row.querySelector(".signature-box");
     box.classList.remove("pending");
     box.classList.add("signed");
@@ -106,24 +109,25 @@ document.addEventListener("DOMContentLoaded", () => {
      SALVAR VIEW (somente aprovações)
      ============================ */
   document.getElementById("btnSaveView")
-    ?.addEventListener("click", async () => {
+    ?.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-    const res = await fetch(
-      `/api/solicitacoes/${solicitacaoId}/salvar-view`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          aprovacoes: pendingApprovals
-        })
+      const res = await fetch(
+        `/api/solicitacoes/${solicitacaoId}/salvar-view`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            aprovacoes: pendingApprovals
+          })
+        }
+      );
+
+      if (!res.ok) {
+        alert("Erro ao salvar");
+        return;
       }
-    );
 
-    if (!res.ok) {
-      alert("Erro ao salvar");
-      return;
-    }
-
-    window.location.href = `/solicitacoes/${solicitacaoId}`;
-  });
+      window.location.href = `/solicitacoes/${solicitacaoId}`;
+    });
 });
