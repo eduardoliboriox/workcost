@@ -286,7 +286,7 @@
   <h5 class="fw-bold mt-4">
     Fluxo de Aprovação <small class="text-muted">/ Approval</small>
   </h5>
-  
+    
   <div class="row justify-content-center g-4 mt-3 approval-flow">
     {% for role in [
       'Solicitante',
@@ -295,28 +295,35 @@
       'Controladoria',
       'Diretoria'
     ] %}
-    <div class="col-md-2 text-center approval-item" data-role="{{ role }}">
-      <div class="approval-box pending mb-1">
-        {{ role }}
+      {% set role_key = role.lower() %}
+  
+      <div class="col-md-2 text-center approval-item" data-role="{{ role }}">
+        <div class="approval-box {{ 'signed' if aprovacoes.get(role_key) else 'pending' }} mb-1">
+          {% if aprovacoes.get(role_key) %}
+            {{ aprovacoes[role_key].username }}
+          {% else %}
+            {{ role }}
+          {% endif %}
+        </div>
+  
+        {% if not aprovacoes.get(role_key) %}
+          <div class="approval-input-wrapper">
+            <input type="password"
+                   class="form-control form-control-sm approval-password mb-1"
+                   placeholder="Senha">
+          </div>
+  
+          <button type="button"
+                  class="btn btn-sm btn-outline-success btn-approve">
+            CONFIRMAR
+          </button>
+        {% endif %}
       </div>
-      
-      <div class="approval-input-wrapper">
-        <input type="password"
-               class="form-control form-control-sm approval-password mb-1"
-               placeholder="Senha">
-      </div>
-      
-      <button type="button"
-              class="btn btn-sm btn-outline-success btn-approve">
-        CONFIRMAR
-      </button>
-
-    </div>
     {% endfor %}
   </div>
-
-   <hr class="my-4">
-
+  
+  <hr class="my-4">
+  
   <div class="row align-items-center g-3 mb-4">
     <div class="col-md-4">
       <label class="fw-bold">
@@ -324,27 +331,33 @@
       </label>
       <input type="date" class="form-control">
     </div>
-
-    <!-- =========================
-         RECURSOS HUMANOS (AJUSTADO)
-         ========================= -->
+  
+    <!-- RH -->
     <div class="col-md-4 text-center approval-item" data-role="rh">
-      <div class="approval-box pending mb-1">
-        Recursos Humanos
+      {% set role_key = 'rh' %}
+  
+      <div class="approval-box {{ 'signed' if aprovacoes.get(role_key) else 'pending' }} mb-1">
+        {% if aprovacoes.get(role_key) %}
+          {{ aprovacoes[role_key].username }}
+        {% else %}
+          Recursos Humanos
+        {% endif %}
       </div>
-
-      <div class="approval-input-wrapper">
-        <input type="password"
-               class="form-control form-control-sm approval-password mb-1"
-               placeholder="Senha RH">
-      </div>
-
-      <button type="button"
-              class="btn btn-sm btn-outline-success btn-approve">
-        CONFIRMAR
-      </button>
+  
+      {% if not aprovacoes.get(role_key) %}
+        <div class="approval-input-wrapper">
+          <input type="password"
+                 class="form-control form-control-sm approval-password mb-1"
+                 placeholder="Senha RH">
+        </div>
+  
+        <button type="button"
+                class="btn btn-sm btn-outline-success btn-approve">
+          CONFIRMAR
+        </button>
+      {% endif %}
     </div>
-
+  
     <div class="col-md-4">
       <label class="fw-bold">
         LANÇADO <small class="text-muted">(Launched)</small>
@@ -352,7 +365,6 @@
       <input type="text" class="form-control">
     </div>
   </div>
-
   {% if modo == 'view' %}
   <button type="button"
           id="btnSaveView"
