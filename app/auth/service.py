@@ -1,4 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
+from app.utils.text import normalize_username
 
 # users core
 from app.auth.repository import (
@@ -44,8 +45,9 @@ def get_or_create_user(profile, provider):
 # REGISTER
 # =====================================================
 def generate_username(full_name: str) -> str:
-    parts = full_name.strip().lower().split()
-    return f"{parts[0]}.{parts[-1]}"
+    parts = full_name.strip().split()
+    raw_username = f"{parts[0]}.{parts[-1]}"
+    return normalize_username(raw_username)
 
 
 def register_user(form):
