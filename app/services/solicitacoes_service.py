@@ -128,10 +128,12 @@ def confirmar_presenca_funcionario(
         f for f in funcionarios
         if f["matricula"].lstrip("0") == matricula.lstrip("0")
     )
-
+    
     return {
         "success": True,
-        "funcionario": funcionario
+        "signed_by": funcionario["signed_by"],
+        "signed_at": funcionario["signed_at"].isoformat()
+        if funcionario.get("signed_at") else None
     }
 
 
