@@ -47,8 +47,18 @@ document.addEventListener("DOMContentLoaded", () => {
       item.querySelector(".approval-box")
         .classList.replace("pending", "signed");
 
-      item.querySelector(".approval-box").textContent =
-        data.username;
+      const box = item.querySelector(".approval-box");
+      
+      box.classList.replace("pending", "signed");
+      
+      let usernameDiv = box.querySelector(".approval-username");
+      if (!usernameDiv) {
+        usernameDiv = document.createElement("div");
+        usernameDiv.className = "approval-username";
+        box.appendChild(usernameDiv);
+      }
+      
+      usernameDiv.textContent = data.username;
     });
   });
 
