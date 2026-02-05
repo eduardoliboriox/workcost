@@ -1,6 +1,8 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 from werkzeug.security import generate_password_hash
+from app.utils.text import normalize_username
+
 
 # =====================================================
 # CORE USERS (Flask-Login / OAuth / Local)
@@ -50,11 +52,20 @@ def create_user(data):
 # LOCAL AUTH
 # =====================================================
 def get_user_by_username(username):
+    username_norm = normalize_username(username)
+
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
-                "SELECT * FROM users WHERE username=%s",
-                (username,),
+                """
+                SELECT *
+                FROM users
+                WHERE
+                  username = %s
+                  OR username = %s
+                LIMIT 1
+                """,
+                (username, username_norm),
             )
             return cur.fetchone()
 
