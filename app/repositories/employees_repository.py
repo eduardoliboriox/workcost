@@ -17,9 +17,14 @@ def get_employee_by_matricula(matricula: str):
                         p.state
                     ) AS endereco
                 FROM employees e
-                LEFT JOIN users u ON u.employee_id = e.id
-                LEFT JOIN user_profiles p ON p.user_id = u.id
-                WHERE e.employee_code = %s
+                LEFT JOIN users u
+                  ON (
+                       u.employee_id = e.id
+                       OR ltrim(u.matricula, '0') = ltrim(e.employee_code, '0')
+                     )
+                LEFT JOIN user_profiles p
+                  ON p.user_id = u.id
+                WHERE ltrim(e.employee_code, '0') = ltrim(%s, '0')
                 LIMIT 1
             """, (matricula,))
 
