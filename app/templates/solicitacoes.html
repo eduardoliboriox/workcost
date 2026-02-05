@@ -299,10 +299,14 @@
   
       <div class="col-md-2 text-center approval-item" data-role="{{ role }}">
         <div class="approval-box {{ 'signed' if aprovacoes.get(role_key) else 'pending' }} mb-1">
-          {% if aprovacoes.get(role_key) %}
-            {{ aprovacoes[role_key].username }}
-          {% else %}
+          <div class="approval-role fw-semibold">
             {{ role }}
+          </div>
+        
+          {% if aprovacoes.get(role_key) %}
+            <div class="approval-username">
+              {{ aprovacoes[role_key].username }}
+            </div>
           {% endif %}
         </div>
   
@@ -337,10 +341,14 @@
       {% set role_key = 'rh' %}
   
       <div class="approval-box {{ 'signed' if aprovacoes.get(role_key) else 'pending' }} mb-1">
-        {% if aprovacoes.get(role_key) %}
-          {{ aprovacoes[role_key].username }}
-        {% else %}
+        <div class="approval-role fw-semibold">
           Recursos Humanos
+        </div>
+      
+        {% if aprovacoes.get(role_key) %}
+          <div class="approval-username">
+            {{ aprovacoes[role_key].username }}
+          </div>
         {% endif %}
       </div>
   
