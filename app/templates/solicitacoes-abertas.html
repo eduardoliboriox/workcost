@@ -103,6 +103,13 @@
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-warning ms-1"
+            onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+            Provisão
+          </button>
         </td>
       </tr>
       {% endfor %}
