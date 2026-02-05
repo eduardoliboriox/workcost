@@ -51,23 +51,31 @@ def create_user(data):
 # =====================================================
 # LOCAL AUTH
 # =====================================================
-def get_user_by_username(username):
+def get_user_by_username(username: str):
+    """
+    Busca usuário por username de forma accent-insensitive.
+    - Normaliza o username digitado
+    - Normaliza TODOS os usernames do banco
+    - Compara em Python (fonte da verdade)
+    """
+
     username_norm = normalize_username(username)
 
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
-            cur.execute(
-                """
+            cur.execute("""
                 SELECT *
                 FROM users
-                WHERE
-                  username = %s
-                  OR username = %s
-                LIMIT 1
-                """,
-                (username, username_norm),
-            )
-            return cur.fetchone()
+                WHERE provider = 'local'
+            """)
+            users = cur.fetchall()
+
+    for user in users:
+        db_username = user.get("username", "")
+        if normalize_username(db_username) == username_norm:
+            return user
+
+    return None
 
 def create_local_user(data):
     with get_db() as conn:
