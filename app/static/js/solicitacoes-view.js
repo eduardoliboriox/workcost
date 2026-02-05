@@ -40,8 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       pendingApprovals.push({
-        role,
-        user_id: form.dataset.userId
+        role
       });
 
       item.querySelector(".approval-input-wrapper").innerHTML = `
