@@ -116,6 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    location.reload();
+    window.location.href = `/solicitacoes/${solicitacaoId}`;
   });
 });
