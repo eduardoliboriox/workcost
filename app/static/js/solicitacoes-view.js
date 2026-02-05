@@ -110,11 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 🔑 Renderiza com base no BACKEND
-        const funcionario = data.funcionario;
-
         row.querySelector("td:nth-child(9)").innerHTML = `
           <div class="signature-box signed">
-            ${funcionario.signed_by}
+            ${data.signed_by}
           </div>
         `;
       });
