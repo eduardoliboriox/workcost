@@ -127,8 +127,9 @@ def attach_employee_and_profile(user_id: int, form):
 
 
 def confirm_employee_extra(matricula: str, password: str):
-    # Blindagem de entrada
-    matricula = matricula.strip()
+    # 🔐 Normalização defensiva
+    matricula = matricula.strip().lstrip("0")
+    password = password.strip()
 
     user = get_user_by_matricula(matricula)
 
