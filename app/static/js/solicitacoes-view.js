@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      🔒 FIX CRÍTICO
-     Em modo VIEW, o form NÃO pode submeter nem interferir
+     Em modo VIEW, o form NÃO pode submeter
      ====================================================== */
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const pendingApprovals = [];
-  const signedEmployees = [];
 
   /* ======================================================
      FLUXO DE APROVAÇÃO (VIEW) — MANTIDO
@@ -35,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.stopPropagation();
 
       const role = item.dataset.role?.toLowerCase();
-      const password = item.querySelector(".approval-password")?.value?.trim();
+      const password =
+        item.querySelector(".approval-password")?.value?.trim();
 
       if (!password || !role) {
         alert("Informe a senha");
@@ -73,16 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ======================================================
-     FUNCIONÁRIOS — ASSINATURA (VIEW) ✅ FIX DEFINITIVO
+     FUNCIONÁRIOS — ASSINATURA (VIEW)
+     Backend é a fonte da verdade
      ====================================================== */
 
   document.querySelectorAll("#funcionariosTable .btn-sign")
     .forEach(btn => {
 
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
+      btn.addEventListener("click", async () => {
         const row = btn.closest("tr");
 
         const matricula =
@@ -111,24 +109,20 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        /* ✅ ATUALIZA VISUAL GARANTIDA */
-        const box = row.querySelector(".signature-box");
-        box.textContent = data.username;
-        box.classList.remove("pending");
-        box.classList.add("signed");
+        // 🔑 Renderiza com base no BACKEND
+        const funcionario = data.funcionario;
 
-        row.querySelector(".signature-password")?.remove();
-        btn.remove();
-
-        signedEmployees.push({
-          matricula,
-          username: data.username
-        });
+        row.querySelector("td:nth-child(9)").innerHTML = `
+          <div class="signature-box signed">
+            ${funcionario.signed_by}
+          </div>
+        `;
       });
+
     });
 
   /* ======================================================
-     SALVAR VIEW
+     SALVAR VIEW (somente aprovações)
      ====================================================== */
 
   document.getElementById("btnSaveView")
@@ -141,8 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            aprovacoes: pendingApprovals,
-            funcionarios: signedEmployees
+            aprovacoes: pendingApprovals
           })
         }
       );
