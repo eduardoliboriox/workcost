@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ============================
-     FUNCIONÁRIOS (VIEW)
+     FUNCIONÁRIOS (VIEW) — FIX
      ============================ */
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-sign");
@@ -66,8 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const row = btn.closest("tr");
 
-    let matricula =
-      row.querySelector(".matricula")?.dataset?.matricula;
+    const matricula =
+      row.querySelector(".matricula")?.dataset?.matricula?.trim();
 
     const password =
       row.querySelector(".signature-password")?.value?.trim();
@@ -76,8 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Informe a senha");
       return;
     }
-
-    matricula = matricula.trim().replace(/^0+/, "");
 
     const res = await fetch(
       `/api/solicitacoes/${solicitacaoId}/confirmar-presenca`,
@@ -94,11 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    /* 🎯 ATUALIZAÇÃO VISUAL CORRETA */
     const box = row.querySelector(".signature-box");
-    box.classList.replace("pending", "signed");
+    box.classList.remove("pending");
+    box.classList.add("signed");
     box.textContent = data.username;
 
-    row.querySelector(".signature-password").remove();
+    row.querySelector(".signature-password")?.remove();
     btn.remove();
   });
 
