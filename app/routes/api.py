@@ -281,9 +281,7 @@ def api_confirmar_presenca_funcionario(solicitacao_id):
 def api_salvar_view_solicitacao(solicitacao_id):
     data = request.get_json() or {}
 
-    from app.services.solicitacoes_service import (
-        salvar_view_solicitacao
-    )
+    from app.services.solicitacoes_service import salvar_view_solicitacao
 
     salvar_view_solicitacao(
         solicitacao_id=solicitacao_id,
