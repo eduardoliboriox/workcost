@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const row = btn.closest("tr");
 
         const matricula =
-          row.querySelector(".matricula")?.value?.trim();
+          row.querySelector(".matricula")?.dataset?.matricula?.trim();
 
         const password =
           row.querySelector(".signature-password")?.value?.trim();
