@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!btn) return;
 
     btn.addEventListener("click", async (e) => {
-      e.preventDefault(); // 🔒 IMPORTANTE
+      e.preventDefault();
 
       const role = item.dataset.role?.toLowerCase();
       const passwordInput = item.querySelector(".approval-password");
@@ -60,18 +60,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ============================
-     FUNCIONÁRIOS (VIEW) — FIX REAL
+     FUNCIONÁRIOS (VIEW) — FIX DEFINITIVO
      ============================ */
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-sign");
     if (!btn) return;
 
-    e.preventDefault(); // 🔒 ESTE ERA O BUG
+    e.preventDefault();
 
     const row = btn.closest("tr");
 
+    // ✅ FIX REAL: usar VALUE, não dataset
     const matricula =
-      row.querySelector(".matricula")?.dataset?.matricula?.trim();
+      row.querySelector(".matricula")?.value?.trim();
 
     const password =
       row.querySelector(".signature-password")?.value?.trim();
