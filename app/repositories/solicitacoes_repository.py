@@ -3,11 +3,6 @@ from psycopg.rows import dict_row
 import json
 
 
-from app.extensions import get_db
-from psycopg.rows import dict_row
-import json
-
-
 def inserir_solicitacao(dados: dict, funcionarios: list):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
