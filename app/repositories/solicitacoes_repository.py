@@ -1,10 +1,7 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
-import json 
-
-from app.extensions import get_db
-from psycopg.rows import dict_row
 import json
+
 
 def inserir_solicitacao(dados: dict, funcionarios: list):
     with get_db() as conn:
@@ -13,6 +10,7 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
             cur.execute("""
                 INSERT INTO solicitacoes (
                     data,
+                    data_execucao,
                     turnos,
                     setores,
                     cliente,
@@ -20,10 +18,11 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                     atividades,
                     solicitante_user_id
                 )
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                 RETURNING id
             """, (
                 dados["data"],
+                dados.get("data_execucao"),
                 dados["turnos"],
                 dados["setores"],
                 dados["cliente"],
