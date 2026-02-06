@@ -19,25 +19,25 @@ document.addEventListener("DOMContentLoaded", () => {
   endDateInput.addEventListener("change", applyFilters);
   estadoSelect.addEventListener("change", applyFilters);
 
-  function getEstadoAtual(row) {
-    const cells = row.querySelectorAll("td");
+function getEstadoAtual(row) {
+  const cells = row.querySelectorAll("td");
 
-    const solicitacaoStatus = cells[4].innerText.toLowerCase();
-    if (solicitacaoStatus.includes("pendente")) {
-      return "solicitante";
-    }
-
-    const roles = ["gestor", "gerente", "controladoria", "diretoria", "rh"];
-
-    for (let i = 0; i < roles.length; i++) {
-      const cellText = cells[5 + i].innerText.toLowerCase();
-      if (cellText.includes("pendente")) {
-        return roles[i];
-      }
-    }
-
-    return "concluida";
+  const solicitacaoStatus = cells[5].innerText.toLowerCase();
+  if (solicitacaoStatus.includes("pendente")) {
+    return "solicitante";
   }
+
+  const roles = ["gestor", "gerente", "controladoria", "diretoria", "rh"];
+
+  for (let i = 0; i < roles.length; i++) {
+    const cellText = cells[6 + i].innerText.toLowerCase();
+    if (cellText.includes("pendente")) {
+      return roles[i];
+    }
+  }
+
+  return "concluida";
+}
 
   function applyFilters() {
     const search = searchInput.value.toLowerCase().trim();

@@ -60,6 +60,7 @@
       <tr>
         <th>ID</th>
         <th>Data</th>
+        <th>Realização</th>
         <th>Solicitante</th>
         <th>Descrição</th>
         <th>Solicitação</th>
@@ -71,15 +72,22 @@
         <th>Acessar</th>
       </tr>
     </thead>
-
+    
     <tbody>
       {% for s in solicitacoes %}
       <tr>
         <td>{{ s.id }}</td>
         <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
+        <td>
+          {% if s.data_execucao %}
+            {{ s.data_execucao.strftime("%d/%m/%Y") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
         <td>{{ s.solicitante }}</td>
         <td>{{ s.descricao }}</td>
-
+    
         <td>
           {% if s.status_solicitacao == "Confirmado" %}
             <span class="badge bg-success">Confirmado</span>
@@ -87,7 +95,7 @@
             <span class="badge bg-secondary">Pendente</span>
           {% endif %}
         </td>
-
+    
         {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
         <td>
           {% if s.aprovacoes[role] %}
@@ -97,13 +105,13 @@
           {% endif %}
         </td>
         {% endfor %}
-
+    
         <td>
           <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
-
+    
           <button
             type="button"
             class="btn btn-sm btn-outline-warning ms-1"

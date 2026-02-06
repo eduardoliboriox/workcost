@@ -69,6 +69,7 @@ def obter_solicitacoes_abertas():
         resultado.append({
             "id": r["id"],
             "data": r["data"],
+            "data_execucao": r["data_execucao"],
             "solicitante": r["solicitante"],
             "descricao": r["atividades"],
             "status_solicitacao": (
