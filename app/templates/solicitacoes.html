@@ -125,6 +125,19 @@
         </select>
       </div>
 
+      <!-- DATA EXECUÇÃO -->
+      <div class="col-md-4">
+        <label class="form-label fw-bold">
+          Data da Realização <small class="text-muted">/ Execution Date</small>
+        </label>
+        <input type="date"
+               name="data_execucao"
+               class="form-control"
+               value="{{ solicitacao.data_execucao if modo == 'view' else now().date() }}"
+               {% if modo == 'view' %}disabled{% endif %}
+               required>
+      </div>      
+
       <!-- SETORES -->
       <div class="col-md-8">
         <label class="form-label fw-bold">
