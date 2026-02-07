@@ -60,7 +60,9 @@
           {% endif %}
         </td>
         <td>
-          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+          <a href="{{ url_for('pages.solicitacao_view',
+                              solicitacao_id=s.id,
+                              from='minhasextras') }}"
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
