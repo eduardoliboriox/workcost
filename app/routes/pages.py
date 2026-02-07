@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from datetime import date
 from app.services import cargos_service
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.services.solicitacoes_service import obter_solicitacoes_abertas
 
 bp = Blueprint("pages", __name__)
