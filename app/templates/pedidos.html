@@ -27,19 +27,37 @@
 {% block content %}
 <div class="card shadow-sm p-4">
 
-  <div class="d-flex justify-content-between mb-3">
-    <input class="form-control w-25" placeholder="Pesquisar...">
+  <!-- FILTROS -->
+  <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
+    <input
+      id="filterSearch"
+      class="form-control w-25"
+      placeholder="Pesquisar...">
+
+    <select id="filterEstado" class="form-select w-25">
+      <option value="">Todos os estados</option>
+      <option value="solicitante">Pendente Solicitante</option>
+      <option value="gestor">Pendente Gestor</option>
+      <option value="gerente">Pendente Gerente</option>
+      <option value="controladoria">Pendente Controladoria</option>
+      <option value="diretoria">Pendente Diretoria</option>
+      <option value="rh">Pendente RH</option>
+      <option value="concluida">Concluída</option>
+    </select>
+
     <div class="d-flex gap-2">
-      <input type="date" class="form-control">
-      <input type="date" class="form-control">
+      <input type="date" id="filterStartDate" class="form-control">
+      <input type="date" id="filterEndDate" class="form-control">
     </div>
   </div>
 
+  <!-- TABELA -->
   <table class="table table-bordered align-middle text-center">
     <thead>
       <tr>
         <th>ID</th>
         <th>Data</th>
+        <th>Realização</th>
         <th>Solicitante</th>
         <th>Descrição</th>
         <th>Solicitação</th>
@@ -51,15 +69,22 @@
         <th>Acessar</th>
       </tr>
     </thead>
-
+    
     <tbody>
       {% for s in solicitacoes %}
       <tr>
         <td>{{ s.id }}</td>
         <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
+        <td>
+          {% if s.data_execucao %}
+            {{ s.data_execucao.strftime("%d/%m/%Y") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
         <td>{{ s.solicitante }}</td>
         <td>{{ s.descricao }}</td>
-
+    
         <td>
           {% if s.status_solicitacao == "Confirmado" %}
             <span class="badge bg-success">Confirmado</span>
@@ -67,34 +92,36 @@
             <span class="badge bg-secondary">Pendente</span>
           {% endif %}
         </td>
-
+    
         {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
-          <td>
-            {% if s.aprovacoes[role] %}
-              <span class="badge bg-success">
-                {{ s.aprovacoes[role] }}
-              </span>
-            {% else %}
-              <span class="badge bg-secondary">Pendente</span>
-            {% endif %}
-          </td>
+        <td>
+          {% if s.aprovacoes[role] %}
+            <span class="badge bg-success">{{ s.aprovacoes[role] }}</span>
+          {% else %}
+            <span class="badge bg-secondary">Pendente</span>
+          {% endif %}
+        </td>
         {% endfor %}
-
-      <td>
-        <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
-           class="btn btn-sm btn-outline-primary">
-          Acessar
-        </a>
-
-      
-        <button class="btn btn-sm btn-outline-warning ms-1"
-                onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao')">
-          Provisão
-        </button>
-      </td>
+    
+        <td>
+          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+             class="btn btn-sm btn-outline-primary">
+            Acessar
+          </a>
+    
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-warning ms-1"
+            onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+            Provisão
+          </button>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
 
 </div>
+
+<script src="{{ url_for('static', filename='js/solicitacoes-abertas.js') }}"></script>
 {% endblock %}
