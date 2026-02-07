@@ -7,7 +7,8 @@ from app.repositories.solicitacoes_repository import (
     listar_funcionarios_por_solicitacao,
     listar_aprovacoes_por_solicitacao_id,
     registrar_aprovacao, 
-    registrar_assinatura_funcionario
+    registrar_assinatura_funcionario,
+    listar_solicitacoes_abertas_por_matricula
 )
 from flask_login import current_user
 
@@ -167,3 +168,38 @@ def salvar_view_solicitacao(
             matricula=f["matricula"],
             username=f["username"]
         )
+
+
+def obter_minhas_extras(matricula: str):
+    rows = listar_solicitacoes_abertas_por_matricula(matricula)
+    aprovacoes = listar_aprovacoes_por_solicitacao()
+
+    aprov_map = {}
+    for a in aprovacoes:
+        aprov_map.setdefault(a["solicitacao_id"], {})[a["role"]] = a
+
+    resultado = []
+
+    for r in rows:
+        status_roles = {}
+
+        for role in ROLES:
+            aprovado = aprov_map.get(r["id"], {}).get(role)
+            status_roles[role] = aprovado["username"] if aprovado else None
+
+        resultado.append({
+            "id": r["id"],
+            "data": r["data"],
+            "data_execucao": r["data_execucao"],
+            "solicitante": r["solicitante"],
+            "descricao": r["atividades"],
+            "status_solicitacao": (
+                "Confirmado"
+                if r["total_funcionarios"] > 0
+                and r["assinadas"] == r["total_funcionarios"]
+                else "Pendente"
+            ),
+            "aprovacoes": status_roles
+        })
+
+    return resultado
