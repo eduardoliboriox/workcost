@@ -2,9 +2,75 @@
 {% block title %}Minhas Extras{% endblock %}
 
 {% block page_title %}
-WorkCost · Minhas Extras
+<div class="d-flex align-items-center w-100">
+  <span class="me-auto">
+    WorkCost · Minhas Solicitações de Extra
+  </span>
+
+  <div class="ms-auto d-flex gap-2">
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
+      Voltar
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+      Sair
+    </a>
+  </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<p>Conteúdo em construção.</p>
+<div class="card shadow-sm p-4">
+
+  <!-- FILTROS -->
+  <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
+    <input id="filterSearch" class="form-control w-25" placeholder="Pesquisar...">
+
+    <div class="d-flex gap-2">
+      <input type="date" id="filterStartDate" class="form-control">
+      <input type="date" id="filterEndDate" class="form-control">
+    </div>
+  </div>
+
+  <!-- TABELA -->
+  <table class="table table-bordered align-middle text-center">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Realização</th>
+        <th>Solicitante</th>
+        <th>Descrição</th>
+        <th>Status</th>
+        <th>Acessar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in solicitacoes %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
+        <td>{{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}</td>
+        <td>{{ s.solicitante }}</td>
+        <td>{{ s.descricao }}</td>
+        <td>
+          {% if s.status_solicitacao == "Confirmado" %}
+            <span class="badge bg-success">Confirmado</span>
+          {% else %}
+            <span class="badge bg-secondary">Pendente</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+             class="btn btn-sm btn-outline-primary">
+            Acessar
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/minhasextras.js') }}"></script>
 {% endblock %}

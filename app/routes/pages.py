@@ -155,8 +155,15 @@ def pedidos():
 @bp.route("/minhas-extras")
 @login_required
 def minhas_extras():
-    return render_template("minhasextras.html", active_menu="minhasextras")
+    from app.services.solicitacoes_service import obter_minhas_extras
 
+    solicitacoes = obter_minhas_extras(current_user.matricula)
+
+    return render_template(
+        "minhasextras.html",
+        solicitacoes=solicitacoes,
+        active_menu="minhasextras"
+    )
 
 @bp.route("/solicitacoes/fechadas")
 @login_required

@@ -178,3 +178,26 @@ def registrar_assinatura_funcionario(
                   AND ltrim(matricula, '0') = ltrim(%s, '0')
             """, (username, solicitacao_id, matricula))
         conn.commit()
+
+
+def listar_solicitacoes_abertas_por_matricula(matricula: str):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT DISTINCT
+                    s.id,
+                    s.data,
+                    s.data_execucao,
+                    u.username AS solicitante,
+                    s.atividades,
+                    COUNT(sf.id) FILTER (WHERE sf.signed_at IS NOT NULL) AS assinadas,
+                    COUNT(sf.id) AS total_funcionarios
+                FROM solicitacoes s
+                JOIN users u ON u.id = s.solicitante_user_id
+                JOIN solicitacao_funcionarios sf
+                  ON sf.solicitacao_id = s.id
+                WHERE ltrim(sf.matricula, '0') = ltrim(%s, '0')
+                GROUP BY s.id, u.username
+                ORDER BY s.id DESC
+            """, (matricula,))
+            return cur.fetchall()
