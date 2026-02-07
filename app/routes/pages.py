@@ -194,13 +194,18 @@ def solicitacao_view(solicitacao_id):
 
     dados = obter_detalhe_solicitacao(solicitacao_id)
 
+    # 🔑 CONTEXTO DE ORIGEM
+    origem = request.args.get("from")
+
     return render_template(
         "solicitacoes.html",
         modo="view",
         solicitacao=dados["solicitacao"],
         funcionarios=dados["funcionarios"],
         aprovacoes=dados["aprovacoes"],
-        active_menu="solicitacoes"
+        active_menu="solicitacoes",
+        origem=origem
     )
+
 
 
