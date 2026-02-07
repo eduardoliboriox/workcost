@@ -9,6 +9,25 @@
 
   <div class="ms-auto d-flex gap-2">
 
+    {% if origem == 'pedidos' %}
+      <!-- 🔹 CONTEXTO: PEDIDOS -->
+      <a href="{{ url_for('pages.minhas_extras') }}"
+         class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </a>
+
+      <button class="btn btn-outline-purple"
+              type="button"
+              onclick="toggleFullscreen()">
+        <i class="bi bi-arrows-fullscreen"></i>
+      </button>
+
+      <a href="{{ url_for('auth.logout') }}"
+         class="btn btn-outline-danger">
+        <i class="bi bi-box-arrow-right"></i> Sair
+      </a>
+
+    {% else %}  
     {% if origem == 'minhasextras' %}
       <!-- 🔹 CONTEXTO: MINHAS EXTRAS -->
       <a href="{{ url_for('pages.minhas_extras') }}"
