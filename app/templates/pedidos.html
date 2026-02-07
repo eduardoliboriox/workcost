@@ -104,7 +104,9 @@
         {% endfor %}
     
         <td>
-          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+          <a href="{{ url_for('pages.solicitacao_view',
+                              solicitacao_id=s.id,
+                              from='pedidos') }}"
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
