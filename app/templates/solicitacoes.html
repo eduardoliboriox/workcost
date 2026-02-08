@@ -370,7 +370,11 @@
       <label class="fw-bold">
         RECEBIDO EM <small class="text-muted">(Received date)</small>
       </label>
-      <input type="date" class="form-control">
+      <input type="date"
+       name="recebido_em"
+       id="recebidoEm"
+       class="form-control"
+       value="{{ solicitacao.recebido_em if modo == 'view' and solicitacao.recebido_em else '' }}">
     </div>
   
     <!-- RH -->
