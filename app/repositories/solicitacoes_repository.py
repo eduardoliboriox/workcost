@@ -201,3 +201,14 @@ def listar_solicitacoes_abertas_por_matricula(matricula: str):
                 ORDER BY s.id DESC
             """, (matricula,))
             return cur.fetchall()
+
+
+def atualizar_recebido_em(solicitacao_id: int, recebido_em: str):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE solicitacoes
+                SET recebido_em = %s
+                WHERE id = %s
+            """, (recebido_em, solicitacao_id))
+        conn.commit()

@@ -8,7 +8,8 @@ from app.repositories.solicitacoes_repository import (
     listar_aprovacoes_por_solicitacao_id,
     registrar_aprovacao, 
     registrar_assinatura_funcionario,
-    listar_solicitacoes_abertas_por_matricula
+    listar_solicitacoes_abertas_por_matricula, 
+    atualizar_recebido_em
 )
 from flask_login import current_user
 
@@ -147,7 +148,8 @@ def confirmar_presenca_funcionario(
 def salvar_view_solicitacao(
     solicitacao_id: int,
     aprovacoes: list,
-    funcionarios: list
+    funcionarios: list,
+    recebido_em: str | None = None
 ):
     """
     Commit explícito do modo VIEW.
@@ -167,6 +169,12 @@ def salvar_view_solicitacao(
             solicitacao_id=solicitacao_id,
             matricula=f["matricula"],
             username=f["username"]
+        )
+
+    if recebido_em:
+        atualizar_recebido_em(
+            solicitacao_id=solicitacao_id,
+            recebido_em=recebido_em
         )
 
 
