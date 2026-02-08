@@ -26,160 +26,167 @@
 {% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4 page-pedidos">
 
-  <!-- FILTROS -->
-  <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
-    <input
-      id="filterSearch"
-      class="form-control w-25"
-      placeholder="Pesquisar...">
+<div class="page-pedidos">
 
-    <select id="filterEstado" class="form-select w-25">
-      <option value="">Todos os estados</option>
-      <option value="solicitante">Pendente Solicitante</option>
-      <option value="gestor">Pendente Gestor</option>
-      <option value="gerente">Pendente Gerente</option>
-      <option value="controladoria">Pendente Controladoria</option>
-      <option value="diretoria">Pendente Diretoria</option>
-      <option value="rh">Pendente RH</option>
-      <option value="concluida">Concluída</option>
-    </select>
+  <!-- =========================
+       DESKTOP
+       ========================= -->
+  <div class="card shadow-sm p-4">
 
-    <div class="d-flex gap-2">
-      <input type="date" id="filterStartDate" class="form-control">
-      <input type="date" id="filterEndDate" class="form-control">
+    <!-- FILTROS -->
+    <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
+      <input
+        id="filterSearch"
+        class="form-control w-25"
+        placeholder="Pesquisar...">
+
+      <select id="filterEstado" class="form-select w-25">
+        <option value="">Todos os estados</option>
+        <option value="solicitante">Pendente Solicitante</option>
+        <option value="gestor">Pendente Gestor</option>
+        <option value="gerente">Pendente Gerente</option>
+        <option value="controladoria">Pendente Controladoria</option>
+        <option value="diretoria">Pendente Diretoria</option>
+        <option value="rh">Pendente RH</option>
+        <option value="concluida">Concluída</option>
+      </select>
+
+      <div class="d-flex gap-2">
+        <input type="date" id="filterStartDate" class="form-control">
+        <input type="date" id="filterEndDate" class="form-control">
+      </div>
     </div>
+
+    <!-- TABELA (DESKTOP) -->
+    <table class="table table-bordered align-middle text-center">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Data</th>
+          <th>Realização</th>
+          <th>Solicitante</th>
+          <th>Descrição</th>
+          <th>Solicitação</th>
+          <th>Gestor</th>
+          <th>Gerente</th>
+          <th>Controladoria</th>
+          <th>Diretoria</th>
+          <th>RH</th>
+          <th>Acessar</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for s in solicitacoes %}
+        <tr>
+          <td>{{ s.id }}</td>
+          <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
+          <td>
+            {% if s.data_execucao %}
+              {{ s.data_execucao.strftime("%d/%m/%Y") }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ s.solicitante }}</td>
+          <td>{{ s.descricao }}</td>
+
+          <td>
+            {% if s.status_solicitacao == "Confirmado" %}
+              <span class="badge bg-success">Confirmado</span>
+            {% else %}
+              <span class="badge bg-secondary">Pendente</span>
+            {% endif %}
+          </td>
+
+          {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
+          <td>
+            {% if s.aprovacoes[role] %}
+              <span class="badge bg-success">{{ s.aprovacoes[role] }}</span>
+            {% else %}
+              <span class="badge bg-secondary">Pendente</span>
+            {% endif %}
+          </td>
+          {% endfor %}
+
+          <td>
+            <a href="{{ url_for('pages.solicitacao_view',
+                                solicitacao_id=s.id,
+                                from='pedidos') }}"
+               class="btn btn-sm btn-outline-primary">
+              Acessar
+            </a>
+
+            <button type="button"
+                    class="btn btn-sm btn-outline-warning ms-1"
+                    onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+              Provisão
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
   </div>
 
-  <!-- TABELA (DESKTOP) -->
-  <table class="table table-bordered align-middle text-center">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Realização</th>
-        <th>Solicitante</th>
-        <th>Descrição</th>
-        <th>Solicitação</th>
-        <th>Gestor</th>
-        <th>Gerente</th>
-        <th>Controladoria</th>
-        <th>Diretoria</th>
-        <th>RH</th>
-        <th>Acessar</th>
-      </tr>
-    </thead>
+  <!-- =========================
+       MOBILE CARDS
+       ========================= -->
+  <div class="solicitacoes-mobile">
+    {% for s in solicitacoes %}
+    <div class="solicitacao-card" data-id="{{ s.id }}">
 
-    <tbody>
-      {% for s in solicitacoes %}
-      <tr>
-        <td>{{ s.id }}</td>
-        <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
-        <td>
-          {% if s.data_execucao %}
-            {{ s.data_execucao.strftime("%d/%m/%Y") }}
-          {% else %}
-            -
-          {% endif %}
-        </td>
-        <td>{{ s.solicitante }}</td>
-        <td>{{ s.descricao }}</td>
+      <div class="card-header">
+        <span class="card-id">ID: {{ s.id }}</span>
 
-        <td>
-          {% if s.status_solicitacao == "Confirmado" %}
-            <span class="badge bg-success">Confirmado</span>
-          {% else %}
-            <span class="badge bg-secondary">Pendente</span>
-          {% endif %}
-        </td>
-
-        {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
-        <td>
-          {% if s.aprovacoes[role] %}
-            <span class="badge bg-success">{{ s.aprovacoes[role] }}</span>
-          {% else %}
-            <span class="badge bg-secondary">Pendente</span>
-          {% endif %}
-        </td>
-        {% endfor %}
-
-        <td>
-          <a href="{{ url_for('pages.solicitacao_view',
-                              solicitacao_id=s.id,
-                              from='pedidos') }}"
-             class="btn btn-sm btn-outline-primary">
-            Acessar
-          </a>
-
-          <button type="button"
-                  class="btn btn-sm btn-outline-warning ms-1"
-                  onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
-            Provisão
-          </button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-</div>
-
-{# ===============================
-   MOBILE CARDS (somente mobile)
-   =============================== #}
-<div class="solicitacoes-mobile">
-
-  {% if solicitacoes %}
-    <div class="solicitacoes-mobile">
-      {% for s in solicitacoes %}
-      <div class="solicitacao-card" data-id="{{ s.id }}">
-        <div class="card-header">
-          <span class="card-id">ID: {{ s.id }}</span>
-  
-          {% if s.status_solicitacao == "Confirmado" %}
-            <span class="badge bg-success">Confirmado</span>
-          {% else %}
-            <span class="badge bg-secondary">Pendente</span>
-          {% endif %}
-        </div>
-  
-        <div class="card-body">
-          <div><strong>Data:</strong> {{ s.data.strftime("%d/%m/%Y") }}</div>
-          <div><strong>Realização:</strong>
-            {{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}
-          </div>
-          <div><strong>Solicitante:</strong> {{ s.solicitante }}</div>
-          <div><strong>Descrição:</strong> {{ s.descricao }}</div>
-        </div>
-  
-        <div class="card-actions">
-          <a href="{{ url_for('pages.solicitacao_view',
-                              solicitacao_id=s.id,
-                              from='pedidos') }}"
-             class="btn btn-sm btn-outline-primary">
-            Acessar
-          </a>
-  
-          <button type="button"
-                  class="btn btn-sm btn-outline-warning"
-                  onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
-            Provisão
-          </button>
-  
-          <button type="button"
-                  class="btn btn-sm btn-outline-secondary btn-details"
-                  data-id="{{ s.id }}">
-            Detalhes
-          </button>
-        </div>
+        {% if s.status_solicitacao == "Confirmado" %}
+          <span class="badge bg-success">Confirmado</span>
+        {% else %}
+          <span class="badge bg-secondary">Pendente</span>
+        {% endif %}
       </div>
-      {% endfor %}
+
+      <div class="card-body">
+        <div><strong>Data:</strong> {{ s.data.strftime("%d/%m/%Y") }}</div>
+        <div><strong>Realização:</strong>
+          {{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}
+        </div>
+        <div><strong>Solicitante:</strong> {{ s.solicitante }}</div>
+        <div><strong>Descrição:</strong> {{ s.descricao }}</div>
+      </div>
+
+      <div class="card-actions">
+        <a href="{{ url_for('pages.solicitacao_view',
+                            solicitacao_id=s.id,
+                            from='pedidos') }}"
+           class="btn btn-sm btn-outline-primary">
+          Acessar
+        </a>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-warning"
+                onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+          Provisão
+        </button>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary btn-details"
+                data-id="{{ s.id }}">
+          Detalhes
+        </button>
+      </div>
+
     </div>
-  {% endif %}
+    {% endfor %}
+  </div>
+
 </div>
 
-<!-- MODAL MOBILE -->
+<!-- =========================
+     MODAL MOBILE
+     ========================= -->
 <div class="modal fade" id="modalSolicitacaoMobile" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
