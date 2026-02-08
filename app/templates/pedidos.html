@@ -125,5 +125,61 @@
 
 </div>
 
+{# ===============================
+   MOBILE CARDS (somente mobile)
+   =============================== #}
+<div class="solicitacoes-mobile">
+
+  {% for s in solicitacoes %}
+  <div class="solicitacao-card" data-id="{{ s.id }}">
+
+    <div class="card-header">
+      <span class="card-id">ID: {{ s.id }}</span>
+
+      {% if s.status_solicitacao == "Confirmado" %}
+        <span class="badge bg-success">Confirmado</span>
+      {% else %}
+        <span class="badge bg-secondary">Pendente</span>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <div><strong>Data:</strong> {{ s.data.strftime("%d/%m/%Y") }}</div>
+      <div>
+        <strong>Realização:</strong>
+        {{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}
+      </div>
+      <div><strong>Solicitante:</strong> {{ s.solicitante }}</div>
+    </div>
+
+    <div class="card-actions">
+      <a href="{{ url_for('pages.solicitacao_view',
+                          solicitacao_id=s.id,
+                          from='pedidos') }}"
+         class="btn btn-sm btn-outline-primary">
+        Acessar
+      </a>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-warning"
+        onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+        Provisão
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary btn-details"
+        data-id="{{ s.id }}">
+        Detalhes
+      </button>
+    </div>
+
+  </div>
+  {% endfor %}
+
+</div>
+
+<script src="{{ url_for('static', filename='js/solicitacoes-mobile.js') }}"></script>
 <script src="{{ url_for('static', filename='js/solicitacoes-abertas.js') }}"></script>
 {% endblock %}
