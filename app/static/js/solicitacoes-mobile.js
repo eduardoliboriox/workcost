@@ -1,25 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const container = document.querySelector(".solicitacoes-mobile");
+  const container = document.querySelector(".page-pedidos .solicitacoes-mobile");
   if (!container) return;
 
-  const modalEl = document.getElementById("modalSolicitacaoMobile");
-  if (!modalEl) return;
+  const modal = new bootstrap.Modal(
+    document.getElementById("modalSolicitacaoMobile")
+  );
 
-  const modal = new bootstrap.Modal(modalEl);
-
-  document.querySelectorAll(".btn-details").forEach(btn => {
+  container.querySelectorAll(".btn-details").forEach(btn => {
     btn.addEventListener("click", () => {
       const card = btn.closest(".solicitacao-card");
 
-      const id = card.dataset.id;
-      const status = card.querySelector(".badge").innerText;
-      const body = card.querySelector(".card-body").innerHTML;
+      document.getElementById("modalSolicitacaoId").innerText =
+        `#${card.dataset.id}`;
 
-      document.getElementById("modalSolicitacaoId").innerText = `#${id}`;
       document.getElementById("modalSolicitacaoBody").innerHTML = `
-        <div class="mb-2"><strong>Status:</strong> ${status}</div>
-        ${body}
+        <p><strong>Solicitante:</strong> ${card.dataset.solicitante}</p>
+        <p><strong>Gestor:</strong> ${card.dataset.gestor}</p>
+        <p><strong>Gerente:</strong> ${card.dataset.gerente}</p>
+        <p><strong>Controladoria:</strong> ${card.dataset.controladoria}</p>
+        <p><strong>Diretoria:</strong> ${card.dataset.diretoria}</p>
+        <p><strong>RH:</strong> ${card.dataset.rh}</p>
       `;
 
       modal.show();
