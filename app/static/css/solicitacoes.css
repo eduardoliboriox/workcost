@@ -99,8 +99,8 @@
 
 .signature-box.pending,
 .approval-box.pending {
-  background: #e9ecef;   /* e9ecef */ 
-  color: #0c0d08;      /* 6c757d */
+  background: #e9ecef;
+  color: #0c0d08;
 }
 
 .signature-box.signed,
@@ -110,17 +110,15 @@
 }
 
 /* ===============================
-   Approval Flow - Spacing Fix
+   Approval Flow
    =============================== */
 
-/* Container do fluxo */
 .approval-flow {
   display: flex;
   justify-content: center;
-  gap: 32px; 
+  gap: 32px;
 }
 
-/* Cada assinatura */
 .approval-item {
   min-width: 160px;
   display: flex;
@@ -128,7 +126,6 @@
   align-items: center;
 }
 
-/* Input centralizado */
 .approval-input-wrapper {
   width: 140px;
   display: flex;
@@ -140,18 +137,28 @@
   text-align: center;
 }
 
-* ===============================
+/* ===============================
    MOBILE / DESKTOP VISIBILITY
    =============================== */
 
-/* 🔹 REGRA BASE (DESKTOP) */
-.page-pedidos .solicitacoes-mobile {
+/* 🔹 DESKTOP (padrão) */
+.page-pedidos .pedidos-mobile {
   display: none;
+}
+
+.page-pedidos .pedidos-desktop {
+  display: block;
 }
 
 /* 🔹 MOBILE */
 @media (max-width: 768px) {
 
-  /* Esconde SOMENTE a tabela da página pedidos */
-  .page-pedidos table {
+  .page-pedidos .pedidos-desktop {
     display: none;
+  }
+
+  .page-pedidos .pedidos-mobile {
+    display: block;
+  }
+
+}
