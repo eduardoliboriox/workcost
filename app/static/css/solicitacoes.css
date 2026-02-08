@@ -201,35 +201,25 @@
   }
 }
 
-/* ===============================
-   MOBILE - PEDIDOS (ISOLADO)
-   =============================== */
+/* ===== PEDIDOS MOBILE ISOLADO ===== */
 
-/* Mobile NÃO existe no desktop */
 .page-pedidos .solicitacoes-mobile {
   display: none;
 }
 
-/* Desktop SEMPRE vê tabela */
-.page-pedidos table {
-  display: table;
-}
-
 @media (max-width: 768px) {
 
-  /* Mobile ESCONDE tabela apenas em pedidos */
   .page-pedidos table {
     display: none;
   }
 
-  /* Mobile MOSTRA cards apenas em pedidos */
   .page-pedidos .solicitacoes-mobile {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .page-pedidos .solicitacao-card {
+  .solicitacao-card {
     border: 1px solid #dee2e6;
     border-radius: 10px;
     padding: 14px;
@@ -237,41 +227,19 @@
     box-shadow: 0 3px 6px rgba(0,0,0,.06);
   }
 
-  .page-pedidos .solicitacao-card .card-header {
+  .solicitacao-card .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+    font-weight: 600;
   }
 
-  .page-pedidos .card-id {
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-
-  .page-pedidos .solicitacao-card .card-body {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .page-pedidos .solicitacao-card .card-actions {
+  .solicitacao-card .card-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
   }
 
-  .page-pedidos .solicitacao-card .btn {
+  .solicitacao-card .btn {
     flex: 1;
-  }
-
-  /* filtros mobile */
-  .page-pedidos #filterSearch,
-  .page-pedidos #filterEstado,
-  .page-pedidos #filterStartDate,
-  .page-pedidos #filterEndDate {
-    width: 100%;
   }
 }
