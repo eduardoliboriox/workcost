@@ -141,9 +141,17 @@
    MOBILE / DESKTOP VISIBILITY
    =============================== */
 
-/* 🔹 DESKTOP (padrão) */
+/*
+  Estratégia:
+  - Estado base: MOBILE DESATIVADO
+  - Desktop é o padrão
+  - Mobile só existe dentro do breakpoint
+  - Força suficiente para sobrepor Bootstrap
+*/
+
+/* 🔹 ESTADO BASE (DESKTOP) */
 .page-pedidos .pedidos-mobile {
-  display: none;
+  display: none !important;
 }
 
 .page-pedidos .pedidos-desktop {
@@ -153,12 +161,17 @@
 /* 🔹 MOBILE */
 @media (max-width: 768px) {
 
-  .page-pedidos .pedidos-desktop {
-    display: none;
+  /* Esconde QUALQUER tabela desktop */
+  .page-pedidos .pedidos-desktop,
+  .page-pedidos .pedidos-desktop table {
+    display: none !important;
   }
 
+  /* Ativa cards mobile */
   .page-pedidos .pedidos-mobile {
-    display: block;
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
   }
 
 }
