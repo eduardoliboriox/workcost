@@ -140,9 +140,8 @@
   text-align: center;
 }
 
-
 /* ===============================
-   MOBILE - CARDS
+   MOBILE - CARDS (GLOBAL)
    =============================== */
 
 .solicitacoes-mobile {
@@ -200,14 +199,11 @@
     flex-direction: column;
     gap: 8px;
   }
+}
 
 /* ===============================
-   MOBILE - SOLICITAÇÕES (PEDIDOS)
+   MOBILE - PEDIDOS (ESCOPADO)
    =============================== */
-
-.page-pedidos table {
-  display: table;
-}
 
 .page-pedidos .solicitacoes-mobile {
   display: none;
@@ -225,27 +221,18 @@
     gap: 14px;
   }
 
-  .solicitacao-card {
-    border: 1px solid #dee2e6;
+  .page-pedidos .solicitacao-card {
     border-radius: 10px;
     padding: 14px;
-    background: #fff;
     box-shadow: 0 3px 6px rgba(0,0,0,.06);
   }
 
-  .solicitacao-card .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .card-id {
+  .page-pedidos .card-id {
     font-weight: 700;
     font-size: 0.95rem;
   }
 
-  .solicitacao-card .card-body {
+  .page-pedidos .solicitacao-card .card-body {
     font-size: 0.9rem;
     line-height: 1.4;
     display: flex;
@@ -253,13 +240,13 @@
     gap: 4px;
   }
 
-  .solicitacao-card .card-actions {
+  .page-pedidos .solicitacao-card .card-actions {
     display: flex;
     gap: 8px;
     margin-top: 12px;
   }
 
-  .solicitacao-card .card-actions .btn {
+  .page-pedidos .solicitacao-card .btn {
     flex: 1;
   }
 
@@ -274,6 +261,5 @@
   .page-pedidos .card > .d-flex.justify-content-between {
     flex-direction: column;
     gap: 10px;
-  }  
-
+  }
 }
