@@ -141,85 +141,44 @@
 }
 
 /* ===============================
-   MOBILE - CARDS (GLOBAL)
+   WorkCost - Solicitações
    =============================== */
 
-.solicitacoes-mobile {
+.page-title-solicitacoes {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   VISIBILIDADE RESPONSIVA
+   =============================== */
+
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
   display: none;
 }
 
+/* ===============================
+   PEDIDOS - RESPONSIVO
+   =============================== */
+
 @media (max-width: 768px) {
 
-  table {
+  .page-pedidos .desktop-only {
     display: none;
   }
 
-  .solicitacoes-mobile {
+  .page-pedidos .mobile-only {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .solicitacao-card {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.05);
-  }
-
-  .solicitacao-card .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .solicitacao-card .card-body {
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-  }
-
-  .solicitacao-card .card-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-  }
-
-  /* Filtros mobile */
-  #filterSearch,
-  #filterEstado,
-  #filterStartDate,
-  #filterEndDate {
-    width: 100% !important;
-  }
-
-  .card > .d-flex.justify-content-between {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-/* ===== PEDIDOS MOBILE ISOLADO ===== */
-
-.page-pedidos .solicitacoes-mobile {
-  display: none;
-}
-
-@media (max-width: 768px) {
-
-  .page-pedidos table {
-    display: none;
-  }
-
-  .page-pedidos .solicitacoes-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .solicitacao-card {
+  .page-pedidos .solicitacao-card {
     border: 1px solid #dee2e6;
     border-radius: 10px;
     padding: 14px;
@@ -227,19 +186,24 @@
     box-shadow: 0 3px 6px rgba(0,0,0,.06);
   }
 
-  .solicitacao-card .card-header {
+  .page-pedidos .solicitacao-card .card-header {
     display: flex;
     justify-content: space-between;
     font-weight: 600;
+    margin-bottom: 6px;
   }
 
-  .solicitacao-card .card-actions {
+  .page-pedidos .solicitacao-card .card-body {
+    font-size: 0.9rem;
+  }
+
+  .page-pedidos .solicitacao-card .card-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
   }
 
-  .solicitacao-card .btn {
+  .page-pedidos .solicitacao-card .btn {
     flex: 1;
   }
 }
