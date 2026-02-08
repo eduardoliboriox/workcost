@@ -1,39 +1,69 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  const tableRows = document.querySelectorAll("tbody tr");
+  const mobileCards = document.querySelectorAll(".solicitacao-card");
+
   const searchInput = document.getElementById("filterSearch");
   const startDateInput = document.getElementById("filterStartDate");
   const endDateInput = document.getElementById("filterEndDate");
-  const rows = document.querySelectorAll("tbody tr");
 
   if (!searchInput || !startDateInput || !endDateInput) return;
 
-  const today = new Date();
-  startDateInput.value = `${today.getFullYear()}-01-01`;
-  endDateInput.value = today.toISOString().split("T")[0];
-
-  searchInput.addEventListener("input", applyFilters);
-  startDateInput.addEventListener("change", applyFilters);
-  endDateInput.addEventListener("change", applyFilters);
+  function parseDate(text) {
+    if (!text) return null;
+    const [day, month, year] = text.trim().split("/");
+    return new Date(`${year}-${month}-${day}`);
+  }
 
   function applyFilters() {
     const search = searchInput.value.toLowerCase().trim();
-    const startDate = new Date(startDateInput.value);
-    const endDate = new Date(endDateInput.value);
+    const startDate = startDateInput.value
+      ? new Date(startDateInput.value)
+      : null;
+    const endDate = endDateInput.value
+      ? new Date(endDateInput.value)
+      : null;
 
-    rows.forEach(row => {
+    /* =====================
+       DESKTOP (tabela)
+       ===================== */
+    tableRows.forEach(row => {
       const text = row.innerText.toLowerCase();
-
       const dateCell = row.querySelector("td:nth-child(2)");
-      if (!dateCell) return;
-
-      const [day, month, year] = dateCell.innerText.split("/");
-      const rowDate = new Date(`${year}-${month}-${day}`);
+      const rowDate = parseDate(dateCell?.innerText);
 
       const matchesText = !search || text.includes(search);
       const matchesDate =
-        (!startDateInput.value || rowDate >= startDate) &&
-        (!endDateInput.value || rowDate <= endDate);
+        (!startDate || (rowDate && rowDate >= startDate)) &&
+        (!endDate || (rowDate && rowDate <= endDate));
 
-      row.style.display = matchesText && matchesDate ? "" : "none";
+      row.style.display =
+        matchesText && matchesDate ? "" : "none";
+    });
+
+    /* =====================
+       MOBILE (cards)
+       ===================== */
+    mobileCards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+
+      const dataText =
+        card.querySelector(".card-content div:nth-child(1)")?.innerText;
+      const cardDate = dataText
+        ? parseDate(dataText.split(":")[1])
+        : null;
+
+      const matchesText = !search || text.includes(search);
+      const matchesDate =
+        (!startDate || (cardDate && cardDate >= startDate)) &&
+        (!endDate || (cardDate && cardDate <= endDate));
+
+      card.style.display =
+        matchesText && matchesDate ? "" : "none";
     });
   }
+
+  [searchInput, startDateInput, endDateInput]
+    .forEach(el => el.addEventListener("input", applyFilters));
+
 });
