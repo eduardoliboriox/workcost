@@ -140,60 +140,18 @@
   text-align: center;
 }
 
-/* ===============================
-   VISIBILIDADE RESPONSIVA
+* ===============================
+   MOBILE / DESKTOP VISIBILITY
    =============================== */
 
-.desktop-only {
-  display: block;
-}
-
-.mobile-only {
+/* 🔹 REGRA BASE (DESKTOP) */
+.page-pedidos .solicitacoes-mobile {
   display: none;
 }
 
-/* ===============================
-   PEDIDOS - RESPONSIVO
-   =============================== */
-
+/* 🔹 MOBILE */
 @media (max-width: 768px) {
 
-  .page-pedidos .desktop-only {
+  /* Esconde SOMENTE a tabela da página pedidos */
+  .page-pedidos table {
     display: none;
-  }
-
-  .page-pedidos .mobile-only {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .page-pedidos .solicitacao-card {
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    padding: 14px;
-    background: #fff;
-    box-shadow: 0 3px 6px rgba(0,0,0,.06);
-  }
-
-  .page-pedidos .solicitacao-card .card-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .page-pedidos .solicitacao-card .card-body {
-    font-size: 0.9rem;
-  }
-
-  .page-pedidos .solicitacao-card .card-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .page-pedidos .solicitacao-card .btn {
-    flex: 1;
-  }
-}
