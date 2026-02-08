@@ -175,3 +175,68 @@
   }
 
 }
+
+
+/* ===============================
+   MOBILE CARDS - PEDIDOS
+   =============================== */
+
+.solicitacao-card {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+.solicitacao-card + .solicitacao-card {
+  margin-top: 12px;
+}
+
+.solicitacao-card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.solicitacao-card .card-id {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.solicitacao-card .card-content {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.solicitacao-card .card-content div {
+  margin-bottom: 4px;
+}
+
+.solicitacao-card .card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.solicitacao-card .card-actions .btn {
+  flex: 1;
+}
+
+/* ===============================
+   FILTROS MOBILE
+   =============================== */
+
+@media (max-width: 768px) {
+
+  .filtros-pedidos .form-control,
+  .filtros-pedidos .form-select {
+    width: 100%;
+  }
+
+  .filtros-pedidos .d-flex {
+    flex-direction: column;
+  }
+
+}
