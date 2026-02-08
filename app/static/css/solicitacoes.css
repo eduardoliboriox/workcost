@@ -239,4 +239,15 @@
     flex-direction: column;
   }
 
+/* ===============================
+   DATE INPUT FIX — MOBILE UX
+   =============================== */
+
+  .filtros-pedidos input[type="date"] {
+    font-size: 1rem;        /* evita texto “miúdo” */
+    padding: 10px 12px;     /* aumenta área clicável */
+    line-height: 1.2;
+  }
+
+   
 }
