@@ -9,6 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!searchInput || !startDateInput || !endDateInput) return;
 
+  /* ===============================
+     DEFAULT DATES (UX CONSISTENTE)
+     =============================== */
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  if (!startDateInput.value) {
+    startDateInput.value = `${currentYear}-01-01`;
+  }
+
+  if (!endDateInput.value) {
+    endDateInput.value = today.toISOString().split("T")[0];
+  }
+
   function parseDate(text) {
     if (!text) return null;
     const [day, month, year] = text.trim().split("/");
