@@ -4,16 +4,17 @@
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
   <span class="me-auto">
-  WorkCost · Pedidos de Extra — Abertas
+    WorkCost · Pedidos de Extra — Abertas
   </span>
 
   <div class="ms-auto d-flex gap-2">
-
     <a href="{{ url_for('pages.inicio') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
-    </a>    
+    </a>
 
-    <button class="btn btn-outline-purple" type="button" onclick="toggleFullscreen()">
+    <button class="btn btn-outline-purple"
+            type="button"
+            onclick="toggleFullscreen()">
       <i class="bi bi-arrows-fullscreen"></i>
     </button>
 
@@ -25,7 +26,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4">
+<div class="card shadow-sm p-4 page-pedidos">
 
   <!-- FILTROS -->
   <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
@@ -51,7 +52,7 @@
     </div>
   </div>
 
-  <!-- TABELA -->
+  <!-- TABELA (DESKTOP) -->
   <table class="table table-bordered align-middle text-center">
     <thead>
       <tr>
@@ -69,7 +70,7 @@
         <th>Acessar</th>
       </tr>
     </thead>
-    
+
     <tbody>
       {% for s in solicitacoes %}
       <tr>
@@ -84,7 +85,7 @@
         </td>
         <td>{{ s.solicitante }}</td>
         <td>{{ s.descricao }}</td>
-    
+
         <td>
           {% if s.status_solicitacao == "Confirmado" %}
             <span class="badge bg-success">Confirmado</span>
@@ -92,7 +93,7 @@
             <span class="badge bg-secondary">Pendente</span>
           {% endif %}
         </td>
-    
+
         {% for role in ["gestor", "gerente", "controladoria", "diretoria", "rh"] %}
         <td>
           {% if s.aprovacoes[role] %}
@@ -102,7 +103,7 @@
           {% endif %}
         </td>
         {% endfor %}
-    
+
         <td>
           <a href="{{ url_for('pages.solicitacao_view',
                               solicitacao_id=s.id,
@@ -110,11 +111,10 @@
              class="btn btn-sm btn-outline-primary">
             Acessar
           </a>
-    
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-warning ms-1"
-            onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+
+          <button type="button"
+                  class="btn btn-sm btn-outline-warning ms-1"
+                  onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
             Provisão
           </button>
         </td>
@@ -150,6 +150,7 @@
         {{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}
       </div>
       <div><strong>Solicitante:</strong> {{ s.solicitante }}</div>
+      <div><strong>Descrição:</strong> {{ s.descricao }}</div>
     </div>
 
     <div class="card-actions">
@@ -160,17 +161,15 @@
         Acessar
       </a>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-warning"
-        onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+      <button type="button"
+              class="btn btn-sm btn-outline-warning"
+              onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
         Provisão
       </button>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary btn-details"
-        data-id="{{ s.id }}">
+      <button type="button"
+              class="btn btn-sm btn-outline-secondary btn-details"
+              data-id="{{ s.id }}">
         Detalhes
       </button>
     </div>
@@ -178,6 +177,26 @@
   </div>
   {% endfor %}
 
+</div>
+
+<!-- MODAL MOBILE -->
+<div class="modal fade" id="modalSolicitacaoMobile" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Solicitação <span id="modalSolicitacaoId"></span>
+        </h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" id="modalSolicitacaoBody">
+        <!-- conteúdo preenchido via JS -->
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/solicitacoes-mobile.js') }}"></script>
