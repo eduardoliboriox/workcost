@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  const container = document.querySelector(".solicitacoes-mobile");
+  if (!container) return;
+
   const modalEl = document.getElementById("modalSolicitacaoMobile");
   if (!modalEl) return;
 
@@ -14,15 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const body = card.querySelector(".card-body").innerHTML;
 
       document.getElementById("modalSolicitacaoId").innerText = `#${id}`;
-
       document.getElementById("modalSolicitacaoBody").innerHTML = `
         <div class="mb-2"><strong>Status:</strong> ${status}</div>
         ${body}
-        <hr>
-        <div class="text-muted small">
-          Gestor, Gerente, Controladoria, Diretoria e RH
-          são exibidos aqui futuramente sem alterar backend.
-        </div>
       `;
 
       modal.show();
