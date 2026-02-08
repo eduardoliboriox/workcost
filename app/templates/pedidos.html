@@ -32,18 +32,16 @@
 <div class="page-pedidos">
 
   <!-- =========================
-       DESKTOP
+       FILTROS (DESKTOP + MOBILE)
        ========================= -->
-  <div class="card shadow-sm p-4 pedidos-desktop">
-
-    <!-- FILTROS -->
-    <div class="d-flex justify-content-between mb-3 gap-2 flex-wrap">
+  <div class="card shadow-sm p-3 mb-3 filtros-pedidos">
+    <div class="d-flex justify-content-between gap-2 flex-wrap">
       <input
         id="filterSearch"
-        class="form-control w-25"
+        class="form-control flex-grow-1"
         placeholder="Pesquisar...">
 
-      <select id="filterEstado" class="form-select w-25">
+      <select id="filterEstado" class="form-select">
         <option value="">Todos os estados</option>
         <option value="solicitante">Pendente Solicitante</option>
         <option value="gestor">Pendente Gestor</option>
@@ -59,6 +57,12 @@
         <input type="date" id="filterEndDate" class="form-control">
       </div>
     </div>
+  </div>
+  
+  <!-- =========================
+       DESKTOP
+       ========================= -->
+  <div class="card shadow-sm p-4 pedidos-desktop">
 
     <!-- TABELA (DESKTOP) -->
     <table class="table table-bordered align-middle text-center">
