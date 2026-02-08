@@ -119,31 +119,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-  /* ======================================================
-     SALVAR VIEW (somente aprovações)
-     ====================================================== */
+/* ======================================================
+   SALVAR VIEW (somente aprovações)
+   ====================================================== */
 
-  document.getElementById("btnSaveView")
-    ?.addEventListener("click", async (e) => {
-      e.preventDefault();
+document.getElementById("btnSaveView")
+  ?.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-      const res = await fetch(
-        `/api/solicitacoes/${solicitacaoId}/salvar-view`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            aprovacoes: pendingApprovals
-          })
-        }
-      );
+    const recebidoEm =
+      document.getElementById("recebidoEm")?.value || null;
 
-      if (!res.ok) {
-        alert("Erro ao salvar");
-        return;
+    const res = await fetch(
+      `/api/solicitacoes/${solicitacaoId}/salvar-view`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          aprovacoes: pendingApprovals,
+          recebido_em: recebidoEm
+        })
       }
+    );
 
-      window.location.href = `/solicitacoes/${solicitacaoId}`;
-    });
+    if (!res.ok) {
+      alert("Erro ao salvar");
+      return;
+    }
+
+    window.location.href = `/solicitacoes/${solicitacaoId}`;
+  });
 
 });
