@@ -69,6 +69,21 @@
          object-fit: contain;
        ">
 
+  <!-- ID DA SOLICITAÇÃO (DIREITA) -->
+  {% if modo == 'view' and solicitacao %}
+    <div style="
+         position: absolute;
+         right: 0;
+         top: 50%;
+         transform: translateY(-50%);
+         font-weight: 600;
+         font-size: 0.95rem;
+         color: #495057;
+       ">
+      ID: {{ solicitacao.id }}
+    </div>
+  {% endif %}
+  
   <div class="text-center">
     <div class="fw-bold">
       FORMULÁRIO DE CONTROLE DE EXTRA JORNADA
