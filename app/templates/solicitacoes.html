@@ -55,13 +55,31 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
 
-<div class="page-title-solicitacoes text-center mb-4">
-  <div class="fw-bold">
-    FORMULÁRIO DE CONTROLE DE EXTRA JORNADA
+<!-- =========================
+     TÍTULO COM LOGO (AJUSTE)
+     ========================= -->
+<div class="page-title-solicitacoes mb-4 position-relative">
+
+  <!-- Logo -->
+  <img src="{{ url_for('static', filename='images/logos/logo.jpeg') }}"
+       alt="Logo da empresa"
+       style="
+         position: absolute;
+         left: 0;
+         top: 50%;
+         transform: translateY(-50%);
+         height: 48px;
+       ">
+
+  <!-- Título (mantido intacto) -->
+  <div class="text-center">
+    <div class="fw-bold">
+      FORMULÁRIO DE CONTROLE DE EXTRA JORNADA
+    </div>
+    <small class="text-muted">
+      Overtime Control Form
+    </small>
   </div>
-  <small class="text-muted">
-    Overtime Control Form
-  </small>
 </div>
 
 <form id="formSolicitacao"
