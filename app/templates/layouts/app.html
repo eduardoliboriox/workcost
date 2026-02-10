@@ -199,21 +199,14 @@
     </a>
   {% endif %}
 
-  <!-- PERFIL -->
-<!-- PERFIL -->
-<a href="{{ url_for('auth.my_profile') }}"
-   class="bottom-item {% if active_menu == 'perfil' %}active{% endif %}">
-  <div class="bottom-icon bottom-avatar">
-    {% if current_user.profile_image %}
-      <img src="{{ url_for('static', filename=current_user.profile_image) }}"
-           alt="Perfil">
-    {% else %}
-      <i class="bi bi-person-circle"></i>
-    {% endif %}
-  </div>
-  <small>Perfil</small>
-</a>
-
+    <a href="{{ url_for('auth.my_profile') }}"
+       class="bottom-item {% if active_menu == 'perfil' %}active{% endif %}">
+      <div class="bottom-icon">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <small>Perfil</small>
+    </a>
+  {% endif %}
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
