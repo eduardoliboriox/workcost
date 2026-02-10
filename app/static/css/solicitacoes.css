@@ -254,43 +254,42 @@
 
 
 /* =====================================================
-   MOBILE BOTTOM NAV — DEFINITIVE ALIGN FIX
+   MOBILE BOTTOM NAV — ICON SLOT (FIX DEFINITIVO)
    ===================================================== */
 
 .bottom-nav .bottom-item {
-  display: grid;
-  grid-template-rows: 26px auto; /* 🔑 ícone | texto */
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  row-gap: 6px !important;
+  justify-content: center;
 }
 
-/* ÍCONE OU AVATAR — SLOT FIXO */
-.bottom-nav .bottom-item i,
-.bottom-nav .bottom-item img {
+/* SLOT fixo para ícone ou avatar */
+.bottom-nav .bottom-item .bottom-icon {
   width: 26px;
   height: 26px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ÍCONE */
-.bottom-nav .bottom-item i {
+/* Ícone */
+.bottom-nav .bottom-item .bottom-icon i {
   font-size: 24px;
-  line-height: 26px;
-  text-align: center;
+  line-height: 1;
 }
 
-/* AVATAR */
-.bottom-nav .bottom-item img {
+/* Avatar */
+.bottom-nav .bottom-item .bottom-icon img {
+  width: 26px;
+  height: 26px;
   object-fit: cover;
   border-radius: 50%;
 }
 
-/* TEXTO */
+/* Texto */
 .bottom-nav .bottom-item small {
+  margin-top: 4px;
   font-size: 0.75rem;
   line-height: 1;
-  margin: 5px;
-  padding: 5px;
 }
-
