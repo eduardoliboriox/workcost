@@ -20,9 +20,17 @@
       Fechadas
     </a>
 
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
-      Sair
+    <button class="btn btn-outline-purple"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
+    <a href="{{ url_for('auth.logout') }}"
+       class="btn btn-outline-danger">
+      <i class="bi bi-box-arrow-right"></i> Sair
     </a>
+    
   </div>
 </div>
 {% endblock %}
