@@ -8,8 +8,8 @@ class User(UserMixin):
         self.email = data.get("email")
         self.full_name = data.get("full_name")
 
-        # 🔑 NECESSÁRIO PARA FLUXO DE APROVAÇÃO (create)
         self.matricula = data.get("matricula")
+        self.profile_image = data.get("profile_image")  
 
         self._is_active = data.get("is_active", False)
         self.is_admin = data.get("is_admin", False)
