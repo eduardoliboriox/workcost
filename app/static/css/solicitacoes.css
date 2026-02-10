@@ -252,11 +252,6 @@
    
 }
 
-
-/* =====================================================
-   MOBILE BOTTOM NAV — ICON SLOT (FIX DEFINITIVO)
-   ===================================================== */
-
 .bottom-nav .bottom-item {
   display: flex;
   flex-direction: column;
@@ -264,7 +259,6 @@
   justify-content: center;
 }
 
-/* SLOT fixo para ícone ou avatar */
 .bottom-nav .bottom-item .bottom-icon {
   width: 26px;
   height: 26px;
@@ -273,13 +267,11 @@
   justify-content: center;
 }
 
-/* Ícone */
 .bottom-nav .bottom-item .bottom-icon i {
   font-size: 24px;
   line-height: 1;
 }
 
-/* Avatar */
 .bottom-nav .bottom-item .bottom-icon img {
   width: 26px;
   height: 26px;
@@ -287,7 +279,6 @@
   border-radius: 50%;
 }
 
-/* Texto */
 .bottom-nav .bottom-item small {
   margin-top: 4px;
   font-size: 0.75rem;
