@@ -252,29 +252,37 @@
    
 }
 
+/* ===============================
+   BOTTOM NAV MOBILE — PERFIL
+   =============================== */
+
 .bottom-nav .bottom-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 56px;               /* 🔑 trava altura */
 }
 
-.bottom-nav .bottom-item .bottom-icon {
+/* SLOT FIXO DO ÍCONE */
+.bottom-nav .bottom-icon {
   width: 26px;
   height: 26px;
+  flex: 0 0 26px;             /* 🔑 impede expansão */
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;           /* 🔑 nada pode vazar */
 }
 
-/* ÍCONE */
-.bottom-nav .bottom-item .bottom-icon i {
+/* ÍCONE PADRÃO */
+.bottom-nav .bottom-icon i {
   font-size: 24px;
   line-height: 1;
 }
 
-/* AVATAR — FIX CRÍTICO */
-.bottom-nav .bottom-item .bottom-icon img {
+/* AVATAR */
+.bottom-nav .bottom-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
