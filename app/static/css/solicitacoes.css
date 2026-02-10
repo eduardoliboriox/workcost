@@ -293,3 +293,8 @@
   margin: 0;
   padding: 0;
 }
+
+
+.bottom-nav .bottom-item small {
+  margin-top: 4px !important;
+}
