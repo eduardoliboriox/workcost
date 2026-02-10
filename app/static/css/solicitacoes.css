@@ -254,42 +254,43 @@
 
 
 /* =====================================================
-   MOBILE BOTTOM NAV — PROFILE ICON FIX
+   MOBILE BOTTOM NAV — FINAL PROFILE ALIGN FIX
    ===================================================== */
 
-/* Área fixa para ícone / avatar */
 .bottom-nav .bottom-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* ⬅️ chave */
 }
 
-/* Slot visual único para ícone ou imagem */
+/* SLOT FIXO DO ÍCONE (independente de img ou i) */
 .bottom-nav .bottom-item i,
 .bottom-nav .bottom-item img {
   width: 26px;
   height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 26px;
-  margin-bottom: 2px;
+  display: block;              /* ⬅️ NÃO flex */
+  margin-bottom: 4px;          /* ⬅️ espaçamento real */
 }
 
-/* Ícone Bootstrap */
+/* ÍCONE */
 .bottom-nav .bottom-item i {
   font-size: 24px;
+  line-height: 26px;
+  text-align: center;
 }
 
-/* Imagem de perfil */
+/* AVATAR */
 .bottom-nav .bottom-item img {
   object-fit: cover;
   border-radius: 50%;
 }
 
-/* Texto sempre alinhado */
+/* TEXTO */
 .bottom-nav .bottom-item small {
+  display: block;
   font-size: 0.75rem;
   line-height: 1;
+  margin: 0;                   /* ⬅️ remove herança */
+  padding: 0;
 }
