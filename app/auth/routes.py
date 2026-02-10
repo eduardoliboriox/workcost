@@ -188,6 +188,15 @@ def my_profile():
 
     if request.method == "POST":
 
+        # 👇 NOVO: upload da imagem
+        file = request.files.get("profile_image")
+        if file:
+            from app.auth.service import save_profile_image
+            try:
+                save_profile_image(current_user.id, file)
+            except ValueError as e:
+                flash(str(e), "danger")
+
         attach_employee_and_profile(current_user.id, request.form)
 
         try:
@@ -204,7 +213,6 @@ def my_profile():
 
         return redirect(url_for("auth.my_profile"))
 
-    # 🔹 GET: carregar perfil de contato/endereço
     from app.auth.profile_repository import get_profile
     profile = get_profile(current_user.id)
 

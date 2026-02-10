@@ -106,7 +106,7 @@
       <!-- PERFIL (todos) -->
       <a href="{{ url_for('auth.my_profile') }}"
          class="{% if active_menu == 'perfil' %}active{% endif %}">
-        <i class="bi bi-person-circle"></i> Perfil
+         Perfil
       </a>
     </nav>
   </aside>
@@ -186,7 +186,13 @@
   <!-- PERFIL -->
   <a href="{{ url_for('auth.my_profile') }}"
      class="bottom-item {% if active_menu == 'perfil' %}active{% endif %}">
-    <i class="bi bi-person-circle"></i>
+        {% if current_user.profile_image %}
+      <img src="{{ url_for('static', filename=current_user.profile_image) }}"
+           class="rounded-circle"
+           style="width:26px; height:26px; object-fit:cover;">
+    {% else %}
+      <i class="bi bi-person-circle"></i>
+    {% endif %}
     <small>Perfil</small>
   </a>
 </nav>

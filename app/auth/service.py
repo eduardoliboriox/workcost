@@ -1,4 +1,7 @@
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
+from werkzeug.utils import secure_filename
 from app.utils.text import normalize_username
 
 # users core
@@ -10,7 +13,9 @@ from app.auth.repository import (
     count_users,
     get_user_by_id,
     update_user_password,
-    get_user_by_matricula
+    get_user_by_matricula,
+    update_profile_image
+
 )
 
 # profile / employee link
@@ -20,6 +25,7 @@ from app.auth.profile_repository import (
     upsert_profile,
 )
 
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
 # =====================================================
 # OAUTH
@@ -148,3 +154,41 @@ def confirm_employee_extra(matricula: str, password: str):
         "success": True,
         "username": user["username"]
     }
+
+
+import os
+from werkzeug.utils import secure_filename
+from flask import current_app
+from app.auth.repository import update_profile_image
+
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+def allowed_file(filename: str) -> bool:
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def save_profile_image(user_id: int, file):
+    if not file or file.filename == "":
+        return None
+
+    if not allowed_file(file.filename):
+        raise ValueError("Formato de imagem não suportado")
+
+    ext = file.filename.rsplit(".", 1)[1].lower()
+    filename = f"user_{user_id}.{ext}"
+
+    upload_dir = os.path.join(
+        current_app.root_path,
+        "static",
+        "uploads",
+        "avatars"
+    )
+    os.makedirs(upload_dir, exist_ok=True)
+
+    filepath = os.path.join(upload_dir, filename)
+    file.save(filepath)
+
+    db_path = f"uploads/avatars/{filename}"
+    update_profile_image(user_id, db_path)
+
+    return db_path
