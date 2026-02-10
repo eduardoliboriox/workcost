@@ -251,3 +251,45 @@
 
    
 }
+
+
+/* =====================================================
+   MOBILE BOTTOM NAV — PROFILE ICON FIX
+   ===================================================== */
+
+/* Área fixa para ícone / avatar */
+.bottom-nav .bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Slot visual único para ícone ou imagem */
+.bottom-nav .bottom-item i,
+.bottom-nav .bottom-item img {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 26px;
+  margin-bottom: 2px;
+}
+
+/* Ícone Bootstrap */
+.bottom-nav .bottom-item i {
+  font-size: 24px;
+}
+
+/* Imagem de perfil */
+.bottom-nav .bottom-item img {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Texto sempre alinhado */
+.bottom-nav .bottom-item small {
+  font-size: 0.75rem;
+  line-height: 1;
+}
