@@ -34,34 +34,64 @@
 
   <h5 class="mb-3">Dados do usuário</h5>
 
-  <div class="row g-3 mb-4">
-    <div class="col-md-6">
-      <label class="form-label">Nome completo</label>
-      <input class="form-control" value="{{ user.full_name }}" disabled>
+  <!-- ✅ FORM ÚNICO (CORRETO) -->
+  <form method="post" enctype="multipart/form-data">
+
+    <!-- ================= FOTO DE PERFIL ================= -->
+    <h5 class="mb-3">Foto de Perfil</h5>
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div class="rounded-circle overflow-hidden border"
+           style="width: 96px; height: 96px;">
+        {% if user.profile_image %}
+          <img src="{{ url_for('static', filename=user.profile_image) }}"
+               style="width:100%; height:100%; object-fit:cover;">
+        {% else %}
+          <img src="{{ url_for('static', filename='images/default-avatar.png') }}"
+               style="width:100%; height:100%; object-fit:cover;">
+        {% endif %}
+      </div>
+
+      <div>
+        <input type="file"
+               name="profile_image"
+               accept="image/*"
+               class="form-control form-control-sm">
+        <small class="text-muted">
+          PNG, JPG ou WEBP — você pode trocar quando quiser
+        </small>
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <label class="form-label">Usuário</label>
-      <input class="form-control" value="{{ user.username }}" disabled>
+    <!-- ================= DADOS FIXOS ================= -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label class="form-label">Nome completo</label>
+        <input class="form-control" value="{{ user.full_name }}" disabled>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Usuário</label>
+        <input class="form-control" value="{{ user.username }}" disabled>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input class="form-control" value="{{ user.email }}" disabled>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Matrícula</label>
+        <input class="form-control" value="{{ user.matricula }}" disabled>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Setor</label>
+        <input class="form-control" value="{{ user.setor }}" disabled>
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <label class="form-label">Email</label>
-      <input class="form-control" value="{{ user.email }}" disabled>
-    </div>
-
-    <div class="col-md-3">
-      <label class="form-label">Matrícula</label>
-      <input class="form-control" value="{{ user.matricula }}" disabled>
-    </div>
-
-    <div class="col-md-3">
-      <label class="form-label">Setor</label>
-      <input class="form-control" value="{{ user.setor }}" disabled>
-    </div>
-  </div>
-
-  <form method="post">
+    <!-- ================= CONTATO & ENDEREÇO ================= -->
     <h5 class="mb-3">Contato & Endereço</h5>
 
     <input name="phone"
@@ -88,6 +118,7 @@
     <input name="reference" class="form-control mb-4" placeholder="Referência"
            value="{{ profile.reference if profile }}">
 
+    <!-- ================= ALTERAR SENHA ================= -->
     <h5 class="mb-3">Alterar senha</h5>
 
     <input type="password" name="current_password"
@@ -106,6 +137,7 @@
     <button class="btn btn-outline-success">
       Salvar alterações
     </button>
+
   </form>
 </div>
 
