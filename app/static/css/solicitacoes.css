@@ -254,23 +254,23 @@
 
 
 /* =====================================================
-   MOBILE BOTTOM NAV — FINAL PROFILE ALIGN FIX
+   MOBILE BOTTOM NAV — DEFINITIVE ALIGN FIX
    ===================================================== */
 
 .bottom-nav .bottom-item {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 26px auto; /* 🔑 ícone | texto */
+  justify-items: center;
   align-items: center;
-  justify-content: flex-start; /* ⬅️ chave */
+  row-gap: 2px;
 }
 
-/* SLOT FIXO DO ÍCONE (independente de img ou i) */
+/* ÍCONE OU AVATAR — SLOT FIXO */
 .bottom-nav .bottom-item i,
 .bottom-nav .bottom-item img {
   width: 26px;
   height: 26px;
-  display: block;              /* ⬅️ NÃO flex */
-  margin-bottom: 4px;          /* ⬅️ espaçamento real */
+  display: block;
 }
 
 /* ÍCONE */
@@ -288,9 +288,8 @@
 
 /* TEXTO */
 .bottom-nav .bottom-item small {
-  display: block;
   font-size: 0.75rem;
   line-height: 1;
-  margin: 0;                   /* ⬅️ remove herança */
+  margin: 0;
   padding: 0;
 }
