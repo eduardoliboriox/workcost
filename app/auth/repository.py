@@ -243,3 +243,19 @@ def get_user_by_matricula(matricula: str):
             """, (matricula_normalizada,))
             return cur.fetchone()
 
+
+# =====================================================
+# PROFILE IMAGE
+# =====================================================
+def update_profile_image(user_id: int, image_path: str):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE users
+                SET profile_image = %s
+                WHERE id = %s
+                """,
+                (image_path, user_id),
+            )
+        conn.commit()
