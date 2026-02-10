@@ -290,7 +290,7 @@
 .bottom-nav .bottom-item small {
   font-size: 0.75rem;
   line-height: 1;
-  margin: 0;
-  padding: 0;
+  margin: 5px;
+  padding: 5px;
 }
 
