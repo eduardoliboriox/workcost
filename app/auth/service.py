@@ -121,14 +121,15 @@ def change_user_password(user_id, current_password, new_password, confirm_passwo
 # =====================================================
 def attach_employee_and_profile(user_id: int, form):
     """
-    - link user to employee by full_name
+    - link user to employee by full_name (se existir)
     - save contact/address profile
     """
 
-    employee = find_employee_by_name(form["full_name"])
-
-    if employee:
-        link_user_to_employee(user_id, employee["id"])
+    full_name = form.get("full_name")
+    if full_name:
+        employee = find_employee_by_name(full_name)
+        if employee:
+            link_user_to_employee(user_id, employee["id"])
 
     upsert_profile(user_id, form)
 
