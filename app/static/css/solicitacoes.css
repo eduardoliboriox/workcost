@@ -262,7 +262,7 @@
   grid-template-rows: 26px auto; /* 🔑 ícone | texto */
   justify-items: center;
   align-items: center;
-  row-gap: 2px;
+  row-gap: 6px !important;
 }
 
 /* ÍCONE OU AVATAR — SLOT FIXO */
@@ -294,7 +294,3 @@
   padding: 0;
 }
 
-
-.bottom-nav .bottom-item small {
-  margin-top: 4px !important;
-}
