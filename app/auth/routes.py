@@ -80,7 +80,7 @@ def google_callback():
     user_data = get_or_create_user(userinfo, "google")
     login_user(User(user_data))
 
-    return redirect(url_for("pages.dashboard"))
+    return redirect(url_for("pages.inicio"))
 
 # OAuth Github
 @bp.route("/login/github")
@@ -107,7 +107,7 @@ def github_callback():
     user_data = get_or_create_user(profile, "github")
     login_user(User(user_data))
 
-    return redirect(url_for("pages.dashboard"))
+    return redirect(url_for("pages.inicio"))
 
 # ... (RESTANTE DO ARQUIVO PERMANECE 100% IGUAL)
 
@@ -132,7 +132,7 @@ def login_local():
         return redirect(url_for("auth.login"))
 
     login_user(User(result))
-    return redirect(url_for("pages.dashboard"))
+    return redirect(url_for("pages.inicio"))
 
 
 @bp.route("/register", methods=["POST"])
