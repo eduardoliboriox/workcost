@@ -6,7 +6,6 @@ from user_agents import parse
 from app.auth.models import User
 from app.auth.decorators import admin_required
 
-# 🔹 services 
 from app.auth.service import (
     get_or_create_user,
     register_user,
@@ -17,7 +16,6 @@ from app.auth.service import (
     reset_password
 )
 
-# 🔹 repositories
 from app.auth.repository import (
     list_pending_users,
     approve_user,
@@ -62,15 +60,11 @@ def login():
     return render_template("auth/login.html")
 
 
-# ======================
-# GOOGLE LOGIN (INÍCIO DO FLUXO)
-# ======================
 @bp.route("/login/google")
 def login_google():
     return oauth.google.authorize_redirect(
         url_for("auth.google_callback", _external=True, _scheme="https")
     )
-
 
 @bp.route("/auth/google")
 def google_callback():
@@ -82,7 +76,6 @@ def google_callback():
 
     return redirect(url_for("pages.inicio"))
 
-# OAuth Github
 @bp.route("/login/github")
 def login_github():
     if not current_app.config.get("GITHUB_CLIENT_ID"):
@@ -109,8 +102,6 @@ def github_callback():
 
     return redirect(url_for("pages.inicio"))
 
-# ... (RESTANTE DO ARQUIVO PERMANECE 100% IGUAL)
-
 @bp.route("/logout")
 def logout():
     logout_user()
@@ -133,7 +124,6 @@ def login_local():
 
     login_user(User(result))
     return redirect(url_for("pages.inicio"))
-
 
 @bp.route("/register", methods=["POST"])
 def register():
@@ -167,7 +157,6 @@ def approve_user_route(user_id):
     flash("Usuário aprovado com sucesso", "success")
     return redirect(url_for("auth.admin_users"))
 
-
 @bp.route("/admin/users/<int:user_id>/deny")
 @login_required
 def reject_user_route(user_id):
@@ -194,7 +183,6 @@ def admin_users_all():
 def login_mobile_choice():
     return render_template("auth/mobile/login_choice.html")
 
-
 @bp.route("/login/mobile/form")
 def login_mobile_form():
     return render_template("auth/mobile/login_form.html")
@@ -210,7 +198,6 @@ def my_profile():
 
     if request.method == "POST":
 
-        # 👇 NOVO: upload da imagem
         file = request.files.get("profile_image")
         if file:
             from app.auth.service import save_profile_image
@@ -255,10 +242,6 @@ def update_user_role_route(user_id):
     flash("Perfil do usuário atualizado", "success")
     return redirect(url_for("auth.admin_users_all"))
 
-
-# ======================
-# FORGOT PASSWORD
-# ======================
 @bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
@@ -273,7 +256,6 @@ def forgot_password():
         return redirect(url_for("auth.login"))
 
     return render_template("auth/forgot_password.html")
-
 
 @bp.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password_route(token):
@@ -293,7 +275,6 @@ def reset_password_route(token):
             flash(str(e), "danger")
 
     return render_template("auth/reset_password.html")
-
 
 @bp.route("/register")
 def register_form():
