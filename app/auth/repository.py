@@ -261,12 +261,6 @@ def update_profile_image(user_id: int, image_path: str):
             )
         conn.commit()
 
-
-import uuid
-from datetime import datetime, timedelta
-from psycopg.rows import dict_row
-from app.extensions import get_db
-
 # =====================================================
 # Esqueci minha senha
 # =====================================================
