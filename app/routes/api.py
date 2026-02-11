@@ -6,7 +6,6 @@ from app.services.lancamentos_service import (
     ferias_por_linha_cargos
 )
 from app.services.pcp_service import ranking_linhas_ferias
-from app.services.atestados_service import registrar_atestado
 from app.services.relatorios_service import gerar_relatorio
 from app.services import hc_linhas_service
 from app.services.solicitacoes_service import criar_solicitacao
@@ -83,10 +82,6 @@ def api_ferias_linha_cargos():
     }
     linha = request.args.get("linha")
     return jsonify(ferias_por_linha_cargos(linha, filtros))
-
-@bp.route("/atestados", methods=["POST"])
-def api_atestado():
-    return jsonify(registrar_atestado(request.form))
 
 @bp.route("/linhas", methods=["GET"])
 def api_linhas_por_setor():
