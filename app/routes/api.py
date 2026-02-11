@@ -287,7 +287,8 @@ def api_salvar_view_solicitacao(solicitacao_id):
         solicitacao_id=solicitacao_id,
         aprovacoes=data.get("aprovacoes", []),
         funcionarios=data.get("funcionarios", []),
-        recebido_em=data.get("recebido_em")
+        recebido_em=data.get("recebido_em"),
+        lancado_em=data.get("lancado_em")
     )
 
     return jsonify({"success": True})
