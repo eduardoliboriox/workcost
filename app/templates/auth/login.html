@@ -85,7 +85,14 @@
                 data-bs-target="#register">
           Cadastrar-se
         </button>
-      </div>      
+      
+        <span class="mx-2">·</span>
+      
+        <a href="{{ url_for('auth.forgot_password') }}"
+           class="btn btn-link p-0">
+          Esqueci minha senha
+        </a>
+      </div>     
       
       <!-- REGISTER -->
       <div id="register" class="collapse">

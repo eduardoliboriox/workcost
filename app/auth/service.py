@@ -14,7 +14,10 @@ from app.auth.repository import (
     get_user_by_id,
     update_user_password,
     get_user_by_matricula,
-    update_profile_image
+    update_profile_image,
+    create_password_reset_token,
+    get_password_reset_token,
+    mark_token_as_used,
 
 )
 
@@ -157,13 +160,6 @@ def confirm_employee_extra(matricula: str, password: str):
     }
 
 
-import os
-from werkzeug.utils import secure_filename
-from flask import current_app
-from app.auth.repository import update_profile_image
-
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
-
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -193,3 +189,30 @@ def save_profile_image(user_id: int, file):
     update_profile_image(user_id, db_path)
 
     return db_path
+
+# =====================================================
+# RESET SENHA
+# =====================================================
+
+def request_password_reset(email: str):
+    from app.extensions import get_db
+    from psycopg.rows import dict_row
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+            user = cur.fetchone()
+
+    if not user:
+        return None
+
+    return create_password_reset_token(user["id"])
+
+
+def reset_password(token: str, new_password: str):
+    token_data = get_password_reset_token(token)
+    if not token_data:
+        raise ValueError("Token inválido ou expirado")
+
+    update_user_password(token_data["user_id"], new_password)
+    mark_token_as_used(token)
