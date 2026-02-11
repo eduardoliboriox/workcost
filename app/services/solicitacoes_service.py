@@ -9,7 +9,8 @@ from app.repositories.solicitacoes_repository import (
     registrar_aprovacao, 
     registrar_assinatura_funcionario,
     listar_solicitacoes_abertas_por_matricula, 
-    atualizar_recebido_em
+    atualizar_recebido_em,
+    atualizar_lancado_em
 )
 from flask_login import current_user
 
@@ -149,14 +150,9 @@ def salvar_view_solicitacao(
     solicitacao_id: int,
     aprovacoes: list,
     funcionarios: list,
-    recebido_em: str | None = None
+    recebido_em: str | None = None,
+    lancado_em: str | None = None
 ):
-    """
-    Commit explícito do modo VIEW.
-    Nada aqui valida senha.
-    Apenas persiste o que já foi confirmado no frontend.
-    """
-
     for a in aprovacoes:
         registrar_aprovacao(
             solicitacao_id=solicitacao_id,
@@ -172,10 +168,10 @@ def salvar_view_solicitacao(
         )
 
     if recebido_em:
-        atualizar_recebido_em(
-            solicitacao_id=solicitacao_id,
-            recebido_em=recebido_em
-        )
+        atualizar_recebido_em(solicitacao_id, recebido_em)
+
+    if lancado_em:
+        atualizar_lancado_em(solicitacao_id, lancado_em)
 
 
 def obter_minhas_extras(matricula: str):
