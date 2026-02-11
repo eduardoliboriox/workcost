@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from datetime import date
-from app.services import cargos_service
 from flask_login import login_required, current_user
 from app.services.solicitacoes_service import obter_solicitacoes_abertas
 
@@ -42,15 +41,11 @@ def dashboard():
         **dados
     )
 
-@bp.route("/cargos")
-@login_required
-def cargos():
-    lista = cargos_service.listar()
-    return render_template("cargos.html", cargos=lista)
-
 @bp.route("/lancamento")
 @login_required
 def lancamento():
+    from app.services import cargos_service
+
     cargos_tecnica = cargos_service.listar_por_area("TECNICA")
     cargos_producao = cargos_service.listar_por_area("PRODUCAO")
 
@@ -90,14 +85,6 @@ def powerbi():
         active_menu="dashboard",
         ranking_faltas_powerbi=ranking_faltas_powerbi,
         **dados
-    )
-
-@bp.route("/cargos/hc-linhas")
-@login_required
-def hc_linhas():
-    return render_template(
-        "hclinhas.html",
-        active_menu="cargos"  
     )
 
 @bp.route("/solicitacoes")
