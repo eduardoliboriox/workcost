@@ -294,3 +294,7 @@ def reset_password_route(token):
 
     return render_template("auth/reset_password.html")
 
+
+@bp.route("/register")
+def register_form():
+    return render_template("auth/register.html")
