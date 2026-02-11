@@ -251,3 +251,34 @@
 
    
 }
+
+
+/* =========================================
+   MOBILE REGISTER — FULL WIDTH FIX
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .mobile-screen.register-form {
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: block;
+  }
+
+  .mobile-register-wrapper {
+    width: 100%;
+  }
+
+  .mobile-register-card {
+    width: 100%;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  .mobile-form {
+    width: 100%;
+  }
+
+}
