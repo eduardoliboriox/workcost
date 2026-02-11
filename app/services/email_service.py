@@ -1,36 +1,29 @@
-import smtplib
-from email.message import EmailMessage
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from flask import current_app
 
 
 def send_email(to_email: str, subject: str, body: str):
     """
-    Serviço genérico de envio de email.
-    Responsabilidade única: comunicação SMTP.
+    Envio de email via SendGrid API (HTTP).
+    Seguro para Railway.
     """
 
-    config = current_app.config
+    api_key = current_app.config.get("SENDGRID_API_KEY")
+    sender = current_app.config.get("SENDGRID_FROM")
 
-    if not config.get("SMTP_HOST"):
-        raise RuntimeError("SMTP não configurado")
+    if not api_key:
+        raise RuntimeError("SENDGRID_API_KEY não configurada")
 
-    msg = EmailMessage()
-    msg["From"] = config["SMTP_FROM"]
-    msg["To"] = to_email
-    msg["Subject"] = subject
-    msg.set_content(body)
+    message = Mail(
+        from_email=sender,
+        to_emails=to_email,
+        subject=subject,
+        plain_text_content=body
+    )
 
     try:
-        with smtplib.SMTP(config["SMTP_HOST"], config["SMTP_PORT"]) as server:
-            if config["SMTP_USE_TLS"]:
-                server.starttls()
-
-            server.login(
-                config["SMTP_USERNAME"],
-                config["SMTP_PASSWORD"]
-            )
-
-            server.send_message(msg)
-
+        sg = SendGridAPIClient(api_key)
+        sg.send(message)
     except Exception as e:
         raise RuntimeError(f"Erro ao enviar email: {str(e)}")
