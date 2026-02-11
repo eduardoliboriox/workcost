@@ -212,3 +212,14 @@ def atualizar_recebido_em(solicitacao_id: int, recebido_em: str):
                 WHERE id = %s
             """, (recebido_em, solicitacao_id))
         conn.commit()
+
+
+def atualizar_lancado_em(solicitacao_id: int, lancado_em: str):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE solicitacoes
+                SET lancado_em = %s
+                WHERE id = %s
+            """, (lancado_em, solicitacao_id))
+        conn.commit()

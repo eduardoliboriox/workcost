@@ -441,7 +441,11 @@
       <label class="fw-bold">
         LANÇADO <small class="text-muted">(Launched)</small>
       </label>
-      <input type="text" class="form-control">
+      <input type="date"
+             id="lancadoEm"
+             name="lancado_em"
+             class="form-control"
+             value="{{ solicitacao.lancado_em if modo == 'view' and solicitacao.lancado_em else '' }}">
     </div>
   </div>
   {% if modo == 'view' %}
