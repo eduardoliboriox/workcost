@@ -4,7 +4,6 @@ from flask import current_app
 from werkzeug.utils import secure_filename
 from app.utils.text import normalize_username
 
-# users core
 from app.auth.repository import (
     get_user_by_provider,
     create_user,
@@ -21,7 +20,6 @@ from app.auth.repository import (
 
 )
 
-# profile / employee link
 from app.auth.profile_repository import (
     find_employee_by_name,
     link_user_to_employee,
@@ -49,15 +47,13 @@ def get_or_create_user(profile, provider):
         "provider_id": provider_id
     })
 
-
-# =====================================================
+# ====================================================
 # REGISTER
 # =====================================================
 def generate_username(full_name: str) -> str:
     parts = full_name.strip().split()
     raw_username = f"{parts[0]}.{parts[-1]}"
     return normalize_username(raw_username)
-
 
 def register_user(form):
     if form["password"] != form["password_confirm"]:
@@ -80,7 +76,6 @@ def register_user(form):
         "is_admin": is_first_user
     })
 
-
 # =====================================================
 # LOGIN LOCAL
 # =====================================================
@@ -97,7 +92,6 @@ def authenticate_local(username, password):
         return None
 
     return user
-
 
 # =====================================================
 # PASSWORD
@@ -118,7 +112,6 @@ def change_user_password(user_id, current_password, new_password, confirm_passwo
 
     return "OK"
 
-
 # =====================================================
 # PROFILE + EMPLOYEE LINK
 # =====================================================
@@ -136,10 +129,7 @@ def attach_employee_and_profile(user_id: int, form):
 
     upsert_profile(user_id, form)
 
-
-
 def confirm_employee_extra(matricula: str, password: str):
-    # 🔐 Normalização defensiva
     matricula = matricula.strip().lstrip("0")
     password = password.strip()
 
@@ -159,10 +149,8 @@ def confirm_employee_extra(matricula: str, password: str):
         "username": user["username"]
     }
 
-
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 def save_profile_image(user_id: int, file):
     if not file or file.filename == "":
@@ -193,7 +181,6 @@ def save_profile_image(user_id: int, file):
 # =====================================================
 # RESET SENHA
 # =====================================================
-
 def request_password_reset(email: str):
     from app.extensions import get_db
     from psycopg.rows import dict_row
@@ -234,7 +221,6 @@ Se você não solicitou isso, ignore este email.
     send_email(user["email"], subject, body)
 
     return token
-
 
 def reset_password(token: str, new_password: str):
     token_data = get_password_reset_token(token)
