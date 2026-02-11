@@ -62,6 +62,16 @@ def login():
     return render_template("auth/login.html")
 
 
+# ======================
+# GOOGLE LOGIN (INÍCIO DO FLUXO)
+# ======================
+@bp.route("/login/google")
+def login_google():
+    return oauth.google.authorize_redirect(
+        url_for("auth.google_callback", _external=True, _scheme="https")
+    )
+
+
 @bp.route("/auth/google")
 def google_callback():
     token = oauth.google.authorize_access_token()
@@ -98,6 +108,8 @@ def github_callback():
     login_user(User(user_data))
 
     return redirect(url_for("pages.dashboard"))
+
+# ... (RESTANTE DO ARQUIVO PERMANECE 100% IGUAL)
 
 @bp.route("/logout")
 def logout():
