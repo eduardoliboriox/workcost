@@ -1,12 +1,32 @@
 from flask import Blueprint, redirect, url_for, render_template, current_app, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from authlib.integrations.flask_client import OAuth
-from app.auth.service import get_or_create_user, register_user, authenticate_local, change_user_password, attach_employee_and_profile
-from app.auth.models import User
-from app.auth.repository import list_pending_users, approve_user, deny_user, list_all_users, get_user_by_id
-from app.auth.decorators import admin_required
 from user_agents import parse
 
+from app.auth.models import User
+from app.auth.decorators import admin_required
+
+# 🔹 services já existentes
+from app.auth.service import (
+    get_or_create_user,
+    register_user,
+    authenticate_local,
+    change_user_password,
+    attach_employee_and_profile,
+
+    # ✅ IMPORTS QUE FALTAVAM
+    request_password_reset,
+    reset_password
+)
+
+# 🔹 repositories
+from app.auth.repository import (
+    list_pending_users,
+    approve_user,
+    deny_user,
+    list_all_users,
+    get_user_by_id
+)
 
 bp = Blueprint("auth", __name__)
 oauth = OAuth()
@@ -38,19 +58,11 @@ def setup_oauth(state):
 def login():
     user_agent = parse(request.headers.get("User-Agent", ""))
 
-    # Mobile (celular)
     if user_agent.is_mobile:
         return redirect(url_for("auth.login_mobile_choice"))
 
-    # Desktop
     return render_template("auth/login.html")
 
-# OAuth Google
-@bp.route("/login/google")
-def login_google():
-    return oauth.google.authorize_redirect(
-        url_for("auth.google_callback", _external=True)
-    )
 
 @bp.route("/auth/google")
 def google_callback():
@@ -234,11 +246,15 @@ def update_user_role_route(user_id):
     return redirect(url_for("auth.admin_users_all"))
 
 
+# ======================
+# FORGOT PASSWORD
+# ======================
 @bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
         email = request.form.get("email")
-        token = request_password_reset(email)
+
+        request_password_reset(email)
 
         flash(
             "Se o email existir, você receberá instruções para redefinir a senha.",
