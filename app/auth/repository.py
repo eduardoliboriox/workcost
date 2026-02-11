@@ -1,8 +1,9 @@
+import uuid
 from app.extensions import get_db
 from psycopg.rows import dict_row
 from werkzeug.security import generate_password_hash
 from app.utils.text import normalize_username
-
+from datetime import datetime, timedelta
 
 # =====================================================
 # CORE USERS (Flask-Login / OAuth / Local)
@@ -259,3 +260,51 @@ def update_profile_image(user_id: int, image_path: str):
                 (image_path, user_id),
             )
         conn.commit()
+
+
+import uuid
+from datetime import datetime, timedelta
+from psycopg.rows import dict_row
+from app.extensions import get_db
+
+# =====================================================
+# Esqueci minha senha
+# =====================================================
+def create_password_reset_token(user_id: int):
+    token = str(uuid.uuid4())
+    expires_at = datetime.utcnow() + timedelta(hours=1)
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO password_reset_tokens (user_id, token, expires_at)
+                VALUES (%s,%s,%s)
+            """, (user_id, token, expires_at))
+        conn.commit()
+
+    return token
+
+
+def get_password_reset_token(token: str):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT *
+                FROM password_reset_tokens
+                WHERE token=%s
+                  AND used=FALSE
+                  AND expires_at > now()
+            """, (token,))
+            return cur.fetchone()
+
+
+def mark_token_as_used(token: str):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE password_reset_tokens
+                SET used=TRUE
+                WHERE token=%s
+            """, (token,))
+        conn.commit()
+
