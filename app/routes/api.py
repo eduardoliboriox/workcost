@@ -15,50 +15,36 @@ from app.auth.service import confirm_employee_extra
 
 bp = Blueprint("api", __name__)
 
-# =========================
-# MODELOS
-# =========================
+
 @bp.route("/modelos", methods=["GET"])
 def listar():
     return jsonify(modelos_service.listar_modelos())
 
-
 @bp.route("/modelos", methods=["POST"])
 def cadastrar():
     return jsonify(modelos_service.cadastrar_modelo(request.form))
-
 
 @bp.route("/modelos", methods=["DELETE"])
 def excluir():
     return jsonify(modelos_service.excluir_modelo(request.form))
 
 
-# =========================
-# CARGOS
-# =========================
 @bp.route("/cargos", methods=["GET"])
 def listar_cargos():
     return jsonify(cargos_service.listar())
-
 
 @bp.route("/cargos", methods=["POST"])
 def cadastrar_cargo():
     return jsonify(cargos_service.cadastrar(request.form))
 
-
 @bp.route("/cargos", methods=["PUT"])
 def atualizar_cargo():
     return jsonify(cargos_service.atualizar(request.form))
-
 
 @bp.route("/cargos", methods=["DELETE"])
 def excluir_cargo():
     return jsonify(cargos_service.excluir(request.form))
 
-
-# =========================
-# LANÇAMENTOS
-# =========================
 @bp.route("/lancamentos", methods=["POST"])
 def api_criar_lancamento():
     dados = request.form
@@ -66,12 +52,6 @@ def api_criar_lancamento():
     status_code = 200 if resultado.get("success") else 400
     return jsonify(resultado), status_code
 
-
-# =========================
-# DASHBOARD
-# =========================
-
-# Ranking de linhas com férias (AGRUPADO POR LINHA)
 @bp.route("/dashboard/linhas/ferias", methods=["GET"])
 def api_ranking_linhas_ferias():
     filtros = {
@@ -82,7 +62,6 @@ def api_ranking_linhas_ferias():
     }
     return jsonify(ranking_linhas_ferias(filtros))
 
-# Faltas por linha (modal)
 @bp.route("/dashboard/linha/cargos", methods=["GET"])
 def api_faltas_linha():
     filtros = {
@@ -94,7 +73,6 @@ def api_faltas_linha():
     linha = request.args.get("linha")
     return jsonify(faltas_por_linha(linha, filtros))
 
-# Férias por linha (modal)
 @bp.route("/dashboard/linha/ferias_cargos", methods=["GET"])
 def api_ferias_linha_cargos():
     filtros = {
@@ -191,22 +169,15 @@ def api_dashboard_resumo():
         "ranking_cargos": dados["ranking_cargos"]
     })
 
-# =========================
-# SOLICITAÇÕES EXTRA
-# =========================
+
 @bp.route("/solicitacoes", methods=["POST"])
 def api_criar_solicitacao():
     result = criar_solicitacao(request.form)
     return jsonify(result), (200 if result["success"] else 400)
 
-# =========================
-# EMPLOYEES (AUTO FILL)
-# =========================
 @bp.route("/employees/<matricula>", methods=["GET"])
 def api_employee_lookup(matricula):
     return jsonify(buscar_funcionario(matricula))
-
-
 
 @bp.route("/auth/confirm-extra", methods=["POST"])
 def api_confirm_extra():
@@ -224,7 +195,6 @@ def api_confirm_extra():
     result = confirm_employee_extra(matricula, password)
     return jsonify(result), (200 if result["success"] else 401)
 
-
 @bp.route("/solicitacoes/<int:solicitacao_id>/aprovar", methods=["POST"])
 def api_aprovar_solicitacao(solicitacao_id):
     data = request.get_json() or {}
@@ -238,12 +208,10 @@ def api_aprovar_solicitacao(solicitacao_id):
     aprovar_solicitacao(solicitacao_id, role)
     return jsonify({"success": True})
 
-
 @bp.route("/solicitacoes/<int:solicitacao_id>/provisao", methods=["GET"])
 def api_provisao_gastos_extra(solicitacao_id):
     from app.services.relatorios_service import gerar_provisao_gastos_extra
     return jsonify(gerar_provisao_gastos_extra(solicitacao_id))
-
 
 @bp.route(
     "/solicitacoes/<int:solicitacao_id>/confirmar-presenca",
@@ -272,7 +240,6 @@ def api_confirmar_presenca_funcionario(solicitacao_id):
     )
 
     return jsonify(result), (200 if result["success"] else 401)
-
 
 @bp.route(
     "/solicitacoes/<int:solicitacao_id>/salvar-view",
