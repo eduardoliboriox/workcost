@@ -9,12 +9,11 @@ from app.routes.api import bp as api_bp
 from app.auth.routes import bp as auth_bp
 from app.auth.models import User
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # 🔐 Garantir SECRET_KEY
+    # 🔐 SECRET_KEY
     if not app.config.get("SECRET_KEY"):
         raise RuntimeError("SECRET_KEY não configurada")
 
@@ -26,7 +25,6 @@ def create_app():
     def load_user(user_id):
         return User.get(user_id)
 
-    # 🕒 Contexto global para templates ({{ now().year }})
     @app.context_processor
     def inject_now():
         return {"now": datetime.utcnow}
