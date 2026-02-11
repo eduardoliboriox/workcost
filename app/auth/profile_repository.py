@@ -1,7 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 
-
 # ======================================================
 # EMPLOYEE LINK
 # ======================================================
@@ -16,7 +15,6 @@ def find_employee_by_name(full_name: str):
             """, (full_name,))
             return cur.fetchone()
 
-
 def link_user_to_employee(user_id: int, employee_id: int):
     with get_db() as conn:
         with conn.cursor() as cur:
@@ -26,7 +24,6 @@ def link_user_to_employee(user_id: int, employee_id: int):
                 WHERE id = %s
             """, (employee_id, user_id))
         conn.commit()
-
 
 # ======================================================
 # PROFILE
@@ -39,7 +36,6 @@ def get_profile(user_id: int):
                 WHERE user_id = %s
             """, (user_id,))
             return cur.fetchone()
-
 
 def upsert_profile(user_id: int, data: dict):
     with get_db() as conn:
