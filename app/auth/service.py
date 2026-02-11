@@ -197,6 +197,8 @@ def save_profile_image(user_id: int, file):
 def request_password_reset(email: str):
     from app.extensions import get_db
     from psycopg.rows import dict_row
+    from app.services.email_service import send_email
+    from flask import url_for
 
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -206,7 +208,32 @@ def request_password_reset(email: str):
     if not user:
         return None
 
-    return create_password_reset_token(user["id"])
+    token = create_password_reset_token(user["id"])
+
+    reset_url = url_for(
+        "auth.reset_password_route",
+        token=token,
+        _external=True
+    )
+
+    subject = "Redefinição de senha - WorkCost"
+    body = f"""
+Olá {user.get('full_name') or user.get('username')},
+
+Você solicitou a redefinição de senha.
+
+Clique no link abaixo para criar uma nova senha:
+
+{reset_url}
+
+Este link expira em 1 hora.
+
+Se você não solicitou isso, ignore este email.
+"""
+
+    send_email(user["email"], subject, body)
+
+    return token
 
 
 def reset_password(token: str, new_password: str):
