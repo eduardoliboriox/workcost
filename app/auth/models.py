@@ -17,10 +17,6 @@ class User(UserMixin):
 
     @property
     def is_active(self):
-        """
-        Flask-Login chama isso automaticamente.
-        NÃO pode ser atributo direto.
-        """
         return self._is_active
 
     @staticmethod
