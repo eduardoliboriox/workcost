@@ -137,7 +137,8 @@ document.getElementById("btnSaveView")
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           aprovacoes: pendingApprovals,
-          recebido_em: recebidoEm
+          recebido_em: recebidoEm,
+          lancado_em: lancadoEm
         })
       }
     );
