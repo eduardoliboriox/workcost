@@ -233,3 +233,38 @@ def update_user_role_route(user_id):
     flash("Perfil do usuário atualizado", "success")
     return redirect(url_for("auth.admin_users_all"))
 
+
+@bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email")
+        token = request_password_reset(email)
+
+        flash(
+            "Se o email existir, você receberá instruções para redefinir a senha.",
+            "info"
+        )
+        return redirect(url_for("auth.login"))
+
+    return render_template("auth/forgot_password.html")
+
+
+@bp.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password_route(token):
+    if request.method == "POST":
+        password = request.form.get("password")
+        confirm = request.form.get("confirm_password")
+
+        if password != confirm:
+            flash("As senhas não conferem", "danger")
+            return redirect(request.url)
+
+        try:
+            reset_password(token, password)
+            flash("Senha redefinida com sucesso", "success")
+            return redirect(url_for("auth.login"))
+        except ValueError as e:
+            flash(str(e), "danger")
+
+    return render_template("auth/reset_password.html")
+
