@@ -60,18 +60,6 @@ def lancamento():
         cargos_producao=cargos_producao
     )
 
-@bp.route("/dashboard/linha/ferias", methods=["GET"])
-@login_required
-def ferias_linha():
-    linha = request.args.get("linha")
-    filtros = {
-        "data_inicial": request.args.get("data_inicial"),
-        "data_final": request.args.get("data_final"),
-        "turno": request.args.get("turno"),
-        "filial": request.args.get("filial")
-    }
-    return jsonify(ferias_por_linha(filtros))
-
 @bp.route("/relatorios")
 @login_required
 def relatorios():
@@ -94,7 +82,6 @@ def powerbi():
     filtros["data_final"] = filtros["data_final"] or hoje
     
     dados = resumo_dashboard(filtros)
-    
     ranking_faltas_powerbi = ranking_linhas_faltas_powerbi(filtros)
     
     return render_template(
@@ -113,23 +100,6 @@ def hc_linhas():
         active_menu="cargos"  
     )
 
-@bp.route("/lancamento/atestados")
-@login_required
-def atestados():
-    cargos_tecnica = cargos_service.listar_por_area("TECNICA")
-    cargos_producao = cargos_service.listar_por_area("PRODUCAO")
-
-    return render_template(
-        "atestados.html",
-        cargos_tecnica=cargos_tecnica,
-        cargos_producao=cargos_producao,
-        active_menu="lancamento"
-    )
-
-@bp.route("/login")
-def login():
-    return render_template("auth/login.html")
-
 @bp.route("/solicitacoes")
 @login_required
 def solicitacoes():
@@ -139,7 +109,6 @@ def solicitacoes():
         aprovacoes={},
         active_menu="solicitacoes"
     )
-
 
 @bp.route("/pedidos")
 @login_required
@@ -173,7 +142,6 @@ def solicitacoes_fechadas():
         active_menu="solicitacoes"
     )
 
-
 @bp.route("/solicitacoes/abertas")
 @login_required
 def solicitacoes_abertas():
@@ -185,16 +153,12 @@ def solicitacoes_abertas():
         active_menu="solicitacoes"
     )
 
-
-
 @bp.route("/solicitacoes/<int:solicitacao_id>")
 @login_required
 def solicitacao_view(solicitacao_id):
     from app.services.solicitacoes_service import obter_detalhe_solicitacao
 
     dados = obter_detalhe_solicitacao(solicitacao_id)
-
-    # 🔑 CONTEXTO DE ORIGEM
     origem = request.args.get("from")
 
     return render_template(
@@ -206,6 +170,3 @@ def solicitacao_view(solicitacao_id):
         active_menu="solicitacoes",
         origem=origem
     )
-
-
-
