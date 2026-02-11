@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.services import modelos_service, cargos_service
+from app.services import modelos_service, 
 from app.services.lancamentos_service import (
     criar_lancamento,
     faltas_por_linha,
@@ -7,7 +7,6 @@ from app.services.lancamentos_service import (
 )
 from app.services.pcp_service import ranking_linhas_ferias
 from app.services.relatorios_service import gerar_relatorio
-from app.services import hc_linhas_service
 from app.services.solicitacoes_service import criar_solicitacao
 from app.services.employees_service import buscar_funcionario
 from app.auth.service import confirm_employee_extra
