@@ -6,15 +6,13 @@ from user_agents import parse
 from app.auth.models import User
 from app.auth.decorators import admin_required
 
-# 🔹 services já existentes
+# 🔹 services 
 from app.auth.service import (
     get_or_create_user,
     register_user,
     authenticate_local,
     change_user_password,
     attach_employee_and_profile,
-
-    # ✅ IMPORTS QUE FALTAVAM
     request_password_reset,
     reset_password
 )
