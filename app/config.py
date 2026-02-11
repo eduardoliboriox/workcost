@@ -4,7 +4,9 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL")
     SECRET_KEY = os.getenv("SECRET_KEY", "dev")
 
-    # 🔐 Senhas operacionais
+    # ==========================
+    # OPERACIONAL
+    # ==========================
     SENHA_ATESTADO = os.getenv("SENHA_ATESTADO", "1234")
     SENHA_ABONO = os.getenv("SENHA_ABONO", "5678")
 
@@ -15,7 +17,7 @@ class Config:
     GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
 
     # ==========================
-    # 📧 SMTP CONFIG
+    # SMTP CONFIG
     # ==========================
     SMTP_HOST = os.getenv("SMTP_HOST")
     SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
