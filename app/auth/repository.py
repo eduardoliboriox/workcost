@@ -156,7 +156,6 @@ def count_users():
             row = cur.fetchone()
             return row["total"]
 
-# app/auth/repository.py
 def list_all_users(search=None):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -178,8 +177,6 @@ def list_all_users(search=None):
                 )
             return cur.fetchall()
 
-# =====================================================
-# ALTERAÇÃO DE SENHA
 # =====================================================
 def update_user_password(user_id: int, new_password: str):
     password_hash = generate_password_hash(new_password)
@@ -244,10 +241,6 @@ def get_user_by_matricula(matricula: str):
             """, (matricula_normalizada,))
             return cur.fetchone()
 
-
-# =====================================================
-# PROFILE IMAGE
-# =====================================================
 def update_profile_image(user_id: int, image_path: str):
     with get_db() as conn:
         with conn.cursor() as cur:
@@ -261,9 +254,6 @@ def update_profile_image(user_id: int, image_path: str):
             )
         conn.commit()
 
-# =====================================================
-# Esqueci minha senha
-# =====================================================
 def create_password_reset_token(user_id: int):
     token = str(uuid.uuid4())
     expires_at = datetime.utcnow() + timedelta(hours=1)
@@ -278,7 +268,6 @@ def create_password_reset_token(user_id: int):
 
     return token
 
-
 def get_password_reset_token(token: str):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -291,7 +280,6 @@ def get_password_reset_token(token: str):
             """, (token,))
             return cur.fetchone()
 
-
 def mark_token_as_used(token: str):
     with get_db() as conn:
         with conn.cursor() as cur:
@@ -301,4 +289,3 @@ def mark_token_as_used(token: str):
                 WHERE token=%s
             """, (token,))
         conn.commit()
-
