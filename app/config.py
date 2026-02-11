@@ -23,3 +23,9 @@ class Config:
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
     SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
     SMTP_FROM = os.getenv("SMTP_FROM")
+    
+    # ==========================
+    # SENDGRID
+    # ==========================
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+    SENDGRID_FROM = os.getenv("SENDGRID_FROM")
