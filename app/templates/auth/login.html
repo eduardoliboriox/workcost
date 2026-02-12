@@ -2,20 +2,17 @@
 {% block title %}WorkCost{% endblock %}
 {% block content %}
 
-<!-- HEADER DESKTOP -->
 <header class="auth-header d-none d-lg-flex">
   <div class="brand">
     <img src="{{ url_for('static', filename='images/logos/logo-sidebar-desktop.png') }}" alt="Venttos">
   </div>
 
   <div class="actions">
-
-    <!-- Login -->
     <a href="{{ url_for('auth.logout') }}"
        class="btn btn-outline-purple btn-sm">
       Fazer login
     </a>
-    
+
     <a href="{{ url_for('auth.register_form') }}"
        class="btn btn-outline-primary">
       Cadastrar-se
@@ -75,19 +72,18 @@
       </form>
 
       <div class="text-center mb-3">
-        
         <a href="{{ url_for('auth.register_form') }}"
            class="btn btn-link p-0">
           Cadastrar-se
         </a>
-      
+
         <span class="mx-2">·</span>
-      
+
         <a href="{{ url_for('auth.forgot_password') }}"
            class="btn btn-link p-0">
           Esqueci minha senha
         </a>
-      </div>     
+      </div>
 
       <hr>
 
@@ -105,6 +101,12 @@
       <div class="text-center mt-3">
         <small class="fw-semibold d-block fw-bold">EDUARDO LIBÓRIO</small>
         <small class="text-muted">Junior Backend Developer</small>
+      </div>
+
+      <div class="legal-links-desktop text-center mt-3">
+        <a href="{{ url_for('pages.privacy_policy') }}">Política de Privacidade</a>
+        <span class="mx-2">·</span>
+        <a href="{{ url_for('pages.cookie_policy') }}">Política de Cookies</a>
       </div>
 
     </div>
