@@ -5,6 +5,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev")
 
     PREFERRED_URL_SCHEME = "https"
+    BASE_URL = os.getenv("BASE_URL")
 
     # ==========================
     # OPERACIONAL
