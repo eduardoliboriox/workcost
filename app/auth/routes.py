@@ -45,7 +45,7 @@ def setup_oauth(state):
         client_kwargs={"scope": "openid email profile"},
     )
 
-    # GITHUB (mantido intacto)
+    # GITHUB
     oauth.register(
         name="github",
         client_id=app.config["GITHUB_CLIENT_ID"],
@@ -71,7 +71,7 @@ def login():
 
 
 # ==========================================================
-# GOOGLE LOGIN
+# GOOGLE LOGIN (mantido intacto)
 # ==========================================================
 @bp.route("/login/google")
 def login_google():
@@ -114,33 +114,77 @@ def google_callback():
 
     return redirect(url_for("pages.inicio"))
 
-# GITHUB
 
+# ==========================================================
+# GITHUB LOGIN (AJUSTADO)
+# ==========================================================
 @bp.route("/login/github")
 def login_github():
+
     if not current_app.config.get("GITHUB_CLIENT_ID"):
         flash("Login com GitHub indisponível no momento", "warning")
         return redirect(url_for("auth.login"))
 
-    redirect_uri = url_for("auth.github_callback", _external=True)
+    base_url = current_app.config.get("BASE_URL")
+
+    if base_url:
+        redirect_uri = f"{base_url}/auth/github/callback"
+    else:
+        redirect_uri = url_for("auth.github_callback", _external=True)
+
     return oauth.github.authorize_redirect(redirect_uri)
 
 
 @bp.route("/github/callback")
 def github_callback():
-    token = oauth.github.authorize_access_token()
-    resp = oauth.github.get("user")
-    profile = resp.json()
 
-    if not profile.get("email"):
-        emails = oauth.github.get("user/emails").json()
-        primary = next(e for e in emails if e["primary"])
-        profile["email"] = primary["email"]
+    try:
+        token = oauth.github.authorize_access_token()
+    except Exception:
+        flash("Erro ao autenticar com GitHub", "danger")
+        return redirect(url_for("auth.login"))
+
+    try:
+        resp = oauth.github.get("user")
+        profile = resp.json()
+    except Exception:
+        flash("Erro ao obter dados do GitHub", "danger")
+        return redirect(url_for("auth.login"))
+
+    if not profile:
+        flash("Falha na autenticação GitHub", "danger")
+        return redirect(url_for("auth.login"))
+
+    # =====================================================
+    # EMAIL (GitHub pode não retornar email direto)
+    # =====================================================
+    email = profile.get("email")
+
+    if not email:
+        try:
+            emails = oauth.github.get("user/emails").json()
+            primary = next(
+                (e for e in emails if e.get("primary") and e.get("verified")),
+                None
+            )
+            if primary:
+                email = primary.get("email")
+        except Exception:
+            pass
+
+    if not email:
+        flash("Não foi possível obter o email do GitHub", "danger")
+        return redirect(url_for("auth.login"))
+
+    profile["email"] = email
 
     user_data = get_or_create_user(profile, "github")
     login_user(User(user_data))
 
     return redirect(url_for("pages.inicio"))
+
+
+# ==========================================================
 
 @bp.route("/logout")
 def logout():
