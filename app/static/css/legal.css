@@ -3,3 +3,24 @@
   margin: auto;
   line-height: 1.6;
 }
+
+/* ===============================
+   LEGAL LINKS - LOGIN
+=============================== */
+
+.legal-links-desktop,
+.legal-links-mobile {
+    font-size: 0.85rem;
+}
+
+.legal-links-desktop a,
+.legal-links-mobile a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.legal-links-desktop a:hover,
+.legal-links-mobile a:hover {
+    text-decoration: underline;
+    color: #0d6efd;
+}
