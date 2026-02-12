@@ -13,14 +13,24 @@
     font-size: 0.85rem;
 }
 
-.legal-links-desktop a,
-.legal-links-mobile a {
+/* 🔹 Desktop mantém padrão */
+.legal-links-desktop a {
     color: #6c757d;
     text-decoration: none;
 }
 
-.legal-links-desktop a:hover,
-.legal-links-mobile a:hover {
+.legal-links-desktop a:hover {
     text-decoration: underline;
     color: #0d6efd;
+}
+
+/* 🔹 Mobile — força branco para melhor contraste */
+.legal-links-mobile a {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+.legal-links-mobile a:hover {
+    text-decoration: underline;
+    color: #ffffff !important;
 }
