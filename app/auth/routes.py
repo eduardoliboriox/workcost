@@ -80,7 +80,12 @@ def login_google():
         flash("Login com Google indisponível no momento", "warning")
         return redirect(url_for("auth.login"))
 
-    redirect_uri = url_for("auth.google_callback", _external=True)
+    base_url = current_app.config.get("BASE_URL")
+
+    if base_url:
+        redirect_uri = f"{base_url}/auth/google/callback"
+    else:
+        redirect_uri = url_for("auth.google_callback", _external=True)
 
     return oauth.google.authorize_redirect(redirect_uri)
 
