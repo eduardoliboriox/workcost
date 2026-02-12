@@ -248,14 +248,13 @@
 }
 
 /* =========================================
-   FIX MOBILE REGISTER ALIGNMENT
+   FIX REGISTER MOBILE OVERLAP
    ========================================= */
 
 @media (max-width: 991px) {
 
-  .mobile-screen.register-form {
-    align-items: flex-start; 
-    padding-top: 60px;
+  .mobile-screen.register-form .mobile-form {
+    transform: none;
   }
 
 }
