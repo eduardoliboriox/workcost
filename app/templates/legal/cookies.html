@@ -1,0 +1,30 @@
+{% extends "layouts/app.html" %}
+{% block title %}Política de Cookies{% endblock %}
+
+{% block page_title %}
+Política de Cookies
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 legal-container">
+
+  <h5>1. O que são cookies?</h5>
+  <p>
+    Cookies são pequenos arquivos armazenados no navegador
+    para manter sessões autenticadas e preferências do usuário.
+  </p>
+
+  <h5>2. Como utilizamos</h5>
+  <ul>
+    <li>Autenticação de sessão (Flask-Login)</li>
+    <li>Integração OAuth (Google / GitHub)</li>
+  </ul>
+
+  <h5>3. Gerenciamento</h5>
+  <p>
+    O usuário pode gerenciar ou excluir cookies
+    diretamente nas configurações do navegador.
+  </p>
+
+</div>
+{% endblock %}
