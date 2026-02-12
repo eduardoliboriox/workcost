@@ -289,3 +289,13 @@ def mark_token_as_used(token: str):
                 WHERE token=%s
             """, (token,))
         conn.commit()
+
+
+def get_user_by_email(email: str):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(
+                "SELECT * FROM users WHERE LOWER(email)=LOWER(%s)",
+                (email,)
+            )
+            return cur.fetchone()
