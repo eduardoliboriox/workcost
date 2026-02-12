@@ -3,6 +3,7 @@
 {% block content %}
   <section class="mobile-screen login-choice"
     style="background-image: url('{{ url_for('static', filename='images/banners/bg-cad-log.png') }}');">
+    
     <div class="mobile-actions">      
       <a href="{{ url_for('auth.register_mobile_form') }}"
         class="btn btn-success w-100 mb-3">
@@ -13,7 +14,26 @@
         class="btn btn-primary w-100">
         Entrar
       </a>
-      
     </div>
+
+    <!-- ===============================
+         LEGAL LINKS (ADICIONADO)
+         =============================== -->
+    <div class="text-center mt-4 px-3">
+      <small class="text-light">
+        <a href="{{ url_for('pages.privacy_policy') }}"
+           class="text-light text-decoration-underline"
+           target="_blank">
+          Política de Privacidade
+        </a>
+        ·
+        <a href="{{ url_for('pages.cookie_policy') }}"
+           class="text-light text-decoration-underline"
+           target="_blank">
+          Política de Cookies
+        </a>
+      </small>
+    </div>
+
   </section>
 {% endblock %}
