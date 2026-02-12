@@ -1,5 +1,6 @@
 from flask import Flask
 from datetime import datetime
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import Config
 from app.extensions import login_manager
@@ -13,11 +14,18 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # 🔐 SECRET_KEY
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app,
+        x_for=1,
+        x_proto=1,
+        x_host=1,
+        x_port=1,
+        x_prefix=1
+    )
+
     if not app.config.get("SECRET_KEY"):
         raise RuntimeError("SECRET_KEY não configurada")
 
-    # 🔐 Flask-Login
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
 
@@ -37,6 +45,7 @@ def create_app():
     # CLI commands
     from app.cli.employees_importer import import_employees
     app.cli.add_command(import_employees)
+
     from app.cli.employees_code_generator import generate_employee_codes
     app.cli.add_command(generate_employee_codes)
 
