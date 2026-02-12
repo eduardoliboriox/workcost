@@ -1,0 +1,46 @@
+{% extends "layouts/app.html" %}
+{% block title %}Política de Privacidade{% endblock %}
+
+{% block page_title %}
+Política de Privacidade
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 legal-container">
+
+  <h5>1. Coleta de Dados</h5>
+  <p>
+    O WorkCost coleta informações como nome, e-mail, matrícula,
+    setor e dados de autenticação para fins exclusivamente corporativos.
+  </p>
+
+  <h5>2. Uso das Informações</h5>
+  <p>
+    Os dados são utilizados para controle de jornada,
+    solicitações de extra, autenticação e gestão administrativa.
+  </p>
+
+  <h5>3. Armazenamento</h5>
+  <p>
+    Os dados são armazenados de forma segura em banco PostgreSQL
+    hospedado em infraestrutura Railway.
+  </p>
+
+  <h5>4. Segurança</h5>
+  <p>
+    Utilizamos autenticação segura, criptografia de senha
+    e controle de acesso por perfil.
+  </p>
+
+  <h5>5. Direitos do Usuário</h5>
+  <p>
+    O usuário pode solicitar atualização ou exclusão de seus dados
+    entrando em contato com o administrador do sistema.
+  </p>
+
+  <p class="mt-4 text-muted">
+    Última atualização: {{ now().date() }}
+  </p>
+
+</div>
+{% endblock %}
