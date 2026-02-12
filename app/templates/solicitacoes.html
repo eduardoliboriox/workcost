@@ -55,6 +55,12 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
 
+<!-- ===============================
+     MOBILE DOCUMENT WRAPPER
+     =============================== -->
+<div class="document-mobile-wrapper">
+  <div class="document-desktop-canvas">
+
 <div class="page-title-solicitacoes mb-4 position-relative">
 
   <img src="{{ url_for('static', filename='images/logos/logo.jpeg') }}"
@@ -69,7 +75,6 @@
          object-fit: contain;
        ">
 
-  <!-- ID DA SOLICITAÇÃO (DIREITA) -->
   {% if modo == 'view' and solicitacao %}
     <div style="
          position: absolute;
@@ -461,6 +466,11 @@
   </button>
   {% endif %}
 </form>
+
+    {{ super() }}
+
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
