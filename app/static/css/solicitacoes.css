@@ -30,7 +30,6 @@
 /* ===============================
    Multiselect - Setores
    =============================== */
-
 .multiselect {
   position: relative;
   width: 100%;
@@ -112,7 +111,6 @@
 /* ===============================
    Approval Flow
    =============================== */
-
 .approval-flow {
   display: flex;
   justify-content: center;
@@ -140,16 +138,6 @@
 /* ===============================
    MOBILE / DESKTOP VISIBILITY
    =============================== */
-
-/*
-  Estratégia:
-  - Estado base: MOBILE DESATIVADO
-  - Desktop é o padrão
-  - Mobile só existe dentro do breakpoint
-  - Força suficiente para sobrepor Bootstrap
-*/
-
-/* 🔹 ESTADO BASE (DESKTOP) */
 .page-pedidos .pedidos-mobile {
   display: none !important;
 }
@@ -158,16 +146,12 @@
   display: block;
 }
 
-/* 🔹 MOBILE */
 @media (max-width: 768px) {
-
-  /* Esconde QUALQUER tabela desktop */
   .page-pedidos .pedidos-desktop,
   .page-pedidos .pedidos-desktop table {
     display: none !important;
   }
 
-  /* Ativa cards mobile */
   .page-pedidos .pedidos-mobile {
     display: flex !important;
     flex-direction: column;
@@ -176,11 +160,9 @@
 
 }
 
-
 /* ===============================
    MOBILE CARDS - PEDIDOS
    =============================== */
-
 .solicitacao-card {
   background: #f8f9fa;
   border-radius: 14px;
@@ -227,7 +209,6 @@
 /* ===============================
    FILTROS MOBILE
    =============================== */
-
 @media (max-width: 768px) {
 
   .filtros-pedidos .form-control,
@@ -242,21 +223,17 @@
 /* ===============================
    DATE INPUT FIX — MOBILE UX
    =============================== */
-
   .filtros-pedidos input[type="date"] {
-    font-size: 1rem;        /* evita texto “miúdo” */
-    padding: 10px 12px;     /* aumenta área clicável */
+    font-size: 1rem;        
+    padding: 10px 12px;     
     line-height: 1.2;
   }
-
    
 }
 
-
 /* =========================================
    MOBILE REGISTER — FULL WIDTH FIX
-   ========================================= */
-
+   ======================================== */
 @media (max-width: 768px) {
 
   .mobile-screen.register-form {
@@ -283,16 +260,13 @@
 
 }
 
-
 /* =========================================
    DOCUMENT MODE — MOBILE VIEWPORT FIX
    ========================================= */
-
 .document-mobile-wrapper {
   width: 100%;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
 
   .document-mobile-wrapper {
@@ -301,8 +275,7 @@
   }
 
   .document-desktop-canvas {
-    min-width: 1200px; /* largura desktop fixa */
+    min-width: 1200px; 
     padding: 16px;
   }
-
 }
