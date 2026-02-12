@@ -222,10 +222,8 @@
   position: relative;
   min-height: 100vh;
 
-  /* FUNDO BASE (nunca branco) */
   background-color: #0f172a;
 
-  /* IMAGEM PADRÃO (já conhecida pelo browser) */
   background-image: url("../images/banners/bg-cad-log.png");
   background-size: cover;
   background-position: center;
@@ -247,4 +245,17 @@
 
 .register-form {
   background-image: url("../images/banners/bg-cad-form.jpg");
+}
+
+/* =========================================
+   FIX MOBILE REGISTER ALIGNMENT
+   ========================================= */
+
+@media (max-width: 991px) {
+
+  .mobile-screen.register-form {
+    align-items: flex-start; 
+    padding-top: 60px;
+  }
+
 }
