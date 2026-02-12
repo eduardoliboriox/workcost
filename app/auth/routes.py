@@ -27,11 +27,16 @@ from app.auth.repository import (
 bp = Blueprint("auth", __name__)
 oauth = OAuth()
 
+
+# ==========================================================
+# OAUTH SETUP
+# ==========================================================
 @bp.record_once
 def setup_oauth(state):
     app = state.app
     oauth.init_app(app)
 
+    # GOOGLE
     oauth.register(
         name="google",
         client_id=app.config["GOOGLE_CLIENT_ID"],
@@ -40,6 +45,7 @@ def setup_oauth(state):
         client_kwargs={"scope": "openid email profile"},
     )
 
+    # GITHUB (mantido intacto)
     oauth.register(
         name="github",
         client_id=app.config["GITHUB_CLIENT_ID"],
@@ -50,6 +56,10 @@ def setup_oauth(state):
         client_kwargs={"scope": "user:email"},
     )
 
+
+# ==========================================================
+# LOGIN PAGE
+# ==========================================================
 @bp.route("/login")
 def login():
     user_agent = parse(request.headers.get("User-Agent", ""))
@@ -60,21 +70,46 @@ def login():
     return render_template("auth/login.html")
 
 
+# ==========================================================
+# GOOGLE LOGIN
+# ==========================================================
 @bp.route("/login/google")
 def login_google():
-    return oauth.google.authorize_redirect(
-        url_for("auth.google_callback", _external=True, _scheme="https")
-    )
 
-@bp.route("/auth/google")
+    if not current_app.config.get("GOOGLE_CLIENT_ID"):
+        flash("Login com Google indisponível no momento", "warning")
+        return redirect(url_for("auth.login"))
+
+    redirect_uri = url_for("auth.google_callback", _external=True)
+
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@bp.route("/google/callback")
 def google_callback():
-    token = oauth.google.authorize_access_token()
-    userinfo = oauth.google.parse_id_token(token)
+
+    try:
+        token = oauth.google.authorize_access_token()
+    except Exception:
+        flash("Erro ao autenticar com Google", "danger")
+        return redirect(url_for("auth.login"))
+
+    try:
+        userinfo = oauth.google.parse_id_token(token)
+    except Exception:
+        flash("Erro ao obter dados do Google", "danger")
+        return redirect(url_for("auth.login"))
+
+    if not userinfo:
+        flash("Falha na autenticação Google", "danger")
+        return redirect(url_for("auth.login"))
 
     user_data = get_or_create_user(userinfo, "google")
     login_user(User(user_data))
 
     return redirect(url_for("pages.inicio"))
+
+# GITHUB
 
 @bp.route("/login/github")
 def login_github():
@@ -82,9 +117,9 @@ def login_github():
         flash("Login com GitHub indisponível no momento", "warning")
         return redirect(url_for("auth.login"))
 
-    return oauth.github.authorize_redirect(
-        url_for("auth.github_callback", _external=True, _scheme="https")
-    )
+    redirect_uri = url_for("auth.github_callback", _external=True)
+    return oauth.github.authorize_redirect(redirect_uri)
+
 
 @bp.route("/github/callback")
 def github_callback():
