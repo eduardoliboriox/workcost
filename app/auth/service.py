@@ -40,6 +40,25 @@ def get_or_create_user(profile, provider):
     if user:
         return user
 
+    from app.auth.repository import get_user_by_email
+
+    existing_user = get_user_by_email(email)
+
+    if existing_user:
+        from app.extensions import get_db
+
+        with get_db() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE users
+                    SET provider = %s,
+                        provider_id = %s
+                    WHERE id = %s
+                """, (provider, provider_id, existing_user["id"]))
+            conn.commit()
+
+        return get_user_by_id(existing_user["id"])
+
     return create_user({
         "username": username,
         "email": email,
