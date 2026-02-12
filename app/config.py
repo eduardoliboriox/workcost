@@ -4,6 +4,8 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL")
     SECRET_KEY = os.getenv("SECRET_KEY", "dev")
 
+    PREFERRED_URL_SCHEME = "https"
+
     # ==========================
     # OPERACIONAL
     # ==========================
@@ -22,7 +24,7 @@ class Config:
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
     SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
     SMTP_FROM = os.getenv("SMTP_FROM")
-    
+
     # ==========================
     # SENDGRID
     # ==========================
