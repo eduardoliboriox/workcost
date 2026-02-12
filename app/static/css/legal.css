@@ -13,7 +13,6 @@
     font-size: 0.85rem;
 }
 
-/* 🔹 Desktop mantém padrão */
 .legal-links-desktop a {
     color: #6c757d;
     text-decoration: none;
@@ -24,7 +23,6 @@
     color: #0d6efd;
 }
 
-/* 🔹 Mobile — força branco para melhor contraste */
 .legal-links-mobile a {
     color: #ffffff !important;
     text-decoration: none;
