@@ -282,3 +282,27 @@
   }
 
 }
+
+
+/* =========================================
+   DOCUMENT MODE — MOBILE VIEWPORT FIX
+   ========================================= */
+
+.document-mobile-wrapper {
+  width: 100%;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .document-mobile-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .document-desktop-canvas {
+    min-width: 1200px; /* largura desktop fixa */
+    padding: 16px;
+  }
+
+}
