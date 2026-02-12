@@ -157,3 +157,15 @@ def solicitacao_view(solicitacao_id):
         active_menu="solicitacoes",
         origem=origem
     )
+
+# ==============================
+# LEGAL PAGES
+# ==============================
+
+@bp.route("/privacy-policy")
+def privacy_policy():
+    return render_template("legal/privacy.html")
+
+@bp.route("/cookie-policy")
+def cookie_policy():
+    return render_template("legal/cookies.html")
