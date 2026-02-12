@@ -28,9 +28,6 @@
 
 <div class="container-fluid">
 
-  <!-- =====================================================
-       BOAS-VINDAS
-       ===================================================== -->
   <div class="card shadow-sm p-4 mb-4">
     <h4 class="fw-bold mb-2">
       Bem-vindo, {{ current_user.full_name or current_user.username }}
@@ -44,10 +41,6 @@
     </p>
   </div>
 
-
-  <!-- =====================================================
-       COMO FUNCIONA O FLUXO
-       ===================================================== -->
   <div class="card shadow-sm p-4 mb-4">
     <h5 class="fw-bold mb-3">
       Como funciona o fluxo de aprovação
@@ -71,10 +64,6 @@
     </ol>
   </div>
 
-
-  <!-- =====================================================
-       PERFIL ADMIN
-       ===================================================== -->
   {% if current_user.is_admin %}
 
   <div class="card shadow-sm p-4 mb-4 border-primary">
@@ -114,9 +103,6 @@
 
   {% elif current_user.extra_authorized %}
 
-  <!-- =====================================================
-       PERFIL AUTORIZADO EXTRA
-       ===================================================== -->
   <div class="card shadow-sm p-4 mb-4 border-success">
     <h5 class="fw-bold text-success mb-3">
       Seu perfil: Autorizado para Extra
@@ -147,9 +133,6 @@
 
   {% else %}
 
-  <!-- =====================================================
-       PERFIL USUÁRIO COMUM
-       ===================================================== -->
   <div class="card shadow-sm p-4 mb-4 border-secondary">
     <h5 class="fw-bold text-secondary mb-3">
       Seu perfil: Colaborador
@@ -180,10 +163,6 @@
 
   {% endif %}
 
-
-  <!-- =====================================================
-       OBSERVAÇÕES IMPORTANTES
-       ===================================================== -->
   <div class="card shadow-sm p-4">
     <h6 class="fw-bold mb-2">
       Orientações importantes
