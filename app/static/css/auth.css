@@ -230,7 +230,7 @@
 
   background-color: #0f172a;
 
-  background-image: url("../images/banners/bg-cad-log.png");
+  background-image: url("../images/banners/bg-cad-log.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -242,15 +242,15 @@
 
 /* PÁGINAS ESPECÍFICAS */
 .login-choice {
-  background-image: url("../images/banners/bg-cad-log.png");
+  background-image: url("../images/banners/bg-cad-log.webp");
 }
 
 .login-form {
-  background-image: url("../images/banners/bg-log-pass.jpg");
+  background-image: url("../images/banners/bg-log-pass.webp");
 }
 
 .register-form {
-  background-image: url("../images/banners/bg-cad-form.jpg");
+  background-image: url("../images/banners/bg-cad-form.webp");
 }
 
 /* =========================================
