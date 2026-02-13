@@ -156,11 +156,22 @@ def attach_employee_and_profile(user_id: int, form):
 
     upsert_profile(user_id, form)
 
-def confirm_employee_extra(matricula: str, password: str):
-    matricula = matricula.strip().lstrip("0")
-    password = password.strip()
+def confirm_employee_extra(identifier: str, password: str):
+    """
+    Confirma assinatura por:
+    - matrícula (CLT)
+    - username (PJ / Diretor / Admin)
+    """
 
-    user = get_user_by_matricula(matricula)
+    identifier = identifier.strip()
+
+    # 1️⃣ Tenta por matrícula
+    user = get_user_by_matricula(identifier)
+
+    # 2️⃣ Se não achar, tenta por username
+    if not user:
+        from app.auth.repository import get_user_by_username
+        user = get_user_by_username(identifier)
 
     if not user:
         return {"success": False, "error": "Usuário não encontrado"}
