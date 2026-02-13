@@ -28,29 +28,38 @@
             action="{{ url_for('auth.register') }}"
             class="mobile-form">
 
-        <!-- ================= DADOS PESSOAIS ================= -->
-        <h6 class="fw-bold mb-2">Dados pessoais</h6>
-
-        <input name="full_name"
-               class="form-control mb-2"
-               placeholder="Nome completo"
-               required>
-
-        <input name="matricula"
-               class="form-control mb-2"
-               placeholder="Matrícula real"
-               required>
-
-        <select name="setor"
-                class="form-select mb-3"
+         <!-- ================= DADOS PESSOAIS ================= -->
+         <h6 class="fw-bold mb-2">Dados pessoais</h6>
+         
+         <select name="user_type"
+                 id="user_type"
+                 class="form-select mb-2"
+                 required>
+           <option value="CLT">Colaborador CLT</option>
+           <option value="PJ">Prestador de Serviço (PJ)</option>
+           <option value="DIRECTOR">Diretoria</option>
+         </select>
+         
+         <input name="full_name"
+                class="form-control mb-2"
+                placeholder="Nome completo"
                 required>
-          <option value="">Selecione o setor</option>
-          <option>Direção</option>
-          <option>Engenharia</option>
-          <option>PCP</option>
-          <option>Produção</option>
-          <option>TI</option>
-        </select>
+         
+         <input name="matricula"
+                id="matricula_field"
+                class="form-control mb-2"
+                placeholder="Matrícula (somente CLT)">
+         
+         <select name="setor"
+                 class="form-select mb-3"
+                 required>
+           <option value="">Selecione o setor</option>
+           <option>Direção</option>
+           <option>Engenharia</option>
+           <option>PCP</option>
+           <option>Produção</option>
+           <option>TI</option>
+         </select>
 
         <!-- ================= CONTATO ================= -->
         <h6 class="fw-bold mt-3 mb-2">Contato</h6>
