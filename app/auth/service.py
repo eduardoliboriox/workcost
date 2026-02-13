@@ -74,22 +74,56 @@ def generate_username(full_name: str) -> str:
     raw_username = f"{parts[0]}.{parts[-1]}"
     return normalize_username(raw_username)
 
+
+def generate_special_matricula(user_type: str) -> str:
+    """
+    Gera matrícula interna para:
+    PJ, DIRECTOR, OWNER
+    """
+
+    from app.extensions import get_db
+    from psycopg.rows import dict_row
+
+    prefix_map = {
+        "PJ": "PJ-",
+        "DIRECTOR": "DIR-",
+        "OWNER": "OWR-"
+    }
+
+    prefix = prefix_map.get(user_type)
+    if not prefix:
+        return None
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT COUNT(*) AS total
+                FROM users
+                WHERE matricula LIKE %s
+            """, (f"{prefix}%",))
+            total = cur.fetchone()["total"] + 1
+
+    return f"{prefix}{str(total).zfill(6)}"
+
+
 def register_user(form):
+
     if form["password"] != form["password_confirm"]:
         raise ValueError("As senhas não conferem")
 
     full_name = form["full_name"]
     username = generate_username(full_name)
-
     password_hash = generate_password_hash(form["password"])
-
     is_first_user = count_users() == 0
 
-    matricula = form.get("matricula") or None
     user_type = form.get("user_type") or "CLT"
+    matricula = form.get("matricula") or None
 
-    if user_type == "CLT" and not matricula:
-        raise ValueError("Matrícula obrigatória para colaboradores CLT")
+    if user_type == "CLT":
+        if not matricula:
+            raise ValueError("Matrícula obrigatória para colaboradores CLT")
+    else:
+        matricula = generate_special_matricula(user_type)
 
     return create_local_user({
         "username": username,
