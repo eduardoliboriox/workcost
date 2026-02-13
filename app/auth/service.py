@@ -78,21 +78,29 @@ def register_user(form):
     if form["password"] != form["password_confirm"]:
         raise ValueError("As senhas não conferem")
 
-    username = generate_username(form["full_name"])
+    full_name = form["full_name"]
+    username = generate_username(full_name)
 
     password_hash = generate_password_hash(form["password"])
 
     is_first_user = count_users() == 0
 
+    matricula = form.get("matricula") or None
+    user_type = form.get("user_type") or "CLT"
+
+    if user_type == "CLT" and not matricula:
+        raise ValueError("Matrícula obrigatória para colaboradores CLT")
+
     return create_local_user({
         "username": username,
         "email": form["email"],
-        "full_name": form["full_name"],
-        "matricula": form["matricula"],
+        "full_name": full_name,
+        "matricula": matricula,
         "setor": form["setor"],
         "password_hash": password_hash,
         "is_active": is_first_user,
-        "is_admin": is_first_user
+        "is_admin": is_first_user,
+        "user_type": user_type
     })
 
 # =====================================================
