@@ -85,19 +85,20 @@ def create_local_user(data):
                 """
                 INSERT INTO users
                 (username, email, full_name, matricula, setor,
-                 password_hash, provider, is_active, is_admin)
-                VALUES (%s,%s,%s,%s,%s,%s,'local',%s,%s)
+                 password_hash, provider, is_active, is_admin, user_type)
+                VALUES (%s,%s,%s,%s,%s,%s,'local',%s,%s,%s)
                 RETURNING *
                 """,
                 (
                     data["username"],
                     data["email"],
                     data["full_name"],
-                    data["matricula"],
+                    data.get("matricula"),
                     data["setor"],
                     data["password_hash"],
                     data["is_active"],
                     data["is_admin"],
+                    data.get("user_type", "CLT")
                 ),
             )
             conn.commit()
