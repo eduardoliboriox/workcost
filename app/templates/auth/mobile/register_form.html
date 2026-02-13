@@ -159,6 +159,27 @@
   </div>
 </section>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const userType = document.getElementById("user_type");
+  const matriculaField = document.getElementById("matricula_field");
+
+  function toggleMatricula() {
+    if (userType.value === "CLT") {
+      matriculaField.setAttribute("required", "required");
+      matriculaField.placeholder = "Matrícula real (obrigatória)";
+    } else {
+      matriculaField.removeAttribute("required");
+      matriculaField.placeholder = "Matrícula (não obrigatória)";
+      matriculaField.value = "";
+    }
+  }
+
+  userType.addEventListener("change", toggleMatricula);
+  toggleMatricula();
+});
+</script>
+
 <script src="{{ url_for('static', filename='js/input-masks.js') }}"></script>
 <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 
