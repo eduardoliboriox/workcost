@@ -3,8 +3,15 @@ from psycopg.rows import dict_row
 
 
 def get_employee_by_matricula(matricula: str):
+
+    matricula = matricula.strip()
+
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
+
+            # ==============================
+            # 1️⃣ TENTA NA TABELA EMPLOYEES
+            # ==============================
             cur.execute("""
                 SELECT
                     e.full_name,
@@ -28,5 +35,31 @@ def get_employee_by_matricula(matricula: str):
                 LIMIT 1
             """, (matricula,))
 
-            return cur.fetchone()
+            employee = cur.fetchone()
 
+            if employee:
+                return employee
+
+            # ==============================
+            # 2️⃣ FALLBACK: BUSCA DIRETO EM USERS
+            # (PJ / DIRECTOR / OWNER)
+            # ==============================
+            cur.execute("""
+                SELECT
+                    u.full_name,
+                    p.phone,
+                    CONCAT_WS(', ',
+                        p.street,
+                        p.number,
+                        p.neighborhood,
+                        p.city,
+                        p.state
+                    ) AS endereco
+                FROM users u
+                LEFT JOIN user_profiles p
+                  ON p.user_id = u.id
+                WHERE u.matricula = %s
+                LIMIT 1
+            """, (matricula,))
+
+            return cur.fetchone()
