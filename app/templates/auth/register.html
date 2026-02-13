@@ -33,10 +33,15 @@
                placeholder="Nome completo"
                required>
 
+        <select name="user_type" class="form-select mb-2" required>
+          <option value="CLT">Colaborador CLT</option>
+          <option value="PJ">Prestador de Serviço (PJ)</option>
+          <option value="DIRECTOR">Diretoria</option>
+        </select>        
+        
         <input name="matricula"
                class="form-control mb-2"
-               placeholder="Matrícula real"
-               required>
+               placeholder="Matrícula (somente CLT)">
 
         <select name="setor"
                 class="form-select mb-3"
