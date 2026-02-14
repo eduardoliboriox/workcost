@@ -392,7 +392,7 @@
 /* Colunas críticas com largura mínima real */
 #funcionariosTable th:nth-child(3),
 #funcionariosTable td:nth-child(3) {
-  min-width: 260px; /* Nome */
+  min-width: 300px; /* Nome */
 }
 
 #funcionariosTable th:nth-child(4),
