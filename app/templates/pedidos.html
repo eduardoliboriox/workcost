@@ -124,11 +124,11 @@
               Arquivo
             </a>
 
-            <button type="button"
-                    class="btn btn-sm btn-outline-warning ms-1"
-                    onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
-              Provisão
-            </button>
+          <a href="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
+             target="_blank"
+             class="btn btn-sm btn-outline-warning ms-1">
+            Provisão
+          </a>
           </td>
         </tr>
         {% endfor %}
