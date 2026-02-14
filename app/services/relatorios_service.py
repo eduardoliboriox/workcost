@@ -2,6 +2,11 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 from datetime import date, timedelta
+from app.services.provisao_service import gerar_provisao
+from app.repositories.solicitacoes_repository import (
+    buscar_solicitacao_por_id,
+    listar_funcionarios_por_solicitacao
+)
 
 def _formatar_data_br(d: date) -> str:
     """Formata data para padrão brasileiro DD-MM-YYYY"""
@@ -135,20 +140,17 @@ def gerar_relatorio(setor, tipo):
 
 
 def gerar_provisao_gastos_extra(solicitacao_id: int):
-    from app.repositories.solicitacoes_repository import (
-        listar_funcionarios_por_solicitacao
+
+    solicitacao = buscar_solicitacao_por_id(solicitacao_id)
+    funcionarios = listar_funcionarios_por_solicitacao(
+        solicitacao_id
     )
 
-    funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
-    quantidade = len(funcionarios)
+    if not solicitacao:
+        return {"error": "Solicitação não encontrada"}
 
-    custo_rota = 500 if quantidade > 0 else 0
-    custo_alimentacao = quantidade * 35
+    return gerar_provisao(solicitacao, funcionarios)}
 
-    return {
-        "quantidade_pessoas": quantidade,
-        "custo_rota": custo_rota,
-        "custo_alimentacao": custo_alimentacao,
-        "total": custo_rota + custo_alimentacao
-    }
+
+
 
