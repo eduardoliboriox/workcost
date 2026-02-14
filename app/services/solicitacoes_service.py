@@ -128,7 +128,6 @@ def confirmar_presenca_funcionario(
         username=result["username"]
     )
 
-    # 🔑 Fonte da verdade: banco
     funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
 
     funcionario = next(
@@ -142,7 +141,6 @@ def confirmar_presenca_funcionario(
         "signed_at": funcionario["signed_at"].isoformat()
         if funcionario.get("signed_at") else None
     }
-
 
 
 def salvar_view_solicitacao(
