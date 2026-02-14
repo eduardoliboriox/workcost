@@ -551,7 +551,16 @@
 {% endblock %}
 
 {% block scripts %}
-{% if not print_mode %}
+{% if print_mode %}
+  <script>
+    // Aguarda render completo antes de imprimir
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        window.print();
+      }, 300);
+    });
+  </script>
+{% else %}
   <script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
 
   {% if modo == 'create' %}
