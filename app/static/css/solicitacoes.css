@@ -360,17 +360,24 @@
      🔵 APPROVAL FLOW — ORGANIZA EM LINHAS
      ===================================== */
 
-  .approval-flow {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 10px !important;
-  }
+   
+   .approval-flow {
+     display: flex !important;
+     flex-wrap: nowrap !important; /* 🔑 não permite quebra */
+     justify-content: space-between !important;
+     gap: 0 !important;
+   }
    
    .approval-flow .approval-item {
-     flex: 0 0 20% !important;
-     max-width: 20% !important;
-     margin-bottom: 0 !important;
+     flex: 0 0 19% !important;   /* 🔑 5 colunas com margem de segurança */
+     max-width: 19% !important;
+     margin: 0 !important;
+   }
+   
+   /* Remove influência do Bootstrap grid */
+   .approval-flow > [class*="col-"] {
+     padding-left: 0 !important;
+     padding-right: 0 !important;
    }
 
   .approval-box {
