@@ -283,3 +283,15 @@
     padding: 16px;
   }
 }
+
+/* =========================================
+   DESCRIÇÃO LONGA — SCROLL HORIZONTAL FIX
+   (Somente tabela de solicitacoes abertas)
+   ========================================= */
+.descricao-scroll {
+  max-width: 260px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: block;
+}
