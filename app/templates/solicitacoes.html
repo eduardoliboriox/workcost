@@ -117,7 +117,7 @@
     <div class="row g-4">
 
       <!-- DATA -->
-      <div class="col-md-3">
+      <div class="col-md-4">
         <label class="form-label fw-bold">
           Data <small class="text-muted">/ Date</small>
         </label>
@@ -130,42 +130,33 @@
       </div>
 
       <!-- TURNO -->
-      <div class="col-md-5">
+      <div class="col-md-4">
         <label class="form-label fw-bold d-block">
           Turno <small class="text-muted">/ Shift</small>
         </label>
-
-        <div class="d-flex gap-3 mt-1">
-          <div class="form-check">
-            <input class="form-check-input turno-radio"
-                   type="radio"
-                   name="turnos"
-                   value="1T"
-                   {% if modo == 'view' and '1T' in solicitacao.turnos %}checked{% endif %}
-                   {% if modo == 'view' %}disabled{% endif %}>
-            <label class="form-check-label">1º Turno</label>
-          </div>
-
-          <div class="form-check">
-            <input class="form-check-input turno-radio"
-                   type="radio"
-                   name="turnos"
-                   value="2T"
-                   {% if modo == 'view' and '2T' in solicitacao.turnos %}checked{% endif %}
-                   {% if modo == 'view' %}disabled{% endif %}>
-            <label class="form-check-label">2º Turno</label>
-          </div>
-
-          <div class="form-check">
-            <input class="form-check-input turno-radio"
-                   type="radio"
-                   name="turnos"
-                   value="3T"
-                   {% if modo == 'view' and '3T' in solicitacao.turnos %}checked{% endif %}
-                   {% if modo == 'view' %}disabled{% endif %}>
-            <label class="form-check-label">3º Turno</label>
-          </div>
-        </div>
+      
+        <select name="turnos"
+                class="form-select turno-select"
+                {% if modo == 'view' %}disabled{% endif %}>
+          
+          <option value="">Selecione</option>
+      
+          <option value="1T"
+            {% if modo == 'view' and '1T' in solicitacao.turnos %}selected{% endif %}>
+            1º Turno
+          </option>
+      
+          <option value="2T"
+            {% if modo == 'view' and '2T' in solicitacao.turnos %}selected{% endif %}>
+            2º Turno
+          </option>
+      
+          <option value="3T"
+            {% if modo == 'view' and '3T' in solicitacao.turnos %}selected{% endif %}>
+            3º Turno
+          </option>
+      
+        </select>
       </div>
 
       <!-- CLIENTE -->

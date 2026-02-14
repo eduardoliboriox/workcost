@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAddRow = document.getElementById("btnAddRow");
   const tbody = document.querySelector("#funcionariosTable tbody");
   const funcionariosJson = document.getElementById("funcionariosJson");
-  const turnoRadios = document.querySelectorAll(".turno-radio");
+  const turnoSelect = document.querySelector(".turno-select");
+
 
   if (!form || !btnAddRow || !tbody) return;
 
@@ -35,9 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnAddRow.addEventListener("click", addRow);
 
-  turnoRadios.forEach(radio =>
-    radio.addEventListener("change", aplicarHorarioPorTurno)
-  );
+  if (turnoSelect) {
+    turnoSelect.addEventListener("change", aplicarHorarioPorTurno);
+  }
 
   addRow();
 
@@ -249,16 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function aplicarHorarioPorTurno() {
-    const turnoSelecionado =
-      document.querySelector(".turno-radio:checked");
-
-    if (!turnoSelecionado) return;
-
-    const horarios =
-      EXTRA_SHIFT_TIMES[turnoSelecionado.value];
-
+    const turnoSelect = document.querySelector(".turno-select");
+  
+    if (!turnoSelect || !turnoSelect.value) return;
+  
+    const horarios = EXTRA_SHIFT_TIMES[turnoSelect.value];
     if (!horarios) return;
-
+  
     [...tbody.querySelectorAll("tr")].forEach(row => {
       row.querySelector(".inicio").value = horarios.start;
       row.querySelector(".termino").value = horarios.end;
