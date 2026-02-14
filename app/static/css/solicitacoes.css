@@ -459,6 +459,25 @@
     display: none !important;
   }
 
+  /* =====================================
+     🔵 PRINT FIX — APPROVAL TEXT COLOR
+     Apenas ajuste de cor para impressão
+     ===================================== */
+
+  .approval-box.signed,
+  .approval-box.pending,
+  .signature-box.signed,
+  .signature-box.pending {
+    background: #fff !important;   /* remove verde */
+    color: #000 !important;        /* força texto preto */
+    border: 1px solid #000 !important; /* mantém destaque visual */
+  }
+
+  .approval-role,
+  .approval-username {
+    color: #000 !important;
+  }
+
 }
 /* =========================================
    FIX DEFINITIVO — EMPLOYEE TABLE
