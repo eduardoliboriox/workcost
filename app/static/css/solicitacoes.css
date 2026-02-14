@@ -394,10 +394,15 @@
    CONTROLE REAL DE COLUNAS
    ============================ */
 
+/* item */
+#funcionariosTable th:nth-child(1),
+#funcionariosTable td:nth-child(1) {
+  width: 50px;
+}
 /* Matrícula */
 #funcionariosTable th:nth-child(2),
 #funcionariosTable td:nth-child(2) {
-  width: 100px;
+  width: 120px;
 }
 
 /* Nome */
