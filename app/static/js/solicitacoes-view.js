@@ -1,18 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ======================================================
-     ELEMENTOS BASE
-     ====================================================== */
-
   const form = document.getElementById("formSolicitacao");
   const solicitacaoId = form?.dataset.solicitacaoId;
 
   if (!form || !solicitacaoId) return;
 
-  /* ======================================================
-     🔒 FIX CRÍTICO
-     Em modo VIEW, o form NÃO pode submeter
-     ====================================================== */
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -22,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pendingApprovals = [];
 
   /* ======================================================
-     FLUXO DE APROVAÇÃO (VIEW) — MANTIDO
+     FLUXO DE APROVAÇÃO 
      ====================================================== */
 
   document.querySelectorAll(".approval-item").forEach(item => {
@@ -73,8 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ======================================================
-     FUNCIONÁRIOS — ASSINATURA (VIEW)
-     Backend é a fonte da verdade
+     FUNCIONÁRIOS — ASSINATURA 
      ====================================================== */
 
   document.querySelectorAll("#funcionariosTable .btn-sign")
@@ -109,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        // 🔑 Renderiza com base no BACKEND
         row.querySelector("td:nth-child(9)").innerHTML = `
           <div class="signature-box signed">
             ${data.signed_by}
@@ -120,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 /* ======================================================
-   SALVAR VIEW (somente aprovações)
+   SALVAR VIEW
    ====================================================== */
 
 document.getElementById("btnSaveView")
