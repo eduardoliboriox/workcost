@@ -295,3 +295,72 @@
   white-space: nowrap;
   display: block;
 }
+
+
+/* =========================================
+   PRINT FIX — DOCUMENTO A4 PERFEITO
+   ========================================= */
+
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html, body {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  /* Remove qualquer overflow horizontal */
+  .document-mobile-wrapper {
+    overflow: visible !important;
+  }
+
+  .document-desktop-canvas {
+    min-width: unset !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Remove sombras e elementos desnecessários */
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Ajuste fino de tipografia */
+  body {
+    font-size: 11.5px;
+  }
+
+  .page-title-solicitacoes img {
+    height: 80px !important;
+  }
+
+  /* Evita quebra feia de tabela */
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* Remove botões e elementos interativos */
+  button,
+  .btn,
+  input[type="password"] {
+    display: none !important;
+  }
+
+}
