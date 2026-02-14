@@ -9,21 +9,18 @@
   <div class="ms-auto d-flex gap-2">
 
     {% if origem == 'pedidos' %}
-      <!-- 🔹 CONTEXTO: PEDIDOS -->
       <a href="{{ url_for('pages.pedidos') }}"
          class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Voltar
       </a>
 
     {% elif origem == 'minhasextras' %}
-      <!-- 🔹 CONTEXTO: MINHAS EXTRAS -->
       <a href="{{ url_for('pages.minhas_extras') }}"
          class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Voltar
       </a>
 
     {% else %}
-      <!-- 🔹 CONTEXTO PADRÃO (CREATE / ADMIN / ABERTAS) -->
       <a href="{{ url_for('pages.solicitacoes_abertas') }}"
          class="btn btn-outline-primary">
         <i class="bi bi-file-earmark-medical"></i> Abertas
@@ -35,7 +32,6 @@
       </a>
     {% endif %}
 
-    <!-- 🔹 BOTÕES COMUNS A TODOS OS CONTEXTOS -->
     <button class="btn btn-outline-purple"
             type="button"
             onclick="toggleFullscreen()">
@@ -54,10 +50,8 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
 
-<!-- ===============================
-     MOBILE DOCUMENT WRAPPER
-     =============================== -->
 <div class="document-mobile-wrapper">
+  
   <div class="document-desktop-canvas">
 
 <div class="page-title-solicitacoes mb-4 position-relative">
@@ -105,9 +99,6 @@
       {% if modo == 'view' %}novalidate{% endif %}>
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
-  {# =======================
-   VARIÁVEIS DE CONTROLE (JINJA)
-   ======================= #}
   {% set setores_selecionados = solicitacao.setores.split(',') if modo == 'view' else [] %}
   
   <!-- =======================
@@ -116,7 +107,6 @@
   <div class="card p-4 shadow-sm mb-4">
     <div class="row g-4">
 
-      <!-- DATA -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Data <small class="text-muted">/ Date</small>
@@ -129,7 +119,6 @@
                required>
       </div>
 
-      <!-- TURNO -->
       <div class="col-md-4">
         <label class="form-label fw-bold d-block">
           Turno <small class="text-muted">/ Shift</small>
@@ -159,7 +148,6 @@
         </select>
       </div>
 
-      <!-- CLIENTE -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Unidade <small class="text-muted">/ Unidad</small>
@@ -174,7 +162,6 @@
         </select>
       </div>
 
-      <!-- DATA EXECUÇÃO -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Data da Realização <small class="text-muted">/ Execution Date</small>
@@ -187,7 +174,6 @@
                required>
       </div>      
      
-      <!-- SETORES -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Setores envolvidos <small class="text-muted">/ Departments</small>
@@ -227,7 +213,6 @@
 
       </div>
 
-      <!-- DESCRIÇÃO -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Descrição <small class="text-muted">/ Description</small>
@@ -287,7 +272,6 @@
         </div>
       </div>
       
-
     </div>
   </div>
 
@@ -354,8 +338,6 @@
                 </div>
               {% endif %}
             </td>
-
-        
             <td></td>
           </tr>
           {% endfor %}
@@ -363,7 +345,6 @@
   </tbody>
 
   </table>
-
 
   <small class="text-muted d-block mb-4">
     A assinatura eletrônica do colaborador, efetuada no sistema corporativo, formaliza sua ciência quanto às solicitações
@@ -384,7 +365,6 @@
           rows="3"
           {% if modo == 'view' %}disabled{% endif %}>{{ solicitacao.atividades if modo == 'view' else '' }}</textarea>
   </div>
-
   
   <!-- =======================
        FLUXO DE APROVAÇÃO
@@ -499,7 +479,6 @@
   </button>
   {% endif %}
 </form>
-
 
 {% if print_mode and provisao %}
 <hr class="my-5">
