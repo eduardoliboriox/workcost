@@ -134,9 +134,10 @@
           </a>
 
           <a href="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}"
-             class="btn btn-sm btn-outline-dark ms-1">
+             class="btn btn-sm btn-outline-dark ms-1 btn-pdf"
+             data-url="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
             PDF
-          </a>        
+          </a>     
         </td>
       </tr>
       {% endfor %}
@@ -144,6 +145,26 @@
   </table>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll(".btn-pdf").forEach(btn => {
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const url = this.dataset.url;
+
+      // Navega na mesma aba
+      window.location.href = url;
+
+    });
+
+  });
+
+});
+</script>
 
 <script src="{{ url_for('static', filename='js/solicitacoes-mobile.js') }}"></script>
 <script src="{{ url_for('static', filename='js/solicitacoes-abertas.js') }}"></script>
