@@ -367,53 +367,24 @@
 }
 
 /* =========================================
-   FIX — EMPLOYEE TABLE LAYOUT DEFINITIVO
+   FIX — EMPLOYEE TABLE CONTENT FULL WIDTH
    ========================================= */
 
 #funcionariosTable {
+  table-layout: auto;
   width: 100%;
-  table-layout: fixed;
 }
 
-/* Define largura estratégica por coluna */
-#funcionariosTable th:nth-child(1),
-#funcionariosTable td:nth-child(1) {
-  width: 60px;
-}
-
-#funcionariosTable th:nth-child(2),
-#funcionariosTable td:nth-child(2) {
-  width: 110px;
-}
-
-#funcionariosTable th:nth-child(3),
-#funcionariosTable td:nth-child(3) {
-  width: 240px;   /* NOME — MAIS IMPORTANTE */
-}
-
-#funcionariosTable th:nth-child(4),
-#funcionariosTable td:nth-child(4) {
-  width: 260px;   /* ENDEREÇO */
-}
-
-#funcionariosTable th:nth-child(5),
-#funcionariosTable td:nth-child(5) {
-  width: 150px;
-}
-
-/* Restante colunas automáticas */
 #funcionariosTable th,
 #funcionariosTable td {
-  vertical-align: middle;
   white-space: normal;
   word-break: break-word;
-  overflow-wrap: anywhere;
 }
 
-/* Inputs ocupam corretamente a coluna */
-#funcionariosTable input.form-control,
-#funcionariosTable select.form-select {
+#funcionariosTable input.form-control {
   width: 100%;
-  min-width: unset;
+  min-width: 140px;
+  white-space: normal;
+  overflow: visible;
   text-overflow: unset;
 }
