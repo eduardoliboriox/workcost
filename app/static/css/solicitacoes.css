@@ -464,14 +464,20 @@
      Apenas ajuste de cor para impressão
      ===================================== */
 
-  .approval-box.signed,
-  .approval-box.pending,
-  .signature-box.signed,
-  .signature-box.pending {
-    background: #fff !important;   /* remove verde */
-    color: #000 !important;        /* força texto preto */
-    border: 1px solid #000 !important; /* mantém destaque visual */
-  }
+/* =====================================
+   🔵 PRINT FIX — APPROVAL TEXT ONLY
+   Apenas texto preto no print
+   ===================================== */
+   
+   .approval-box.signed,
+   .approval-box.pending,
+   .signature-box.signed,
+   .signature-box.pending {
+     background: transparent !important;
+     color: #000 !important;
+     border: none !important;
+     box-shadow: none !important;
+   }
 
   .approval-role,
   .approval-username {
