@@ -365,3 +365,26 @@
   }
 
 }
+
+/* =========================================
+   FIX — EMPLOYEE TABLE CONTENT FULL WIDTH
+   ========================================= */
+
+#funcionariosTable {
+  table-layout: auto;
+  width: 100%;
+}
+
+#funcionariosTable th,
+#funcionariosTable td {
+  white-space: normal;
+  word-break: break-word;
+}
+
+#funcionariosTable input.form-control {
+  width: 100%;
+  min-width: 140px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
