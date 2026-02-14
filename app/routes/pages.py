@@ -169,3 +169,24 @@ def privacy_policy():
 @bp.route("/cookie-policy")
 def cookie_policy():
     return render_template("legal/cookies.html")
+
+
+@bp.route("/solicitacoes/<int:solicitacao_id>/provisao")
+@login_required
+def solicitacao_provisao(solicitacao_id):
+    from app.services.provisao_view_service import (
+        gerar_provisao_para_template
+    )
+
+    dados = gerar_provisao_para_template(solicitacao_id)
+
+    if not dados:
+        return "Solicitação não encontrada", 404
+
+    return render_template(
+        "solicitacoes-provisao.html",
+        solicitacao=dados["solicitacao"],
+        funcionarios=dados["funcionarios"],
+        total_geral=dados["total_geral"],
+        active_menu="solicitacoes"
+    )
