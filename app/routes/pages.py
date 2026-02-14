@@ -192,26 +192,24 @@ def solicitacao_provisao(solicitacao_id):
     )
 
 
-# ==============================
-# DOCUMENTO COMPLETO (ARQUIVO + PROVISÃO)
-# ==============================
 @bp.route("/solicitacoes/<int:solicitacao_id>/documento")
 @login_required
 def solicitacao_documento(solicitacao_id):
+
     from app.services.solicitacoes_service import obter_detalhe_solicitacao
-    from app.services.provisao_view_service import gerar_provisao_para_template
 
     detalhe = obter_detalhe_solicitacao(solicitacao_id)
-    provisao = gerar_provisao_para_template(solicitacao_id)
 
-    if not detalhe or not provisao:
+    if not detalhe:
         return "Solicitação não encontrada", 404
 
     return render_template(
-        "solicitacoes-documento.html",
+        "solicitacoes.html",
+        modo="view",
         solicitacao=detalhe["solicitacao"],
         funcionarios=detalhe["funcionarios"],
         aprovacoes=detalhe["aprovacoes"],
-        provisao_funcionarios=provisao["funcionarios"],
-        total_geral=provisao["total_geral"]
+        origem=None,
+        print_mode=True,  
+        active_menu=None
     )
