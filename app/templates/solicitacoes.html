@@ -196,23 +196,7 @@
                {% if modo == 'view' %}disabled{% endif %}
                required>
       </div>      
-
-      <div class="col-md-4">
-        <label class="form-label fw-bold">
-          Cliente <small class="text-muted">/ Customer</small>
-        </label>
-        <select name="customer"
-                class="form-select"
-                {% if modo == 'view' %}disabled{% endif %}>
-          <option value="">Selecione</option>
-          {% for c in ['Harman','LG','Spacecomm','TCL']|sort %}
-          <option value="{{ c }}">
-            {{ c }}
-          </option>
-          {% endfor %}
-        </select>
-      </div>
-      
+     
       <!-- SETORES -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
@@ -270,6 +254,23 @@
             {% endfor %}
           </select>
       </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-bold">
+          Cliente <small class="text-muted">/ Customer</small>
+        </label>
+        <select name="customer"
+                class="form-select"
+                {% if modo == 'view' %}disabled{% endif %}>
+          <option value="">Selecione</option>
+          {% for c in ['Harman','LG','Spacecomm','TCL']|sort %}
+          <option value="{{ c }}">
+            {{ c }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      
 
     </div>
   </div>
