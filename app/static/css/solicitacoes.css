@@ -421,7 +421,7 @@
 /* Telefone */
 #funcionariosTable th:nth-child(5),
 #funcionariosTable td:nth-child(5) {
-  width: 180px;
+  width: 155px;
 }
 
 /* botão excluir */
