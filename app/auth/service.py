@@ -199,10 +199,8 @@ def confirm_employee_extra(identifier: str, password: str):
 
     identifier = identifier.strip()
 
-    # 1️⃣ Tenta por matrícula
     user = get_user_by_matricula(identifier)
-
-    # 2️⃣ Se não achar, tenta por username
+    
     if not user:
         from app.auth.repository import get_user_by_username
         user = get_user_by_username(identifier)
