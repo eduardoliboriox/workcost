@@ -255,20 +255,40 @@
           </select>
       </div>
 
+      {% set clientes_selecionados = solicitacao.cliente.split(',') if modo == 'view' and solicitacao.cliente else [] %}
+      
       <div class="col-md-4">
         <label class="form-label fw-bold">
           Cliente <small class="text-muted">/ Customer</small>
         </label>
-        <select name="customer"
-                class="form-select"
-                {% if modo == 'view' %}disabled{% endif %}>
-          <option value="">Selecione</option>
-          {% for c in ['Harman','LG','Spacecomm','TCL']|sort %}
-          <option value="{{ c }}">
-            {{ c }}
-          </option>
-          {% endfor %}
-        </select>
+      
+        <div class="multiselect {% if modo == 'view' %}disabled{% endif %}" id="clientesSelect">
+          <div class="multiselect-display {% if clientes_selecionados %}has-value{% endif %}" id="clientesDisplay">
+            {% if modo == 'view' and clientes_selecionados %}
+              {{ clientes_selecionados | join(' / ') }}
+            {% else %}
+              Selecione um ou mais clientes
+            {% endif %}
+          </div>
+      
+          <div class="multiselect-options">
+            {% for cliente in [
+              'Harman',
+              'LG',
+              'Spacecomm',
+              'TCL'
+            ]|sort %}
+              <label class="multiselect-option">
+                <input type="checkbox"
+                       value="{{ cliente }}"
+                       name="clientes"
+                       {% if modo == 'view' and cliente in clientes_selecionados %}checked{% endif %}
+                       {% if modo == 'view' %}disabled{% endif %}>
+                <span>{{ cliente }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
       </div>
       
 
