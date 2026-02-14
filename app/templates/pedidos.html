@@ -178,11 +178,12 @@
           Acessar
         </a>
 
-        <button type="button"
-                class="btn btn-sm btn-outline-warning"
-                onclick="window.open('/api/solicitacoes/{{ s.id }}/provisao', '_blank')">
+        <a href="{{ url_for('pages.solicitacao_provisao',
+                            solicitacao_id=s.id) }}"
+           target="_blank"
+           class="btn btn-sm btn-outline-warning">
           Provisão
-        </button>
+        </a>
 
         <button type="button"
                 class="btn btn-sm btn-outline-secondary btn-details"
