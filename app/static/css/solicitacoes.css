@@ -403,7 +403,7 @@
 /* Matrícula */
 #funcionariosTable th:nth-child(2),
 #funcionariosTable td:nth-child(2) {
-  width: 120px;
+  width: 125px;
 }
 
 /* Nome */
@@ -427,7 +427,7 @@
 /* botão excluir */
 #funcionariosTable th:nth-child(10),
 #funcionariosTable td:nth-child(10) {
-  width: 60px;
+  width: 55px;
 }
 
 /* Inputs ocupam 100% da célula */
