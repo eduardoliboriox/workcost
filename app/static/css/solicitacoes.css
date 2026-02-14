@@ -1,6 +1,4 @@
-/* ===============================
-   WorkCost - Solicitações
-   =============================== */
+
 .page-title-solicitacoes {
   font-size: 1.4rem;
   font-weight: 600;
@@ -286,7 +284,6 @@
 
 /* =========================================
    DESCRIÇÃO LONGA — SCROLL HORIZONTAL FIX
-   (Somente tabela de solicitacoes abertas)
    ========================================= */
 .descricao-scroll {
   max-width: 260px;
@@ -296,9 +293,8 @@
   display: block;
 }
 
-
 /* =========================================
-   PRINT MODE — CORREÇÃO DEFINITIVA
+   PRINT MODE
    ========================================= */
 
 @media print {
@@ -332,7 +328,7 @@
   }
 
   /* =====================================
-     🔵 DADOS GERAIS (SEM QUEBRAR BOOTSTRAP)
+     DADOS GERAIS 
      ===================================== */
 
    .card .row.g-4 {
@@ -346,7 +342,6 @@
      margin-bottom: 10px;
    }
    
-   /* Última coluna (Cliente / Customer) ocupa 100% */
    .card .row.g-4 > [class*="col-"]:nth-child(7) {
      flex: 0 0 33.333% !important;
      max-width: 33.333% !important;
@@ -364,24 +359,22 @@
   }
 
   /* =====================================
-     🔵 APPROVAL FLOW — ORGANIZA EM LINHAS
+     APPROVAL FLOW
      ===================================== */
 
-   
    .approval-flow {
      display: flex !important;
-     flex-wrap: nowrap !important; /* 🔑 não permite quebra */
+     flex-wrap: nowrap !important; 
      justify-content: space-between !important;
      gap: 0 !important;
    }
    
    .approval-flow .approval-item {
-     flex: 0 0 19% !important;   /* 🔑 5 colunas com margem de segurança */
+     flex: 0 0 19% !important;   
      max-width: 19% !important;
      margin: 0 !important;
    }
    
-   /* Remove influência do Bootstrap grid */
    .approval-flow > [class*="col-"] {
      padding-left: 0 !important;
      padding-right: 0 !important;
@@ -401,7 +394,7 @@
   }
 
   /* =====================================
-     🔵 BLOCO FINAL (RECEBIDO / RH / LANÇADO)
+     (RECEBIDO / RH / LANÇADO)
      ===================================== */
 
   .row.align-items-center.g-3 > [class*="col-"] {
@@ -410,7 +403,7 @@
   }
 
   /* =====================================
-     🔵 EMPLOYEE TABLE (MANTIDO INTACTO)
+     EMPLOYEE TABLE
      ===================================== */
 
   #funcionariosTable {
@@ -466,14 +459,8 @@
     display: none !important;
   }
 
-  /* =====================================
-     🔵 PRINT FIX — APPROVAL TEXT COLOR
-     Apenas ajuste de cor para impressão
-     ===================================== */
-
 /* =====================================
-   🔵 PRINT FIX — APPROVAL TEXT ONLY
-   Apenas texto preto no print
+   PRINT FIX — APPROVAL TEXT 
    ===================================== */
    
    .approval-box.signed,
@@ -493,32 +480,25 @@
 
 }
 /* =========================================
-   FIX DEFINITIVO — EMPLOYEE TABLE
    Controle real de largura por coluna
    Funciona em CREATE / VIEW / PRINT
    ========================================= */
 
 #funcionariosTable {
-  table-layout: fixed; /* 🔑 agora largura obedece exatamente */
+  table-layout: fixed;
   width: 100%;
 }
 
-/* Permite scroll horizontal quando necessário */
 .document-mobile-wrapper {
   overflow-x: auto;
 }
 
-/* Permite quebra natural de texto */
 #funcionariosTable th,
 #funcionariosTable td {
   vertical-align: middle;
   white-space: normal;
   word-break: break-word;
 }
-
-/* ============================
-   CONTROLE REAL DE COLUNAS
-   ============================ */
 
 /* item */
 #funcionariosTable th:nth-child(1),
@@ -562,7 +542,6 @@
   width: 50px;
 }
 
-/* Inputs ocupam 100% da célula */
 #funcionariosTable input.form-control {
   width: 100%;
   white-space: normal;
@@ -570,7 +549,6 @@
   text-overflow: unset;
 }
 
-/* Garante que readonly/disabled também mostrem tudo */
 #funcionariosTable input[disabled] {
   background-color: #f8f9fa;
 }
