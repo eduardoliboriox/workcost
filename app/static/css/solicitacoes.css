@@ -399,6 +399,7 @@
 #funcionariosTable td:nth-child(1) {
   width: 60px;
 }
+
 /* Matrícula */
 #funcionariosTable th:nth-child(2),
 #funcionariosTable td:nth-child(2) {
@@ -421,6 +422,12 @@
 #funcionariosTable th:nth-child(5),
 #funcionariosTable td:nth-child(5) {
   width: 120px;
+}
+
+/* botão excluir */
+#funcionariosTable th:nth-child(10),
+#funcionariosTable td:nth-child(10) {
+  width: 60px;
 }
 
 /* Inputs ocupam 100% da célula */
