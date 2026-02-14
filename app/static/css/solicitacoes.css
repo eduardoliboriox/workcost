@@ -298,7 +298,7 @@
 
 
 /* =========================================
-   PRINT MODE — AJUSTE FINAL A4
+   PRINT MODE — CORREÇÃO DEFINITIVA
    ========================================= */
 
 @media print {
@@ -332,17 +332,17 @@
   }
 
   /* =====================================
-     🔵 DADOS GERAIS — FORÇA LAYOUT VERTICAL
+     🔵 DADOS GERAIS (SEM QUEBRAR BOOTSTRAP)
      ===================================== */
 
-  .row {
-    display: block !important;
+  .card .row.g-4 {
+    display: flex !important;
+    flex-wrap: wrap !important;
   }
 
-  .row > [class*="col-"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: none !important;
+  .card .row.g-4 > [class*="col-"] {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
     margin-bottom: 10px;
   }
 
@@ -357,17 +357,20 @@
   }
 
   /* =====================================
-     🔵 APPROVAL FLOW — EMPILHAR VERTICAL
+     🔵 APPROVAL FLOW — ORGANIZA EM LINHAS
      ===================================== */
 
   .approval-flow {
-    display: block !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 16px !important;
   }
 
-  .approval-item {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-bottom: 12px;
+  .approval-flow .approval-item {
+    flex: 0 0 30% !important;
+    max-width: 30% !important;
+    margin-bottom: 16px;
   }
 
   .approval-box {
@@ -378,16 +381,22 @@
     width: 100% !important;
   }
 
-  .approval-role {
-    font-size: 10px;
-  }
-
+  .approval-role,
   .approval-username {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   /* =====================================
-     🔵 EMPLOYEE TABLE (NÃO ALTERAR LÓGICA)
+     🔵 BLOCO FINAL (RECEBIDO / RH / LANÇADO)
+     ===================================== */
+
+  .row.align-items-center.g-3 > [class*="col-"] {
+    flex: 0 0 33% !important;
+    max-width: 33% !important;
+  }
+
+  /* =====================================
+     🔵 EMPLOYEE TABLE (MANTIDO INTACTO)
      ===================================== */
 
   #funcionariosTable {
@@ -444,7 +453,6 @@
   }
 
 }
-
 /* =========================================
    FIX DEFINITIVO — EMPLOYEE TABLE
    Controle real de largura por coluna
