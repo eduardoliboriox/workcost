@@ -3,9 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".page-pedidos .solicitacoes-mobile");
   if (!container) return;
 
-  /* ===============================
-     MODAL MOBILE (JÁ EXISTENTE)
-     =============================== */
   const modal = new bootstrap.Modal(
     document.getElementById("modalSolicitacaoMobile")
   );
@@ -31,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ===============================
-     FILTROS MOBILE (NOVO)
+     FILTROS MOBILE 
      =============================== */
 
   const searchInput = document.getElementById("filterSearch");
