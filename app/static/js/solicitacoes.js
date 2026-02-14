@@ -1,42 +1,57 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ===============================
-     MULTISELECT - SETORES
-     =============================== */
+  function initMultiselect(containerId, displayId, emptyText) {
 
-  const multiselect = document.getElementById("setoresSelect");
-  const display = document.getElementById("setoresDisplay");
+    const multiselect = document.getElementById(containerId);
+    const display = document.getElementById(displayId);
 
-  if (!multiselect || !display) return;
+    if (!multiselect || !display) return;
 
-  const checkboxes =
-    multiselect.querySelectorAll("input[type='checkbox']");
+    const checkboxes =
+      multiselect.querySelectorAll("input[type='checkbox']");
 
-  display.addEventListener("click", () => {
-    if (multiselect.classList.contains("disabled")) return;
-    multiselect.classList.toggle("open");
-  });
+    display.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (multiselect.classList.contains("disabled")) return;
+      multiselect.classList.toggle("open");
+    });
 
-  function updateDisplay() {
-    const selected = [...checkboxes]
-      .filter(cb => cb.checked)
-      .map(cb => `${cb.value} ✓`);
+    function updateDisplay() {
+      const selected = [...checkboxes]
+        .filter(cb => cb.checked)
+        .map(cb => `${cb.value} ✓`);
 
-    display.textContent = selected.length
-      ? selected.join(" / ")
-      : "Selecione um ou mais setores envolvidos nesta extra";
+      display.textContent = selected.length
+        ? selected.join(" / ")
+        : emptyText;
 
-    display.classList.toggle("has-value", selected.length > 0);
+      display.classList.toggle("has-value", selected.length > 0);
+    }
+
+    checkboxes.forEach(cb =>
+      cb.addEventListener("change", updateDisplay)
+    );
+
+    document.addEventListener("click", (e) => {
+      if (!multiselect.contains(e.target)) {
+        multiselect.classList.remove("open");
+      }
+    });
+
+    updateDisplay();
   }
 
-  checkboxes.forEach(cb =>
-    cb.addEventListener("change", updateDisplay)
+  initMultiselect(
+    "setoresSelect",
+    "setoresDisplay",
+    "Selecione um ou mais setores envolvidos nesta extra"
   );
 
-  document.addEventListener("click", e => {
-    if (!multiselect.contains(e.target)) {
-      multiselect.classList.remove("open");
-    }
-  });
+  // CLIENTES
+  initMultiselect(
+    "clientesSelect",
+    "clientesDisplay",
+    "Selecione um ou mais clientes"
+  );
 
 });
