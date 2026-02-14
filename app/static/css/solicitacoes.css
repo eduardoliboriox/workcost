@@ -367,46 +367,49 @@
 }
 
 /* =========================================
-   EMPLOYEE TABLE — FULL CONTENT FIX
-   Garantir exibição completa de Nome e Endereço
+   FIX DEFINITIVO — EMPLOYEE TABLE
+   Exibir conteúdo completo (nome/endereço)
    Funciona em CREATE / VIEW / PRINT
    ========================================= */
 
 #funcionariosTable {
   table-layout: auto;
-  width: max-content;           /* 🔑 tabela cresce conforme conteúdo */
-  min-width: 100%;              /* nunca menor que container */
+  width: 100%;
+  min-width: 1200px; /* impede compressão excessiva */
 }
 
-/* Permite scroll horizontal real */
 .document-mobile-wrapper {
   overflow-x: auto;
 }
 
-/* Impede quebra de linha nas colunas críticas */
+/* Permite crescimento natural das células */
+#funcionariosTable th,
+#funcionariosTable td {
+  white-space: normal;
+  vertical-align: middle;
+}
+
+/* Colunas críticas com largura mínima real */
 #funcionariosTable th:nth-child(3),
-#funcionariosTable td:nth-child(3),
+#funcionariosTable td:nth-child(3) {
+  min-width: 260px; /* Nome */
+}
+
 #funcionariosTable th:nth-child(4),
 #funcionariosTable td:nth-child(4) {
-  white-space: nowrap;          /* 🔑 não quebra nome nem endereço */
+  min-width: 320px; /* Endereço */
 }
 
-/* Inputs ocupam espaço real do conteúdo */
+/* Inputs nunca devem cortar conteúdo */
 #funcionariosTable input.form-control {
-  width: auto;                  /* 🔑 remove compressão bootstrap */
-  min-width: 100%;
-  display: inline-block;
+  width: 100%;
+  min-width: 180px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
 }
 
-/* Remove qualquer corte visual */
-#funcionariosTable input {
-  overflow: visible !important;
-  text-overflow: unset !important;
-}
-
-/* PRINT deve respeitar largura natural */
-@media print {
-  #funcionariosTable {
-    width: 100% !important;
-  }
+/* Garante que readonly/disabled também mostrem tudo */
+#funcionariosTable input[disabled] {
+  background-color: #f8f9fa;
 }
