@@ -421,13 +421,13 @@
 /* Telefone */
 #funcionariosTable th:nth-child(5),
 #funcionariosTable td:nth-child(5) {
-  width: 135px;
+  width: 150px;
 }
 
 /* botão excluir */
 #funcionariosTable th:nth-child(10),
 #funcionariosTable td:nth-child(10) {
-  width: 55px;
+  width: 50px;
 }
 
 /* Inputs ocupam 100% da célula */
