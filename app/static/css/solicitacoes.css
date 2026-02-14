@@ -367,24 +367,49 @@
 }
 
 /* =========================================
-   FIX — EMPLOYEE TABLE CONTENT FULL WIDTH
+   FIX DEFINITIVO — EMPLOYEE TABLE
+   Exibir conteúdo completo (nome/endereço)
+   Funciona em CREATE / VIEW / PRINT
    ========================================= */
 
 #funcionariosTable {
   table-layout: auto;
   width: 100%;
+  min-width: 1200px; /* impede compressão excessiva */
 }
 
+.document-mobile-wrapper {
+  overflow-x: auto;
+}
+
+/* Permite crescimento natural das células */
 #funcionariosTable th,
 #funcionariosTable td {
   white-space: normal;
-  word-break: break-word;
+  vertical-align: middle;
 }
 
+/* Colunas críticas com largura mínima real */
+#funcionariosTable th:nth-child(3),
+#funcionariosTable td:nth-child(3) {
+  min-width: 260px; /* Nome */
+}
+
+#funcionariosTable th:nth-child(4),
+#funcionariosTable td:nth-child(4) {
+  min-width: 320px; /* Endereço */
+}
+
+/* Inputs nunca devem cortar conteúdo */
 #funcionariosTable input.form-control {
   width: 100%;
-  min-width: 140px;
+  min-width: 180px;
   white-space: normal;
   overflow: visible;
   text-overflow: unset;
+}
+
+/* Garante que readonly/disabled também mostrem tudo */
+#funcionariosTable input[disabled] {
+  background-color: #f8f9fa;
 }
