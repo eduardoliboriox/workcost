@@ -23,7 +23,23 @@
     <div class="avatar">
       <img src="{{ url_for('static', filename='images/logos/logo.jpeg') }}">
     </div>
-    <span class="username fw-bold">WorkCost</span>
+
+    {# ===============================
+       TÍTULO DINÂMICO MOBILE
+       =============================== #}
+
+    {% set page_titles = {
+      "inicio": "Início",
+      "solicitacoes": "Solicitações",
+      "pedidos": "Pedidos",
+      "dashboard": "Dashboard",
+      "minhasextras": "Minhas Extras",
+      "perfil": "Meu Perfil"
+    } %}
+
+    <span class="username fw-bold">
+      {{ page_titles.get(active_menu, "WorkCost") }}
+    </span>
   </div>
 
   {% if current_user.is_authenticated %}
@@ -53,7 +69,6 @@
       </a>
 
       {% if current_user.is_admin %}
-        <!-- ADMIN: tudo -->
         <a href="{{ url_for('pages.solicitacoes') }}"
            class="{% if active_menu == 'solicitacoes' %}active{% endif %}">
           <i class="bi bi-plus-square"></i> Solicitações
@@ -75,7 +90,6 @@
         </a>
 
       {% elif current_user.extra_authorized %}
-        <!-- AUTORIZADO EXTRA -->
         <a href="{{ url_for('pages.solicitacoes') }}"
            class="{% if active_menu == 'solicitacoes' %}active{% endif %}">
           <i class="bi bi-plus-square"></i> Solicitações
@@ -92,7 +106,6 @@
         </a>
 
       {% else %}
-        <!-- USUÁRIO COMUM -->
         <a href="{{ url_for('pages.pedidos') }}"
            class="{% if active_menu == 'pedidos' %}active{% endif %}">
           <i class="bi bi-journal-text"></i> Pedidos
@@ -104,7 +117,6 @@
         </a>
       {% endif %}
 
-      <!-- PERFIL (todos) -->
       <a href="{{ url_for('auth.my_profile') }}"
          class="{% if active_menu == 'perfil' %}active{% endif %}">
          <i class="bi bi-person-circle"></i>
