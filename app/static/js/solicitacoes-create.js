@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ======================================================
-     ELEMENTOS PRINCIPAIS DA PÁGINA (MODO CREATE)
-     ====================================================== */
-
   const form = document.getElementById("formSolicitacao");
   const btnAddRow = document.getElementById("btnAddRow");
   const tbody = document.querySelector("#funcionariosTable tbody");
@@ -15,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ======================================================
      MATRÍCULA DO USUÁRIO LOGADO
-     (usada no Fluxo de Aprovação)
      ====================================================== */
 
   const loggedUserMatricula = form.dataset.userMatricula;
@@ -23,10 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!loggedUserMatricula) {
     console.warn("Matrícula do usuário logado não encontrada");
   }
-
-  /* ======================================================
-     HORÁRIOS PADRÃO POR TURNO
-     ====================================================== */
 
   const EXTRA_SHIFT_TIMES = {
     "1T": { start: "07:00", end: "16:00" },
@@ -79,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ======================================================
-     FLUXO DE APROVAÇÃO — MODO CREATE
+     FLUXO DE APROVAÇÃO 
      ====================================================== */
 
   document.querySelectorAll(".btn-approve").forEach(button => {
@@ -115,10 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      /* 🎯 AJUSTE CORRETO:
-         - mantém o título (approval-box)
-         - substitui APENAS o campo de senha
-      */
       inputWrapper.innerHTML = `
         <div class="approval-box signed">
           ${data.username}
