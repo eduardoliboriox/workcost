@@ -96,7 +96,11 @@
           {% endif %}
         </td>
         <td>{{ s.solicitante }}</td>
-        <td>{{ s.descricao }}</td>
+        <td>
+          <div class="descricao-scroll">
+            {{ s.descricao }}
+          </div>
+        </td>
     
         <td>
           {% if s.status_solicitacao == "Confirmado" %}
