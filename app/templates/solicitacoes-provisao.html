@@ -7,10 +7,16 @@
     Provisão de Gastos — Extra
   </span>
 
-  <div class="ms-auto">
-    <a href="{{ url_for('pages.solicitacoes_abertas') }}"
-       class="btn btn-outline-secondary">
-      Voltar
+  <div class="ms-auto d-flex gap-2">
+   
+    <button class="btn btn-outline-purple"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>  
+    
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+      Sair
     </a>
   </div>
 </div>
