@@ -297,7 +297,6 @@
 }
 
 
-
 /* =========================================
    PRINT FIX — DOCUMENTO A4 PERFEITO
    ========================================= */
@@ -367,60 +366,46 @@
 }
 
 /* =========================================
-   FIX DEFINITIVO — EMPLOYEE TABLE
-   Exibir conteúdo completo (nome/endereço)
+   EMPLOYEE TABLE — STRUCTURAL FIX
+   Exibir conteúdo completo em todas colunas
    Funciona em CREATE / VIEW / PRINT
    ========================================= */
 
+/* 🔑 A tabela agora cresce conforme conteúdo real */
 #funcionariosTable {
   table-layout: auto;
-  width: 100%;
-  min-width: 1200px; /* impede compressão excessiva */
+  width: max-content;      /* deixa crescer */
+  min-width: 100%;         /* nunca menor que container */
 }
 
+/* Permite scroll horizontal quando necessário */
 .document-mobile-wrapper {
   overflow-x: auto;
 }
 
-/* Permite crescimento natural das células */
+/* Impede quebra artificial */
 #funcionariosTable th,
 #funcionariosTable td {
-  white-space: normal;
+  white-space: nowrap;
   vertical-align: middle;
 }
 
-/* Colunas críticas com largura mínima real */
-#funcionariosTable th:nth-child(2),
-#funcionariosTable td:nth-child(2) {
-  min-width: 100px !important ; /* Nome */
-}
-
-/* Colunas críticas com largura mínima real */
-#funcionariosTable th:nth-child(3),
-#funcionariosTable td:nth-child(3) {
-  min-width: 325px; /* Nome */
-}
-
-#funcionariosTable th:nth-child(4),
-#funcionariosTable td:nth-child(4) {
-  min-width: 320px; /* Endereço */
-}
-
-#funcionariosTable th:nth-child(5),
-#funcionariosTable td:nth-child(5) {
-  min-width: 100px; /* Endereço */
-}
-
-/* Inputs nunca devem cortar conteúdo */
+/* 🔑 REMOVE compressão do Bootstrap */
 #funcionariosTable input.form-control {
-  width: 100%;
-  min-width: 180px;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+  width: auto !important;          /* não forçar 100% */
+  min-width: 100%;
+  display: inline-block;
 }
 
-/* Garante que readonly/disabled também mostrem tudo */
-#funcionariosTable input[disabled] {
-  background-color: #f8f9fa;
+/* Garante que readonly/disabled mostrem tudo */
+#funcionariosTable input {
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
+/* PRINT deve respeitar largura da página */
+@media print {
+  #funcionariosTable {
+    width: 100% !important;
+  }
 }
