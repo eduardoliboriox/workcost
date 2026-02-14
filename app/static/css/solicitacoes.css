@@ -427,7 +427,7 @@
 /* Transporte  */
 #funcionariosTable th:nth-child(8),
 #funcionariosTable td:nth-child(8) {
-  width: 170px;
+  width: 180px;
 }
 
 /* botão excluir */
