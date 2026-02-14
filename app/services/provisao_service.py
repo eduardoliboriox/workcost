@@ -23,23 +23,38 @@ CUSTO_TRANSPORTE = {
 # UTILITÁRIOS
 # ===============================
 
-def calcular_horas(inicio_str, termino_str):
-    fmt = "%H:%M"
+def _to_datetime(valor):
+    """
+    Converte:
+    - string 'HH:MM'
+    - datetime.time
+    para datetime seguro.
+    """
+    if isinstance(valor, time):
+        return datetime.combine(datetime.today(), valor)
 
-    inicio = datetime.strptime(inicio_str, fmt)
-    termino = datetime.strptime(termino_str, fmt)
+    if isinstance(valor, str):
+        return datetime.strptime(valor, "%H:%M")
+
+    raise TypeError(f"Formato de hora não suportado: {type(valor)}")
+
+
+def calcular_horas(inicio_valor, termino_valor):
+
+    inicio = _to_datetime(inicio_valor)
+    termino = _to_datetime(termino_valor)
 
     if termino <= inicio:
         termino += timedelta(days=1)
 
     total = termino - inicio
-    return total.total_seconds() / 3600
+    return round(total.total_seconds() / 3600, 2)
 
 
-def calcular_horas_noturnas(inicio_str, termino_str):
-    fmt = "%H:%M"
-    inicio = datetime.strptime(inicio_str, fmt)
-    termino = datetime.strptime(termino_str, fmt)
+def calcular_horas_noturnas(inicio_valor, termino_valor):
+
+    inicio = _to_datetime(inicio_valor)
+    termino = _to_datetime(termino_valor)
 
     if termino <= inicio:
         termino += timedelta(days=1)
@@ -83,6 +98,7 @@ def calcular_transporte(tipo: str):
 # ===============================
 
 def gerar_provisao(solicitacao, funcionarios):
+
     resultado = []
     total_geral = 0
 
@@ -115,7 +131,7 @@ def gerar_provisao(solicitacao, funcionarios):
             "horas_noturnas": horas_noturnas,
             "custo_refeicao": custo_refeicao,
             "custo_transporte": custo_transporte,
-            "adicional_noturno": adicional_noturno,
+            "adicional_noturno": round(adicional_noturno, 2),
             "total": round(total_funcionario, 2)
         })
 
