@@ -1,7 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 
-
 def get_employee_by_matricula(matricula: str):
 
     matricula = matricula.strip()
@@ -9,9 +8,6 @@ def get_employee_by_matricula(matricula: str):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
 
-            # ==============================
-            # 1️⃣ TENTA NA TABELA EMPLOYEES
-            # ==============================
             cur.execute("""
                 SELECT
                     e.full_name,
@@ -40,10 +36,6 @@ def get_employee_by_matricula(matricula: str):
             if employee:
                 return employee
 
-            # ==============================
-            # 2️⃣ FALLBACK: BUSCA DIRETO EM USERS
-            # (PJ / DIRECTOR / OWNER)
-            # ==============================
             cur.execute("""
                 SELECT
                     u.full_name,
