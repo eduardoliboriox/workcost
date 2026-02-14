@@ -121,13 +121,12 @@
              class="btn btn-sm btn-outline-primary">
             Arquivo
           </a>
-    
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-warning ms-1"
-            onclick="window.open('/solicitacoes/{{ s.id }}/provisao', '_blank')"
+        
+          <a href="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
+             target="_blank"
+             class="btn btn-sm btn-outline-warning ms-1">
             Provisão
-          </button>
+          </a>
         </td>
       </tr>
       {% endfor %}
