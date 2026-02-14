@@ -172,7 +172,7 @@
       <!-- CLIENTE -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
-          Cliente <small class="text-muted">/ Client</small>
+          Unidade <small class="text-muted">/ Unidad</small>
         </label>
         <select name="cliente" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
           {% for c in ['VAC','VTE','VTT'] %}
@@ -197,6 +197,22 @@
                required>
       </div>      
 
+      <div class="col-md-4">
+        <label class="form-label fw-bold">
+          Cliente <small class="text-muted">/ Customer</small>
+        </label>
+        <select name="customer"
+                class="form-select"
+                {% if modo == 'view' %}disabled{% endif %}>
+          <option value="">Selecione</option>
+          {% for c in ['Harman','LG','Spacecomm','TCL']|sort %}
+          <option value="{{ c }}">
+            {{ c }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      
       <!-- SETORES -->
       <div class="col-md-4">
         <label class="form-label fw-bold">
