@@ -397,7 +397,7 @@
 /* item */
 #funcionariosTable th:nth-child(1),
 #funcionariosTable td:nth-child(1) {
-  width: 50px;
+  width: 60px;
 }
 /* Matrícula */
 #funcionariosTable th:nth-child(2),
