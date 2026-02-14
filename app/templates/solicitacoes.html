@@ -553,11 +553,17 @@
 {% block scripts %}
 {% if print_mode %}
   <script>
-    // Aguarda render completo antes de imprimir
     window.addEventListener("load", function () {
+
       setTimeout(function () {
+
         window.print();
+        window.onafterprint = function () {
+          window.history.back();
+        };
+
       }, 300);
+
     });
   </script>
 {% else %}
