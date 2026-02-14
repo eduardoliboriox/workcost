@@ -298,7 +298,7 @@
 
 
 /* =========================================
-   PRINT MODE — A4 FIT CORRETO
+   PRINT MODE — AJUSTE FINAL A4
    ========================================= */
 
 @media print {
@@ -313,10 +313,9 @@
     margin: 0;
     padding: 0;
     background: #fff;
-    font-size: 10.5px; /* 🔑 reduz levemente para caber */
+    font-size: 10.5px;
   }
 
-  /* Remove overflow horizontal */
   .document-mobile-wrapper {
     overflow: visible !important;
   }
@@ -327,15 +326,69 @@
     padding: 0 !important;
   }
 
-  /* Remove sombras */
   .card {
     box-shadow: none !important;
     border: none !important;
   }
 
-  /* ===============================
-     TABELA FUNCIONÁRIOS (PRINT)
-     =============================== */
+  /* =====================================
+     🔵 DADOS GERAIS — FORÇA LAYOUT VERTICAL
+     ===================================== */
+
+  .row {
+    display: block !important;
+  }
+
+  .row > [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+    margin-bottom: 10px;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+  }
+
+  label.form-label {
+    font-size: 10px !important;
+  }
+
+  /* =====================================
+     🔵 APPROVAL FLOW — EMPILHAR VERTICAL
+     ===================================== */
+
+  .approval-flow {
+    display: block !important;
+  }
+
+  .approval-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 12px;
+  }
+
+  .approval-box {
+    width: 100% !important;
+  }
+
+  .approval-input-wrapper {
+    width: 100% !important;
+  }
+
+  .approval-role {
+    font-size: 10px;
+  }
+
+  .approval-username {
+    font-size: 10px;
+  }
+
+  /* =====================================
+     🔵 EMPLOYEE TABLE (NÃO ALTERAR LÓGICA)
+     ===================================== */
 
   #funcionariosTable {
     table-layout: fixed !important;
@@ -350,54 +403,40 @@
     word-break: break-word;
   }
 
-  /* 🔑 Larguras adaptadas para caber em ~700px */
-
-  /* Item */
   #funcionariosTable th:nth-child(1),
   #funcionariosTable td:nth-child(1) { width: 40px !important; }
 
-  /* Matrícula */
   #funcionariosTable th:nth-child(2),
   #funcionariosTable td:nth-child(2) { width: 70px !important; }
 
-  /* Nome */
   #funcionariosTable th:nth-child(3),
   #funcionariosTable td:nth-child(3) { width: 150px !important; }
 
-  /* Endereço */
   #funcionariosTable th:nth-child(4),
   #funcionariosTable td:nth-child(4) { width: 150px !important; }
 
-  /* Telefone */
   #funcionariosTable th:nth-child(5),
   #funcionariosTable td:nth-child(5) { width: 95px !important; }
 
-  /* Início */
   #funcionariosTable th:nth-child(6),
   #funcionariosTable td:nth-child(6) { width: 70px !important; }
 
-  /* Término */
   #funcionariosTable th:nth-child(7),
   #funcionariosTable td:nth-child(7) { width: 70px !important; }
 
-  /* Transporte */
   #funcionariosTable th:nth-child(8),
   #funcionariosTable td:nth-child(8) { width: 90px !important; }
 
-  /* Assinatura */
   #funcionariosTable th:nth-child(9),
   #funcionariosTable td:nth-child(9) { width: 90px !important; }
 
-  /* Botão excluir */
   #funcionariosTable th:nth-child(10),
   #funcionariosTable td:nth-child(10) { width: 30px !important; }
 
-  /* Evita quebra feia */
   table { page-break-inside: auto; }
   tr { page-break-inside: avoid; }
   thead { display: table-header-group; }
 
-  /* Remove botões e inputs */
   button,
   .btn,
   input[type="password"] {
@@ -405,7 +444,6 @@
   }
 
 }
-
 
 /* =========================================
    FIX DEFINITIVO — EMPLOYEE TABLE
