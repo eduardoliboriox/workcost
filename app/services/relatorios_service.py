@@ -149,7 +149,7 @@ def gerar_provisao_gastos_extra(solicitacao_id: int):
     if not solicitacao:
         return {"error": "Solicitação não encontrada"}
 
-    return gerar_provisao(solicitacao, funcionarios)}
+    return gerar_provisao(solicitacao, funcionarios)
 
 
 
