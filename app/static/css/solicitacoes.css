@@ -364,7 +364,7 @@
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
-    gap: 16px !important;
+    gap: 10px !important;
   }
    
    .approval-flow .approval-item {
