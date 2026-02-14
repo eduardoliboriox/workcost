@@ -365,17 +365,16 @@
 
 }
 
+
 /* =========================================
-   EMPLOYEE TABLE — STRUCTURAL FIX
-   Exibir conteúdo completo em todas colunas
+   FIX DEFINITIVO — EMPLOYEE TABLE
+   Controle real de largura por coluna
    Funciona em CREATE / VIEW / PRINT
    ========================================= */
 
-/* 🔑 A tabela agora cresce conforme conteúdo real */
 #funcionariosTable {
-  table-layout: auto;
-  width: max-content;      /* deixa crescer */
-  min-width: 100%;         /* nunca menor que container */
+  table-layout: fixed; /* 🔑 agora largura obedece exatamente */
+  width: 100%;
 }
 
 /* Permite scroll horizontal quando necessário */
@@ -383,29 +382,51 @@
   overflow-x: auto;
 }
 
-/* Impede quebra artificial */
+/* Permite quebra natural de texto */
 #funcionariosTable th,
 #funcionariosTable td {
-  white-space: nowrap;
   vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* 🔑 REMOVE compressão do Bootstrap */
+/* ============================
+   CONTROLE REAL DE COLUNAS
+   ============================ */
+
+/* Matrícula */
+#funcionariosTable th:nth-child(2),
+#funcionariosTable td:nth-child(2) {
+  width: 100px;
+}
+
+/* Nome */
+#funcionariosTable th:nth-child(3),
+#funcionariosTable td:nth-child(3) {
+  width: 325px;
+}
+
+/* Endereço */
+#funcionariosTable th:nth-child(4),
+#funcionariosTable td:nth-child(4) {
+  width: 320px;
+}
+
+/* Telefone */
+#funcionariosTable th:nth-child(5),
+#funcionariosTable td:nth-child(5) {
+  width: 120px;
+}
+
+/* Inputs ocupam 100% da célula */
 #funcionariosTable input.form-control {
-  width: auto !important;          /* não forçar 100% */
-  min-width: 100%;
-  display: inline-block;
+  width: 100%;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
 }
 
-/* Garante que readonly/disabled mostrem tudo */
-#funcionariosTable input {
-  overflow: visible !important;
-  text-overflow: unset !important;
-}
-
-/* PRINT deve respeitar largura da página */
-@media print {
-  #funcionariosTable {
-    width: 100% !important;
-  }
+/* Garante que readonly/disabled também mostrem tudo */
+#funcionariosTable input[disabled] {
+  background-color: #f8f9fa;
 }
