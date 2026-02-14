@@ -335,16 +335,28 @@
      🔵 DADOS GERAIS (SEM QUEBRAR BOOTSTRAP)
      ===================================== */
 
-  .card .row.g-4 {
-    display: flex !important;
-    flex-wrap: wrap !important;
-  }
+/* =====================================
+   🔵 DADOS GERAIS — PRINT 3-3-1 LAYOUT
+   ===================================== */
 
-  .card .row.g-4 > [class*="col-"] {
-    flex: 0 0 50% !important;
-    max-width: 50% !important;
-    margin-bottom: 10px;
-  }
+   .card .row.g-4 {
+     display: flex !important;
+     flex-wrap: wrap !important;
+   }
+   
+   /* Primeiras 6 colunas → 3 por linha */
+   .card .row.g-4 > [class*="col-"]:nth-child(-n+6) {
+     flex: 0 0 33.333% !important;
+     max-width: 33.333% !important;
+     margin-bottom: 10px;
+   }
+   
+   /* Última coluna (Cliente / Customer) ocupa 100% */
+   .card .row.g-4 > [class*="col-"]:nth-child(7) {
+     flex: 0 0 100% !important;
+     max-width: 100% !important;
+     margin-bottom: 10px;
+   }
 
   .form-control,
   .form-select {
