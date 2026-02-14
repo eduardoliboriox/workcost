@@ -1,5 +1,4 @@
-{% extends "layouts/app.html" %}
-{% block title %}Solicitações{% endblock %}
+{% extends "layouts/app_print.html" if print_mode else "layouts/app.html" %}{% block title %}Solicitações{% endblock %}
 
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
@@ -510,18 +509,64 @@
   {% endif %}
 </form>
 
-    {{ super() }}
 
+{% if print_mode and provisao %}
+<hr class="my-5">
+
+<h4 class="fw-bold text-center">
+  PROVISÃO DE GASTOS
+</h4>
+
+<table class="table table-bordered text-center align-middle mt-3">
+  <thead>
+    <tr>
+      <th>Matrícula</th>
+      <th>Nome</th>
+      <th>Horas</th>
+      <th>Noturnas</th>
+      <th>Refeição</th>
+      <th>Transporte</th>
+      <th>Adic. Noturno</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for f in provisao.funcionarios %}
+    <tr>
+      <td>{{ f.matricula }}</td>
+      <td>{{ f.nome }}</td>
+      <td>{{ f.horas_total }}</td>
+      <td>{{ f.horas_noturnas }}</td>
+      <td>{{ f.custo_refeicao }}</td>
+      <td>{{ f.custo_transporte }}</td>
+      <td>{{ f.adicional_noturno }}</td>
+      <td><strong>{{ f.total }}</strong></td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+      <td colspan="7"><strong>Total Geral</strong></td>
+      <td><strong>{{ provisao.total_geral }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+    
+    {{ super() }}
+    
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
+{% if not print_mode %}
+  <script src="{{ url_for('static', filename='js/solicitacoes.js') }}"></script>
 
-{% if modo == 'create' %}
-  <script src="{{ url_for('static', filename='js/solicitacoes-create.js') }}"></script>
-{% else %}
-  <script src="{{ url_for('static', filename='js/solicitacoes-view.js') }}"></script>
+  {% if modo == 'create' %}
+    <script src="{{ url_for('static', filename='js/solicitacoes-create.js') }}"></script>
+  {% else %}
+    <script src="{{ url_for('static', filename='js/solicitacoes-view.js') }}"></script>
+  {% endif %}
 {% endif %}
 {% endblock %}

@@ -190,3 +190,29 @@ def solicitacao_provisao(solicitacao_id):
         total_geral=dados["total_geral"],
         active_menu="solicitacoes"
     )
+
+
+@bp.route("/solicitacoes/<int:solicitacao_id>/documento")
+@login_required
+def solicitacao_documento(solicitacao_id):
+
+    from app.services.solicitacoes_service import obter_detalhe_solicitacao
+    from app.services.provisao_view_service import gerar_provisao_para_template
+
+    detalhe = obter_detalhe_solicitacao(solicitacao_id)
+    provisao = gerar_provisao_para_template(solicitacao_id)
+
+    if not detalhe:
+        return "Solicitação não encontrada", 404
+
+    return render_template(
+        "solicitacoes.html",
+        modo="view",
+        solicitacao=detalhe["solicitacao"],
+        funcionarios=detalhe["funcionarios"],
+        aprovacoes=detalhe["aprovacoes"],
+        origem=None,
+        print_mode=True,
+        provisao=provisao,   
+        active_menu=None
+    )
