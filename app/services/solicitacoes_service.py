@@ -28,7 +28,9 @@ def criar_solicitacao(form):
             "data_execucao": form.get("data_execucao"),
             "turnos": ",".join(form.getlist("turnos")),
             "setores": ",".join(form.getlist("setores")),
-            "cliente": form["cliente"],
+
+            "cliente": ",".join(form.getlist("clientes")),
+
             "descricao": form["descricao"],
             "atividades": form["atividades"],
             "solicitante_user_id": current_user.id
@@ -37,9 +39,6 @@ def criar_solicitacao(form):
         inserir_solicitacao(dados, funcionarios)
 
         return {"success": True}
-
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
     except Exception as e:
         return {"success": False, "error": str(e)}
