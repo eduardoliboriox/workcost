@@ -123,16 +123,21 @@
         {% endfor %}
     
         <td>
-          <select class="form-select form-select-sm select-acessar"
-                  data-arquivo="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
-                  data-provisao="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
-                  data-pdf="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
+            <select class="form-select form-select-sm select-acessar"
+                    data-id="{{ s.id }}"
+                    data-arquivo="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+                    data-provisao="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
+                    data-pdf="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
+              
+              <option value="">Selecionar</option>
+              <option value="arquivo">Arquivo</option>
+              <option value="provisao">Provisão</option>
+              <option value="pdf">PDF</option>
             
-            <option value="">Selecionar</option>
-            <option value="arquivo">Arquivo</option>
-            <option value="provisao">Provisão</option>
-            <option value="pdf">PDF</option>
-          </select>
+              {% if current_user.is_admin %}
+                <option value="excluir">Excluir</option>
+              {% endif %}
+            </select>
         </td>
 
       </tr>
@@ -147,10 +152,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelectorAll(".select-acessar").forEach(select => {
 
-    select.addEventListener("change", function () {
+    select.addEventListener("change", async function () {
 
       const selected = this.value;
       if (!selected) return;
+
+      const solicitacaoId = this.dataset.id;
+
+      if (selected === "excluir") {
+
+        const confirmed = confirm(
+          "Tem certeza que deseja excluir esta solicitação?\n\nEssa ação é irreversível."
+        );
+
+        if (!confirmed) {
+          this.value = "";
+          return;
+        }
+
+        const response = await fetch(
+          `/api/solicitacoes/${solicitacaoId}`,
+          { method: "DELETE" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          alert(data.error || "Erro ao excluir");
+          this.value = "";
+          return;
+        }
+
+        this.closest("tr").remove();
+        return;
+      }
 
       const url = this.dataset[selected];
 
@@ -159,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       this.value = "";
-
     });
 
   });
