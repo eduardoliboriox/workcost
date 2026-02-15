@@ -14,16 +14,21 @@ def inicio():
 @bp.route("/dashboard")
 @login_required
 def dashboard():
+    from datetime import date
+
     data_inicial = request.args.get("data_inicial")
     data_final = request.args.get("data_final")
     turno = request.args.get("turno")
     filial = request.args.get("filial")
 
-    hoje = date.today().isoformat()
+    hoje = date.today()
+    primeiro_dia_ano = date(hoje.year, 1, 1)
+
     if not data_inicial:
-        data_inicial = hoje
+        data_inicial = primeiro_dia_ano.isoformat()
+
     if not data_final:
-        data_final = hoje
+        data_final = hoje.isoformat()
 
     filtros = {
         "data_inicial": data_inicial,

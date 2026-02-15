@@ -27,3 +27,17 @@ async function atualizarDashboard() {
 // polling igual Power BI
 setInterval(atualizarDashboard, 5000);
 document.addEventListener("DOMContentLoaded", atualizarDashboard);
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById("dashboardFilters");
+  if (!form) return;
+
+  form.querySelectorAll("input, select").forEach(el => {
+    el.addEventListener("change", () => form.submit());
+  });
+
+});
+</script>

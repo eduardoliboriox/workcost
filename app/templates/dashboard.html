@@ -43,27 +43,26 @@
 {% block content %}
 <div class="container-fluid">
   
-  <form method="get" class="row g-3 mb-4">
+  <form method="get" id="dashboardFilters" class="row g-3 mb-4">
+
     <div class="col-md-3">
       <label class="form-label">Data Inicial</label>
-      <input type="date" name="data_inicial" class="form-control"
+      <input type="date"
+             name="data_inicial"
+             class="form-control"
              value="{{ filtros.data_inicial }}">
     </div>
   
     <div class="col-md-3">
       <label class="form-label">Data Final</label>
-      <input type="date" name="data_final" class="form-control"
+      <input type="date"
+             name="data_final"
+             class="form-control"
              value="{{ filtros.data_final }}">
     </div>
   
-    <div class="col-md-2 d-flex align-items-end">
-      <button type="button" class="btn btn-secondary w-100" id="btnHoje">
-        Hoje
-      </button>
-    </div>
-  
-    <div class="col-md-2">
-      <label class="form-label me-2">Turno</label>
+    <div class="col-md-3">
+      <label class="form-label">Turno</label>
       <select name="turno" class="form-select">
         <option value="">Todos</option>
         <option value="1T" {% if filtros.turno == '1T' %}selected{% endif %}>1º Turno</option>
@@ -72,20 +71,16 @@
       </select>
     </div>
     
-    <div class="col-md-2">
-      <label class="form-label me-2">Filial</label>
+    <div class="col-md-3">
+      <label class="form-label">Filial</label>
       <select name="filial" class="form-select">
         <option value="">Todas</option>
+        <option value="VAC" {% if filtros.filial == 'VAC' %}selected{% endif %}>VAC</option>
         <option value="VTE" {% if filtros.filial == 'VTE' %}selected{% endif %}>VTE</option>
         <option value="VTT" {% if filtros.filial == 'VTT' %}selected{% endif %}>VTT</option>
       </select>
     </div>
-  
-    <div class="col-md-12 d-flex align-items-end">
-      <button type="submit" class="btn btn-primary w-100">
-        <i class="bi bi-funnel"></i> Filtrar
-      </button>
-    </div>
+
   </form>
 
   <!-- KPIs -->
