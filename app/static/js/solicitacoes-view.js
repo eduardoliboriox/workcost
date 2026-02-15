@@ -109,36 +109,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-/* ======================================================
-   SALVAR VIEW
-   ====================================================== */
+  /* ======================================================
+     SALVAR VIEW
+     ====================================================== */
 
-document.getElementById("btnSaveView")
-  ?.addEventListener("click", async (e) => {
-    e.preventDefault();
+  document.getElementById("btnSaveView")
+    ?.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-    const recebidoEm =
-      document.getElementById("recebidoEm")?.value || null;
+      const recebidoEm =
+        document.getElementById("recebidoEm")?.value || null;
 
-    const res = await fetch(
-      `/api/solicitacoes/${solicitacaoId}/salvar-view`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          aprovacoes: pendingApprovals,
-          recebido_em: recebidoEm,
-          lancado_em: lancadoEm
-        })
+      const lancadoEm =
+        document.getElementById("lancadoEm")?.value || null;
+
+      const res = await fetch(
+        `/api/solicitacoes/${solicitacaoId}/salvar-view`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            aprovacoes: pendingApprovals,
+            recebido_em: recebidoEm,
+            lancado_em: lancadoEm
+          })
+        }
+      );
+
+      if (!res.ok) {
+        alert("Erro ao salvar");
+        return;
       }
-    );
 
-    if (!res.ok) {
-      alert("Erro ao salvar");
-      return;
-    }
-
-    window.location.href = `/solicitacoes/${solicitacaoId}`;
-  });
+      window.location.href = `/solicitacoes/${solicitacaoId}`;
+    });
 
 });
