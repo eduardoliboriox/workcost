@@ -1,19 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-  document.querySelectorAll("select[data-pdf]").forEach(select => {
+  const selects = document.querySelectorAll(".select-acessar-fechadas");
+
+  if (!selects.length) return;
+
+  selects.forEach(select => {
 
     select.addEventListener("change", function () {
 
       const selected = this.value;
-
       if (!selected) return;
 
-      if (selected === "pdf") {
-        window.location.href = this.dataset.pdf;
-      }
+      const url = this.dataset[selected];
 
-      if (selected === "frequencia") {
-        alert("Tela de frequência será implementada no próximo passo.");
+      if (url) {
+        window.location.href = url;
       }
 
       this.value = "";
