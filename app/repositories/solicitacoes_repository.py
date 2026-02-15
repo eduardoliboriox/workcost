@@ -323,3 +323,18 @@ def contar_presencas(solicitacao_id: int):
                   AND compareceu = TRUE
             """, (solicitacao_id,))
             return cur.fetchone()["total"]
+
+def atualizar_fechamento(
+    solicitacao_id: int,
+    objetivo_status: str,
+    observacoes: str
+):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE solicitacoes
+                SET objetivo_status = %s,
+                    observacoes = %s
+                WHERE id = %s
+            """, (objetivo_status, observacoes, solicitacao_id))
+        conn.commit()
