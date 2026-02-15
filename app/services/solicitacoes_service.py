@@ -316,3 +316,60 @@ def salvar_fechamento_solicitacao(
     )
 
     return {"success": True}
+
+
+# =====================================================
+# DASHBOARD - RANKING EXTRAS POR FILIAL
+# =====================================================
+
+def ranking_extras_dashboard():
+    from datetime import date
+    from app.repositories.solicitacoes_repository import listar_extras_com_provisao
+
+    hoje = date.today()
+
+    dados = listar_extras_com_provisao()
+
+    ranking = {}
+
+    for item in dados:
+
+        filial = item["filial"]
+        data_execucao = item["data_execucao"]
+        total = item["total_provisao"] or 0
+
+        if filial not in ranking:
+            ranking[filial] = {
+                "quantidade": 0,
+                "provisionado": 0,
+                "realizado": 0
+            }
+
+        ranking[filial]["quantidade"] += 1
+
+        if data_execucao and data_execucao > hoje:
+            ranking[filial]["provisionado"] += total
+        else:
+            ranking[filial]["realizado"] += total
+
+    total_extras = sum(v["quantidade"] for v in ranking.values()) or 1
+
+    resultado = []
+
+    for filial, valores in ranking.items():
+
+        percentual = round(
+            (valores["quantidade"] / total_extras) * 100,
+            1
+        )
+
+        resultado.append({
+            "filial": filial,
+            "percentual": percentual,
+            "provisionado": round(valores["provisionado"], 2),
+            "realizado": round(valores["realizado"], 2)
+        })
+
+    resultado.sort(key=lambda x: x["percentual"], reverse=True)
+
+    return resultado
