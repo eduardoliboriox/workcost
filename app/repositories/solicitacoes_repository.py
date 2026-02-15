@@ -223,3 +223,33 @@ def atualizar_lancado_em(solicitacao_id: int, lancado_em: str):
                 WHERE id = %s
             """, (lancado_em, solicitacao_id))
         conn.commit()
+
+
+def deletar_solicitacao_por_id(solicitacao_id: int):
+    """
+    Remove completamente uma solicitação do banco.
+    Ordem:
+    1. solicitacao_aprovacoes
+    2. solicitacao_funcionarios
+    3. solicitacoes
+    """
+
+    with get_db() as conn:
+        with conn.cursor() as cur:
+
+            cur.execute("""
+                DELETE FROM solicitacao_aprovacoes
+                WHERE solicitacao_id = %s
+            """, (solicitacao_id,))
+
+            cur.execute("""
+                DELETE FROM solicitacao_funcionarios
+                WHERE solicitacao_id = %s
+            """, (solicitacao_id,))
+
+            cur.execute("""
+                DELETE FROM solicitacoes
+                WHERE id = %s
+            """, (solicitacao_id,))
+
+        conn.commit()
