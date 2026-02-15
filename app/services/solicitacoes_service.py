@@ -296,3 +296,21 @@ def salvar_frequencia_service(solicitacao_id: int, dados: list):
         )
 
     return {"success": True}
+
+
+def salvar_fechamento_solicitacao(
+    solicitacao_id: int,
+    objetivo_status: str,
+    observacoes: str
+):
+    from app.repositories.solicitacoes_repository import (
+        atualizar_fechamento
+    )
+
+    atualizar_fechamento(
+        solicitacao_id,
+        objetivo_status,
+        observacoes
+    )
+
+    return {"success": True}
