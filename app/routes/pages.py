@@ -40,7 +40,7 @@ def dashboard():
 
     dados = resumo_dashboard(filtros)
 
-    ranking_extras = ranking_extras_dashboard()
+    ranking_extras = ranking_extras_dashboard(filtros)
 
     return render_template(
         "dashboard.html",
