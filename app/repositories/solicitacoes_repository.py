@@ -269,6 +269,8 @@ def listar_solicitacoes_com_status():
                     s.id,
                     s.data,
                     s.data_execucao,
+                    s.objetivo_status,
+                    s.observacoes,
                     u.username AS solicitante,
                     s.atividades,
                     COUNT(sf.id) FILTER (WHERE sf.signed_at IS NOT NULL) AS assinadas,
@@ -277,7 +279,14 @@ def listar_solicitacoes_com_status():
                 JOIN users u ON u.id = s.solicitante_user_id
                 LEFT JOIN solicitacao_funcionarios sf
                   ON sf.solicitacao_id = s.id
-                GROUP BY s.id, u.username
+                GROUP BY 
+                    s.id,
+                    s.data,
+                    s.data_execucao,
+                    s.objetivo_status,
+                    s.observacoes,
+                    u.username,
+                    s.atividades
                 ORDER BY s.id DESC
             """)
             return cur.fetchall()
