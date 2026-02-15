@@ -71,16 +71,29 @@
         <td>{{ s.solicitante }}</td>
 
         <td>
-          <select class="form-select form-select-sm">
-            <option value="nao">Não</option>
-            <option value="parcial">Parcialmente</option>
-            <option value="sim">Sim</option>
+          <select class="form-select form-select-sm objetivo-select"
+                  data-id="{{ s.id }}">
+            <option value="">Selecionar</option>
+            <option value="nao"
+              {% if s.objetivo_status == 'nao' %}selected{% endif %}>
+              Não
+            </option>
+            <option value="parcial"
+              {% if s.objetivo_status == 'parcial' %}selected{% endif %}>
+              Parcialmente
+            </option>
+            <option value="sim"
+              {% if s.objetivo_status == 'sim' %}selected{% endif %}>
+              Sim
+            </option>
           </select>
         </td>
-
+        
         <td>
           <input type="text"
-                 class="form-control form-control-sm"
+                 class="form-control form-control-sm observacao-input"
+                 data-id="{{ s.id }}"
+                 value="{{ s.observacoes or '' }}"
                  placeholder="Observação...">
         </td>
 
