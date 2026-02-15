@@ -15,6 +15,7 @@ def inicio():
 @login_required
 def dashboard():
     from datetime import date
+    from app.services.solicitacoes_service import ranking_extras_dashboard
 
     data_inicial = request.args.get("data_inicial")
     data_final = request.args.get("data_final")
@@ -39,9 +40,12 @@ def dashboard():
 
     dados = resumo_dashboard(filtros)
 
+    ranking_extras = ranking_extras_dashboard()
+
     return render_template(
         "dashboard.html",
         filtros=filtros,
+        ranking_extras=ranking_extras,
         active_menu="dashboard",
         **dados
     )
