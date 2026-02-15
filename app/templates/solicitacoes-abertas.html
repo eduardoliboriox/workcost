@@ -123,22 +123,18 @@
         {% endfor %}
     
         <td>
-          <a href="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
-             class="btn btn-sm btn-outline-primary">
-            Arquivo
-          </a>
-        
-          <a href="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
-             class="btn btn-sm btn-outline-warning ms-1">
-            Provisão
-          </a>
-
-          <a href="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}"
-             class="btn btn-sm btn-outline-dark ms-1 btn-pdf"
-             data-url="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
-            PDF
-          </a>     
+          <select class="form-select form-select-sm select-acessar"
+                  data-arquivo="{{ url_for('pages.solicitacao_view', solicitacao_id=s.id) }}"
+                  data-provisao="{{ url_for('pages.solicitacao_provisao', solicitacao_id=s.id) }}"
+                  data-pdf="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
+            
+            <option value="">Selecionar</option>
+            <option value="arquivo">Arquivo</option>
+            <option value="provisao">Provisão</option>
+            <option value="pdf">PDF</option>
+          </select>
         </td>
+
       </tr>
       {% endfor %}
     </tbody>
@@ -149,14 +145,20 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  document.querySelectorAll(".btn-pdf").forEach(btn => {
+  document.querySelectorAll(".select-acessar").forEach(select => {
 
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
+    select.addEventListener("change", function () {
 
-      const url = this.dataset.url;
+      const selected = this.value;
+      if (!selected) return;
 
-      window.location.href = url;
+      const url = this.dataset[selected];
+
+      if (url) {
+        window.location.href = url;
+      }
+
+      this.value = "";
 
     });
 
