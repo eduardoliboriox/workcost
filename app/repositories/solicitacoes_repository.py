@@ -348,15 +348,13 @@ def atualizar_fechamento(
             """, (objetivo_status, observacoes, solicitacao_id))
         conn.commit()
 
-# =====================================================
-# DASHBOARD - RANKING EXTRAS POR FILIAL
-# =====================================================
 
 def listar_extras_com_provisao():
     """
     Retorna todas as solicitações com:
     - filial (cliente)
     - data_execucao
+    - turnos (necessário para provisão)
     - total provisão calculado
     """
 
@@ -369,7 +367,8 @@ def listar_extras_com_provisao():
                 SELECT
                     s.id,
                     s.cliente,
-                    s.data_execucao
+                    s.data_execucao,
+                    s.turnos
                 FROM solicitacoes s
                 ORDER BY s.id DESC
             """)
