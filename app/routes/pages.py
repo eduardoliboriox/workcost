@@ -124,8 +124,16 @@ def minhas_extras():
 @bp.route("/solicitacoes/fechadas")
 @login_required
 def solicitacoes_fechadas():
+
+    from app.services.solicitacoes_service import (
+        obter_solicitacoes_fechadas
+    )
+
+    solicitacoes = obter_solicitacoes_fechadas()
+
     return render_template(
         "solicitacoes-fechadas.html",
+        solicitacoes=solicitacoes,
         active_menu="solicitacoes"
     )
 

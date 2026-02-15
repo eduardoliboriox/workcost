@@ -11,10 +11,11 @@ from app.repositories.solicitacoes_repository import (
     listar_solicitacoes_abertas_por_matricula, 
     atualizar_recebido_em,
     atualizar_lancado_em,
-    deletar_solicitacao_por_id
+    deletar_solicitacao_por_id, 
+    listar_solicitacoes_com_status
 )
 from flask_login import current_user
-
+from datetime import date, timedelta
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
@@ -218,3 +219,46 @@ def excluir_solicitacao(solicitacao_id: int):
     deletar_solicitacao_por_id(solicitacao_id)
 
     return {"success": True}
+
+
+def obter_solicitacoes_fechadas():
+    rows = listar_solicitacoes_com_status()
+    aprovacoes = listar_aprovacoes_por_solicitacao()
+
+    aprov_map = {}
+    for a in aprovacoes:
+        aprov_map.setdefault(a["solicitacao_id"], {})[a["role"]] = a
+
+    resultado = []
+    hoje = date.today()
+
+    for r in rows:
+
+        total_funcionarios = r["total_funcionarios"]
+        assinadas = r["assinadas"]
+
+        # todos roles aprovados?
+        roles_aprovados = all(
+            aprov_map.get(r["id"], {}).get(role)
+            for role in ROLES
+        )
+
+        # regra fechamento
+        if (
+            r["data_execucao"]
+            and total_funcionarios > 0
+            and assinadas == total_funcionarios
+            and roles_aprovados
+            and hoje > r["data_execucao"]
+        ):
+
+            resultado.append({
+                "id": r["id"],
+                "data": r["data"],
+                "data_execucao": r["data_execucao"],
+                "solicitante": r["solicitante"],
+                "efetivo_previsto": total_funcionarios,
+                "efetivo_real": total_funcionarios  # ajustado depois via frequência
+            })
+
+    return resultado
