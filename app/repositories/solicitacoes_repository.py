@@ -1,4 +1,5 @@
 from app.extensions import get_db
+from datetime import date
 from psycopg.rows import dict_row
 import json
 
@@ -253,3 +254,30 @@ def deletar_solicitacao_por_id(solicitacao_id: int):
             """, (solicitacao_id,))
 
         conn.commit()
+
+
+def listar_solicitacoes_com_status():
+    """
+    Retorna todas as solicitações com contagem de assinaturas.
+    Service decide se é aberta ou fechada.
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    s.id,
+                    s.data,
+                    s.data_execucao,
+                    u.username AS solicitante,
+                    s.atividades,
+                    COUNT(sf.id) FILTER (WHERE sf.signed_at IS NOT NULL) AS assinadas,
+                    COUNT(sf.id) AS total_funcionarios
+                FROM solicitacoes s
+                JOIN users u ON u.id = s.solicitante_user_id
+                LEFT JOIN solicitacao_funcionarios sf
+                  ON sf.solicitacao_id = s.id
+                GROUP BY s.id, u.username
+                ORDER BY s.id DESC
+            """)
+            return cur.fetchall()
