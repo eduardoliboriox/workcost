@@ -267,3 +267,23 @@ def api_excluir_solicitacao(solicitacao_id):
         return jsonify(result), 403
 
     return jsonify(result), 200
+
+@bp.route(
+    "/solicitacoes/<int:solicitacao_id>/frequencia",
+    methods=["POST"]
+)
+@login_required
+def api_salvar_frequencia(solicitacao_id):
+
+    data = request.get_json() or []
+
+    from app.services.solicitacoes_service import (
+        salvar_frequencia_service
+    )
+
+    result = salvar_frequencia_service(
+        solicitacao_id,
+        data
+    )
+
+    return jsonify(result), 200
