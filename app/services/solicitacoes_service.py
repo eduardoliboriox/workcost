@@ -264,7 +264,9 @@ def obter_solicitacoes_fechadas():
                 "data_execucao": r["data_execucao"],
                 "solicitante": r["solicitante"],
                 "efetivo_previsto": total_funcionarios,
-                "efetivo_real": efetivo_real
+                "efetivo_real": efetivo_real,
+                "objetivo_status": r.get("objetivo_status"),
+                "observacoes": r.get("observacoes")
             })
 
     return resultado
