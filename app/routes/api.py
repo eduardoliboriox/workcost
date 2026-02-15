@@ -287,3 +287,25 @@ def api_salvar_frequencia(solicitacao_id):
     )
 
     return jsonify(result), 200
+
+
+@bp.route(
+    "/solicitacoes/<int:solicitacao_id>/fechamento",
+    methods=["POST"]
+)
+@login_required
+def api_salvar_fechamento(solicitacao_id):
+
+    data = request.get_json() or {}
+
+    from app.services.solicitacoes_service import (
+        salvar_fechamento_solicitacao
+    )
+
+    result = salvar_fechamento_solicitacao(
+        solicitacao_id,
+        data.get("objetivo_status"),
+        data.get("observacoes")
+    )
+
+    return jsonify(result), 200
