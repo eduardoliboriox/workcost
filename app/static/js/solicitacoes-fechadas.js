@@ -1,5 +1,67 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  /* ======================================================
+     FILTROS — DATA PADRÃO (01/01 -> HOJE)
+     ====================================================== */
+
+  const searchInput = document.getElementById("filterSearch");
+  const startDateInput = document.getElementById("filterStartDate");
+  const endDateInput = document.getElementById("filterEndDate");
+  const rows = document.querySelectorAll("tbody tr");
+
+  if (startDateInput && endDateInput) {
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+
+    // padrão: primeiro dia do ano
+    startDateInput.value = `${currentYear}-01-01`;
+
+    // padrão: hoje
+    endDateInput.value = today.toISOString().split("T")[0];
+  }
+
+  function applyFilters() {
+
+    const search = searchInput?.value.toLowerCase().trim() || "";
+    const startDate = startDateInput?.value
+      ? new Date(startDateInput.value)
+      : null;
+    const endDate = endDateInput?.value
+      ? new Date(endDateInput.value)
+      : null;
+
+    rows.forEach(row => {
+
+      const text = row.innerText.toLowerCase();
+
+      const dateCell = row.querySelector("td:nth-child(2)");
+      if (!dateCell) return;
+
+      const [day, month, year] = dateCell.innerText.split("/");
+      const rowDate = new Date(`${year}-${month}-${day}`);
+
+      const matchesText = !search || text.includes(search);
+
+      const matchesDate =
+        (!startDate || rowDate >= startDate) &&
+        (!endDate || rowDate <= endDate);
+
+      row.style.display =
+        matchesText && matchesDate ? "" : "none";
+    });
+  }
+
+  searchInput?.addEventListener("input", applyFilters);
+  startDateInput?.addEventListener("change", applyFilters);
+  endDateInput?.addEventListener("change", applyFilters);
+
+  applyFilters();
+
+  /* ======================================================
+     SELECT ACESSAR
+     ====================================================== */
+
   document.querySelectorAll(".select-acessar-fechadas")
     .forEach(select => {
 
@@ -18,6 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
     });
+
+  /* ======================================================
+     SALVAR FECHAMENTO (objetivo + observação)
+     ====================================================== */
 
   async function salvarFechamento(id) {
 
