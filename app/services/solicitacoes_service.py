@@ -10,7 +10,8 @@ from app.repositories.solicitacoes_repository import (
     registrar_assinatura_funcionario,
     listar_solicitacoes_abertas_por_matricula, 
     atualizar_recebido_em,
-    atualizar_lancado_em
+    atualizar_lancado_em,
+    deletar_solicitacao_por_id
 )
 from flask_login import current_user
 
@@ -204,3 +205,16 @@ def obter_minhas_extras(matricula: str):
         })
 
     return resultado
+
+def excluir_solicitacao(solicitacao_id: int):
+    """
+    Exclusão definitiva da solicitação.
+    Apenas admins podem executar.
+    """
+
+    if not current_user.is_admin:
+        return {"success": False, "error": "Sem permissão"}
+
+    deletar_solicitacao_por_id(solicitacao_id)
+
+    return {"success": True}

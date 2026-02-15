@@ -1,3 +1,4 @@
+from flask_login import login_required
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service 
 from app.services.lancamentos_service import (
@@ -253,3 +254,16 @@ def api_salvar_view_solicitacao(solicitacao_id):
     )
 
     return jsonify({"success": True})
+
+@bp.route("/solicitacoes/<int:solicitacao_id>", methods=["DELETE"])
+@login_required
+def api_excluir_solicitacao(solicitacao_id):
+
+    from app.services.solicitacoes_service import excluir_solicitacao
+
+    result = excluir_solicitacao(solicitacao_id)
+
+    if not result["success"]:
+        return jsonify(result), 403
+
+    return jsonify(result), 200
