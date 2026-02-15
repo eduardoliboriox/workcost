@@ -286,7 +286,7 @@
    DESCRIÇÃO LONGA — SCROLL HORIZONTAL FIX
    ========================================= */
 .descricao-scroll {
-  max-width: 350px;
+  max-width: 260px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
