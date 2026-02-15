@@ -12,10 +12,14 @@ from app.repositories.solicitacoes_repository import (
     atualizar_recebido_em,
     atualizar_lancado_em,
     deletar_solicitacao_por_id, 
-    listar_solicitacoes_com_status
+    listar_solicitacoes_com_status,
+    listar_frequencia_por_solicitacao,
+    salvar_frequencia,
+    contar_presencas
 )
 from flask_login import current_user
 from datetime import date, timedelta
+
 
 ROLES = ["gestor", "gerente", "controladoria", "diretoria", "rh"]
 
@@ -252,13 +256,43 @@ def obter_solicitacoes_fechadas():
             and hoje > r["data_execucao"]
         ):
 
+            efetivo_real = contar_presencas(r["id"])
+            
             resultado.append({
                 "id": r["id"],
                 "data": r["data"],
                 "data_execucao": r["data_execucao"],
                 "solicitante": r["solicitante"],
                 "efetivo_previsto": total_funcionarios,
-                "efetivo_real": total_funcionarios  # ajustado depois via frequência
+                "efetivo_real": efetivo_real
             })
 
     return resultado
+
+def obter_frequencia(solicitacao_id: int):
+    funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
+    frequencias = listar_frequencia_por_solicitacao(solicitacao_id)
+
+    freq_map = {f["matricula"]: f["compareceu"] for f in frequencias}
+
+    resultado = []
+
+    for f in funcionarios:
+        resultado.append({
+            "matricula": f["matricula"],
+            "nome": f["nome"],
+            "compareceu": freq_map.get(f["matricula"], True)
+        })
+
+    return resultado
+
+
+def salvar_frequencia_service(solicitacao_id: int, dados: list):
+    for item in dados:
+        salvar_frequencia(
+            solicitacao_id,
+            item["matricula"],
+            item["compareceu"]
+        )
+
+    return {"success": True}

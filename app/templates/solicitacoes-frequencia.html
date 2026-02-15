@@ -1,0 +1,85 @@
+{% extends "layouts/app.html" %}
+{% block title %}Frequência{% endblock %}
+
+{% block page_title %}
+<div class="d-flex align-items-center w-100">
+  <span class="me-auto">
+    WorkCost · Frequência
+  </span>
+
+  <div class="ms-auto d-flex gap-2">
+    <a href="{{ url_for('pages.solicitacoes') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+
+      <a href="{{ url_for('pages.solicitacoes_abertas') }}"
+         class="btn btn-outline-primary active">
+        <i class="bi bi-file-earmark-medical"></i> Abertas
+      </a>
+
+      <a href="{{ url_for('pages.solicitacoes_fechadas') }}"
+         class="btn btn-outline-success">
+        <i class="bi bi-file-earmark-medical"></i> Fechadas
+      </a>
+
+    <button class="btn btn-outline-purple"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
+    <a href="{{ url_for('auth.logout') }}"
+       class="btn btn-outline-danger">
+      <i class="bi bi-box-arrow-right"></i> Sair
+    </a>
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4">
+
+<table class="table table-bordered text-center align-middle">
+  <thead>
+    <tr>
+      <th>Matrícula</th>
+      <th>Nome Completo</th>
+      <th>Presença</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for f in funcionarios %}
+    <tr data-matricula="{{ f.matricula }}">
+      <td>{{ f.matricula }}</td>
+      <td>{{ f.nome }}</td>
+      <td>
+        <select class="form-select form-select-sm presenca-select">
+          <option value="true"
+            {% if f.compareceu %}selected{% endif %}>
+            Compareceu
+          </option>
+          <option value="false"
+            {% if not f.compareceu %}selected{% endif %}>
+            Faltou
+          </option>
+        </select>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<button class="btn btn-success w-100 mt-3"
+        id="btnSalvarFrequencia">
+  Salvar Frequência
+</button>
+
+</div>
+
+<script>
+const SOLICITACAO_ID = {{ solicitacao_id }};
+</script>
+<script src="{{ url_for('static', filename='js/solicitacoes-frequencia.js') }}"></script>
+{% endblock %}

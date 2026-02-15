@@ -281,3 +281,45 @@ def listar_solicitacoes_com_status():
                 ORDER BY s.id DESC
             """)
             return cur.fetchall()
+
+def listar_frequencia_por_solicitacao(solicitacao_id: int):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT matricula, compareceu
+                FROM solicitacao_frequencia
+                WHERE solicitacao_id = %s
+            """, (solicitacao_id,))
+            return cur.fetchall()
+
+
+def salvar_frequencia(
+    solicitacao_id: int,
+    matricula: str,
+    compareceu: bool
+):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO solicitacao_frequencia (
+                    solicitacao_id,
+                    matricula,
+                    compareceu
+                )
+                VALUES (%s,%s,%s)
+                ON CONFLICT (solicitacao_id, matricula)
+                DO UPDATE SET compareceu = EXCLUDED.compareceu
+            """, (solicitacao_id, matricula, compareceu))
+        conn.commit()
+
+
+def contar_presencas(solicitacao_id: int):
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT COUNT(*) AS total
+                FROM solicitacao_frequencia
+                WHERE solicitacao_id = %s
+                  AND compareceu = TRUE
+            """, (solicitacao_id,))
+            return cur.fetchone()["total"]

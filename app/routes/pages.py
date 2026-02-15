@@ -224,3 +224,21 @@ def solicitacao_documento(solicitacao_id):
         provisao=provisao,   
         active_menu=None
     )
+
+@bp.route("/solicitacoes/<int:solicitacao_id>/frequencia")
+@login_required
+def solicitacao_frequencia(solicitacao_id):
+
+    from app.services.solicitacoes_service import (
+        obter_frequencia,
+        buscar_solicitacao_por_id
+    )
+
+    funcionarios = obter_frequencia(solicitacao_id)
+
+    return render_template(
+        "solicitacoes-frequencia.html",
+        solicitacao_id=solicitacao_id,
+        funcionarios=funcionarios,
+        active_menu="solicitacoes"
+    )
