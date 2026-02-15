@@ -123,24 +123,47 @@
   
 <div class="row g-3 mb-4">
 
-  <!-- Ranking por Filial -->
-  <div class="col-md-4">
-    <div class="card shadow-sm p-3">
-      <h6 class="fw-bold text-primary">
-        <i class="bi bi-geo-alt"></i>
-        Ranking por Filial
+<!-- Ranking por Filial (Extras) -->
+<div class="col-md-4">
+  <div class="card shadow-sm p-3">
+    <h6 class="fw-bold text-primary mb-3">
+      <i class="bi bi-geo-alt"></i>
+      Ranking por Filial
     </h6>
 
-      <ul class="list-group list-group-flush">
-        {% for f in ranking_filial %}
-        <li class="list-group-item d-flex justify-content-between">
-          {{ f.nome }}
-          <span class="badge bg-primary">{{ f.absenteismo }}%</span>
-        </li>
-        {% endfor %}
-      </ul>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle text-center mb-0">
+        <thead>
+          <tr>
+            <th>Filial</th>
+            <th>% Extras</th>
+            <th>Provisionado</th>
+            <th>Realizado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in ranking_extras %}
+          <tr>
+            <td class="fw-semibold">{{ f.filial }}</td>
+            <td>
+              <span class="badge bg-primary">
+                {{ f.percentual }}%
+              </span>
+            </td>
+            <td class="text-warning fw-semibold">
+              R$ {{ "{:,.2f}".format(f.provisionado) }}
+            </td>
+            <td class="text-success fw-semibold">
+              R$ {{ "{:,.2f}".format(f.realizado) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+
   </div>
+</div>
   
   <!-- Ranking por Setor -->
   <div class="col-md-4">
