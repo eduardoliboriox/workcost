@@ -8,10 +8,31 @@
   </span>
 
   <div class="ms-auto d-flex gap-2">
-    <a href="{{ url_for('pages.solicitacoes_fechadas') }}"
-       class="btn btn-outline-secondary">
-      Voltar
+    <a href="{{ url_for('pages.solicitacoes') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
     </a>
+
+      <a href="{{ url_for('pages.solicitacoes_abertas') }}"
+         class="btn btn-outline-primary active">
+        <i class="bi bi-file-earmark-medical"></i> Abertas
+      </a>
+
+      <a href="{{ url_for('pages.solicitacoes_fechadas') }}"
+         class="btn btn-outline-success">
+        <i class="bi bi-file-earmark-medical"></i> Fechadas
+      </a>
+
+    <button class="btn btn-outline-purple"
+            type="button"
+            onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+
+    <a href="{{ url_for('auth.logout') }}"
+       class="btn btn-outline-danger">
+      <i class="bi bi-box-arrow-right"></i> Sair
+    </a>
+    
   </div>
 </div>
 {% endblock %}
