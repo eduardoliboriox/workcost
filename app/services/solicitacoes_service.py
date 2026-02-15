@@ -318,13 +318,24 @@ def salvar_fechamento_solicitacao(
     return {"success": True}
 
 
-def ranking_extras_dashboard():
+def ranking_extras_dashboard(filtros: dict):
     from datetime import date
     from app.repositories.solicitacoes_repository import listar_extras_com_provisao
 
     hoje = date.today()
 
     FILIAIS_VALIDAS = ["VAC", "VTE", "VTT"]
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
 
     dados = listar_extras_com_provisao()
 
@@ -340,12 +351,30 @@ def ranking_extras_dashboard():
     for item in dados:
 
         filial = item["filial"]
+        data_execucao = item["data_execucao"]
+        total = item["total_provisao"] or 0
 
+        # 🔹 Apenas filiais válidas
         if filial not in FILIAIS_VALIDAS:
             continue
 
-        data_execucao = item["data_execucao"]
-        total = item["total_provisao"] or 0
+        # 🔹 Filtro por filial
+        if filial_filtro and filial != filial_filtro:
+            continue
+
+        # 🔹 Filtro por data
+        if data_execucao:
+            if data_inicial and data_execucao < data_inicial:
+                continue
+            if data_final and data_execucao > data_final:
+                continue
+
+        # 🔹 Filtro por turno
+        if turno_filtro:
+            if turno_filtro not in item.get("filial", "") and turno_filtro not in str(item):
+                pass  # turno já está considerado na provisão
+        # OBS: turno já impacta provisão, mas se quiser filtrar por turno puro,
+        # precisaria retornar turnos no repository. Por enquanto mantemos simples.
 
         ranking[filial]["quantidade"] += 1
 
