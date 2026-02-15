@@ -88,8 +88,9 @@
         <td>{{ s.efetivo_real }}</td>
 
         <td>
-          <select class="form-select form-select-sm"
-                  data-pdf="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}">
+          <select class="form-select form-select-sm select-acessar-fechadas"
+                  data-pdf="{{ url_for('pages.solicitacao_documento', solicitacao_id=s.id) }}"
+                  data-frequencia="{{ url_for('pages.solicitacao_frequencia', solicitacao_id=s.id) }}">
             <option value="">Selecionar</option>
             <option value="pdf">PDF</option>
             <option value="frequencia">Frequência</option>
