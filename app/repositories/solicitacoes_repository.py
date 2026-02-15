@@ -347,3 +347,47 @@ def atualizar_fechamento(
                 WHERE id = %s
             """, (objetivo_status, observacoes, solicitacao_id))
         conn.commit()
+
+# =====================================================
+# DASHBOARD - RANKING EXTRAS POR FILIAL
+# =====================================================
+
+def listar_extras_com_provisao():
+    """
+    Retorna todas as solicitações com:
+    - filial (cliente)
+    - data_execucao
+    - total provisão calculado
+    """
+
+    from app.services.provisao_service import gerar_provisao
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+
+            cur.execute("""
+                SELECT
+                    s.id,
+                    s.cliente,
+                    s.data_execucao
+                FROM solicitacoes s
+                ORDER BY s.id DESC
+            """)
+
+            solicitacoes = cur.fetchall()
+
+    resultado = []
+
+    for s in solicitacoes:
+
+        funcionarios = listar_funcionarios_por_solicitacao(s["id"])
+
+        provisao = gerar_provisao(s, funcionarios)
+
+        resultado.append({
+            "filial": s["cliente"],
+            "data_execucao": s["data_execucao"],
+            "total_provisao": provisao["total_geral"]
+        })
+
+    return resultado
