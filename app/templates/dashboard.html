@@ -123,24 +123,6 @@
   
 <div class="row g-3 mb-4">
 
-  <!-- Ranking por Setor -->
-  <div class="col-md-4">
-    <div class="card shadow-sm p-3">
-      <h6 class="fw-bold text-danger">
-        <i class="bi bi-diagram-3"></i>
-        Ranking por Setor
-     </h6>
-      <ul class="list-group list-group-flush">
-        {% for s in ranking_setor %}
-        <li class="list-group-item d-flex justify-content-between">
-          {{ s.nome }}
-          <span class="badge bg-danger">{{ s.absenteismo }}%</span>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
   <!-- Ranking por Filial -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
@@ -154,6 +136,24 @@
         <li class="list-group-item d-flex justify-content-between">
           {{ f.nome }}
           <span class="badge bg-primary">{{ f.absenteismo }}%</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Ranking por Setor -->
+  <div class="col-md-4">
+    <div class="card shadow-sm p-3">
+      <h6 class="fw-bold text-danger">
+        <i class="bi bi-diagram-3"></i>
+        Ranking por Setor
+     </h6>
+      <ul class="list-group list-group-flush">
+        {% for s in ranking_setor %}
+        <li class="list-group-item d-flex justify-content-between">
+          {{ s.nome }}
+          <span class="badge bg-danger">{{ s.absenteismo }}%</span>
         </li>
         {% endfor %}
       </ul>
