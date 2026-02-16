@@ -362,7 +362,7 @@ def ranking_extras_dashboard(filtros: dict):
         # FILIAL / UNIDADE
         # ================================
         filiais_solicitacao = [
-            f.strip() for f in (r.get("cliente") or "").split(",")
+            f.strip() for f in (r.get("unidade") or "").split(",")
         ]
 
         filial_valida = next(
