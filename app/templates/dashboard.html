@@ -72,7 +72,7 @@
     </div>
     
     <div class="col-md-3">
-      <label class="form-label">Filial</label>
+      <label class="form-label">Unidade</label>
       <select name="filial" class="form-select">
         <option value="">Todas</option>
         <option value="VAC" {% if filtros.filial == 'VAC' %}selected{% endif %}>VAC</option>
@@ -123,19 +123,19 @@
   
 <div class="row g-3 mb-4">
 
-<!-- Ranking por Filial (Extras) -->
+<!-- Ranking por Unidade (Extras) -->
 <div class="col-md-4">
   <div class="card shadow-sm p-3">
     <h6 class="fw-bold text-primary mb-3">
       <i class="bi bi-geo-alt"></i>
-      Ranking por Filial
+      Ranking por Unidade
     </h6>
 
     <div class="table-responsive">
       <table class="table table-sm align-middle text-center mb-0">
         <thead>
           <tr>
-            <th>Filial</th>
+            <th>Unidade</th>
             <th>% Extras</th>
             <th>Provisionado</th>
             <th>Realizado</th>
