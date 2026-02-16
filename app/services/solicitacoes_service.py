@@ -33,10 +33,9 @@ def criar_solicitacao(form):
             "data": form["data"],
             "data_execucao": form.get("data_execucao"),
             "turnos": ",".join(form.getlist("turnos")),
+            "unidade": form.get("unidade"),   
             "setores": ",".join(form.getlist("setores")),
-
             "cliente": ",".join(form.getlist("clientes")),
-
             "descricao": form["descricao"],
             "atividades": form["atividades"],
             "solicitante_user_id": current_user.id
@@ -363,7 +362,7 @@ def ranking_extras_dashboard(filtros: dict):
         # FILIAL / UNIDADE
         # ================================
         filiais_solicitacao = [
-            f.strip() for f in (r.get("cliente") or "").split(",")
+            f.strip() for f in (r.get("unidade") or "").split(",")
         ]
 
         filial_valida = next(

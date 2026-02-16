@@ -13,18 +13,20 @@ def inserir_solicitacao(dados: dict, funcionarios: list):
                     data,
                     data_execucao,
                     turnos,
+                    unidade,              
                     setores,
                     cliente,
                     descricao,
                     atividades,
                     solicitante_user_id
                 )
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 RETURNING id
             """, (
                 dados["data"],
                 dados.get("data_execucao"),
                 dados["turnos"],
+                dados.get("unidade"),     
                 dados["setores"],
                 dados["cliente"],
                 dados["descricao"],
@@ -259,7 +261,6 @@ def deletar_solicitacao_por_id(solicitacao_id: int):
 def listar_solicitacoes_com_status():
     """
     Retorna todas as solicitações com contagem de assinaturas.
-    Service decide se é aberta ou fechada.
     """
 
     with get_db() as conn:
@@ -269,6 +270,9 @@ def listar_solicitacoes_com_status():
                     s.id,
                     s.data,
                     s.data_execucao,
+                    s.turnos,
+                    s.unidade,          
+                    s.cliente,
                     s.objetivo_status,
                     s.observacoes,
                     u.username AS solicitante,
@@ -283,6 +287,9 @@ def listar_solicitacoes_com_status():
                     s.id,
                     s.data,
                     s.data_execucao,
+                    s.turnos,
+                    s.unidade,
+                    s.cliente,
                     s.objetivo_status,
                     s.observacoes,
                     u.username,
@@ -352,7 +359,7 @@ def atualizar_fechamento(
 def listar_extras_com_provisao():
     """
     Retorna todas as solicitações com:
-    - filial (cliente)
+    - unidade (unidade)
     - data_execucao
     - turnos
     - total provisão calculado
@@ -366,7 +373,7 @@ def listar_extras_com_provisao():
             cur.execute("""
                 SELECT
                     s.id,
-                    s.cliente,
+                    s.unidade,
                     s.data_execucao,
                     s.turnos
                 FROM solicitacoes s
@@ -384,7 +391,7 @@ def listar_extras_com_provisao():
         provisao = gerar_provisao(s, funcionarios)
 
         resultado.append({
-            "filial": s["cliente"],
+            "unidade": s["unidade"],
             "data_execucao": s["data_execucao"],
             "turnos": s["turnos"],  
             "total_provisao": provisao["total_geral"]
