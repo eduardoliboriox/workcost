@@ -513,3 +513,69 @@ def objetivos_status_dashboard(filtros: dict):
             "percentual": round((contagem["sim"] / total) * 100, 2)
         }
     ]
+
+def ranking_solicitacoes_por_cliente(filtros: dict):
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_solicitacoes_para_ranking_cliente
+    )
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_para_ranking_cliente()
+
+    contagem = {}
+
+    for r in rows:
+
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        # filtro unidade
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        # filtro turno
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        # pode haver múltiplos clientes
+        clientes = [c.strip() for c in (r.get("cliente") or "").split(",")]
+
+        for cliente in clientes:
+            if not cliente:
+                continue
+            contagem[cliente] = contagem.get(cliente, 0) + 1
+
+    total = sum(contagem.values()) or 1
+
+    resultado = [
+        {
+            "cliente": nome,
+            "percentual": round((qtd / total) * 100, 2)
+        }
+        for nome, qtd in contagem.items()
+    ]
+
+    resultado.sort(key=lambda x: x["percentual"], reverse=True)
+
+    return resultado
