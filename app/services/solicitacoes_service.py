@@ -437,3 +437,79 @@ def ranking_extras_dashboard(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
+
+def objetivos_status_dashboard(filtros: dict):
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_objetivos_dashboard
+    )
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_objetivos_dashboard()
+
+    contagem = {
+        "nao": 0,
+        "parcialmente": 0,
+        "sim": 0
+    }
+
+    for r in rows:
+
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        # FILTRO FILIAL
+        filiais_solicitacao = [
+            f.strip() for f in (r.get("unidade") or "").split(",")
+        ]
+
+        if filial_filtro and filial_filtro not in filiais_solicitacao:
+            continue
+
+        # FILTRO TURNO
+        turnos_solicitacao = [
+            t.strip() for t in (r.get("turnos") or "").split(",")
+        ]
+
+        if turno_filtro and turno_filtro not in turnos_solicitacao:
+            continue
+
+        status = (r.get("objetivo_status") or "").lower()
+
+        if status in contagem:
+            contagem[status] += 1
+
+    total = sum(contagem.values()) or 1
+
+    return [
+        {
+            "status": "Não",
+            "percentual": round((contagem["nao"] / total) * 100, 2)
+        },
+        {
+            "status": "Parcialmente",
+            "percentual": round((contagem["parcialmente"] / total) * 100, 2)
+        },
+        {
+            "status": "Sim",
+            "percentual": round((contagem["sim"] / total) * 100, 2)
+        }
+    ]

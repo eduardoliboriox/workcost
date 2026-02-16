@@ -7,9 +7,7 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    // ===============================
     // KPIs
-    // ===============================
     const respResumo = await fetch(`/api/dashboard/resumo?${params}`);
     const dataResumo = await respResumo.json();
 
@@ -19,13 +17,15 @@ async function atualizarDashboard() {
     document.getElementById("kpi-abs").innerText = dataResumo.kpis.absenteismo + "%";
     document.getElementById("kpi-linhas").innerText = dataResumo.kpis.linhas;
 
-    // ===============================
-    // Ranking Extras (NOVO)
-    // ===============================
+    // Extras
     const respExtras = await fetch(`/api/dashboard/extras?${params}`);
     const rankingExtras = await respExtras.json();
-
     atualizarTabelaExtras(rankingExtras);
+
+    // Objetivos
+    const respObjetivos = await fetch(`/api/dashboard/objetivos?${params}`);
+    const rankingObjetivos = await respObjetivos.json();
+    atualizarObjetivos(rankingObjetivos);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -33,7 +33,6 @@ async function atualizarDashboard() {
 }
 
 function atualizarTabelaExtras(dados) {
-
   const tbody = document.querySelector("#rankingExtrasBody");
   if (!tbody) return;
 
@@ -43,25 +42,30 @@ function atualizarTabelaExtras(dados) {
     tbody.innerHTML += `
       <tr>
         <td class="fw-semibold">${f.filial}</td>
-        <td>
-          <span class="badge bg-primary">
-            ${f.percentual}%
-          </span>
-        </td>
-        <td class="text-warning fw-bold">
-          R$ ${f.provisionado.toFixed(2)}
-        </td>
-        <td class="text-success fw-bold">
-          R$ ${f.realizado.toFixed(2)}
-        </td>
+        <td><span class="badge bg-primary">${f.percentual}%</span></td>
+        <td class="text-warning fw-bold">R$ ${f.provisionado.toFixed(2)}</td>
+        <td class="text-success fw-bold">R$ ${f.realizado.toFixed(2)}</td>
       </tr>
     `;
   });
 }
 
-// ===============================
-// Filtros -> atualizar sem reload
-// ===============================
+function atualizarObjetivos(dados) {
+  const lista = document.getElementById("rankingObjetivosList");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach(o => {
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${o.status}
+        <span class="badge bg-danger">${o.percentual}%</span>
+      </li>
+    `;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
   const form = document.getElementById("dashboardFilters");
@@ -76,5 +80,4 @@ document.addEventListener("DOMContentLoaded", function () {
   atualizarDashboard();
 });
 
-// polling
 setInterval(atualizarDashboard, 5000);

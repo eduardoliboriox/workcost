@@ -398,3 +398,27 @@ def listar_extras_com_provisao():
         })
 
     return resultado
+
+def listar_objetivos_dashboard():
+    """
+    Retorna:
+    - id
+    - objetivo_status
+    - data_execucao
+    - turnos
+    - unidade
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    id,
+                    objetivo_status,
+                    data_execucao,
+                    turnos,
+                    unidade
+                FROM solicitacoes
+                WHERE objetivo_status IS NOT NULL
+            """)
+            return cur.fetchall()
