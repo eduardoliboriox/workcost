@@ -33,10 +33,9 @@ def criar_solicitacao(form):
             "data": form["data"],
             "data_execucao": form.get("data_execucao"),
             "turnos": ",".join(form.getlist("turnos")),
+            "unidade": form.get("unidade"),   
             "setores": ",".join(form.getlist("setores")),
-
             "cliente": ",".join(form.getlist("clientes")),
-
             "descricao": form["descricao"],
             "atividades": form["atividades"],
             "solicitante_user_id": current_user.id
