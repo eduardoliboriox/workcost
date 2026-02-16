@@ -583,11 +583,7 @@ def ranking_solicitacoes_por_tipo(filtros: dict):
 
     rows = listar_solicitacoes_para_ranking_tipo()
 
-    contagem = {
-        "Hora extra": 0,
-        "Banco de Horas": 0,
-        "Compensação": 0
-    }
+    contagem = {}
 
     for r in rows:
 
@@ -611,8 +607,10 @@ def ranking_solicitacoes_por_tipo(filtros: dict):
 
         descricao = (r.get("descricao") or "").strip()
 
-        if descricao in contagem:
-            contagem[descricao] += 1
+        if not descricao:
+            continue
+
+        contagem[descricao] = contagem.get(descricao, 0) + 1
 
     total = sum(contagem.values()) or 1
 
