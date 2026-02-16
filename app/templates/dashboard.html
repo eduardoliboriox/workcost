@@ -144,16 +144,16 @@
         <tbody id="rankingExtrasBody">
           {% for f in ranking_extras %}
           <tr>
-            <td class="fw-semibold">{{ f.filial }}</td>
+            <td class="fw-bold">{{ f.filial }}</td>
             <td>
               <span class="badge bg-primary">
                 {{ f.percentual }}%
               </span>
             </td>
-            <td class="text-warning fw-semibold">
+            <td class="text-warning fw-bold">
               R$ {{ "{:,.2f}".format(f.provisionado) }}
             </td>
-            <td class="text-success fw-semibold">
+            <td class="text-success fw-bold">
               R$ {{ "{:,.2f}".format(f.realizado) }}
             </td>
           </tr>
