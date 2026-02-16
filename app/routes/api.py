@@ -327,3 +327,23 @@ def api_dashboard_extras():
     dados = ranking_extras_dashboard(filtros)
 
     return jsonify(dados)
+
+
+@bp.route("/dashboard/objetivos", methods=["GET"])
+@login_required
+def api_dashboard_objetivos():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    from app.services.solicitacoes_service import (
+        objetivos_status_dashboard
+    )
+
+    dados = objetivos_status_dashboard(filtros)
+
+    return jsonify(dados)
