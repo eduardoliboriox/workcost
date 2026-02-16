@@ -7,15 +7,28 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    // KPIs
     const respResumo = await fetch(`/api/dashboard/resumo?${params}`);
     const dataResumo = await respResumo.json();
 
-    document.getElementById("kpi-hc-planejado").innerText = dataResumo.kpis.hc_planejado;
-    document.getElementById("kpi-hc-real").innerText = dataResumo.kpis.hc_real;
-    document.getElementById("kpi-ausencias").innerText = dataResumo.kpis.ausencias;
-    document.getElementById("kpi-abs").innerText = dataResumo.kpis.absenteismo + "%";
-    document.getElementById("kpi-linhas").innerText = dataResumo.kpis.linhas;
+    document.getElementById("kpi-abs").innerText =
+      dataResumo.kpis.absenteismo + "%";
+
+    document.getElementById("kpi-linhas").innerText =
+      dataResumo.kpis.linhas;                                         
+
+    const respSolicitacoes = await fetch(`/api/dashboard/solicitacoes-resumo?${params}`);
+    const dataSolicitacoes = await respSolicitacoes.json();
+    
+    document.getElementById("kpi-solicitacoes-abertas").innerText =
+      dataSolicitacoes.abertas;
+    
+    document.getElementById("kpi-solicitacoes-fechadas").innerText =
+      dataSolicitacoes.fechadas;
+    
+    document.getElementById("kpi-total-gasto").innerText =
+      "R$ " + dataSolicitacoes.total_gasto
+        .toFixed(2)
+        .replace(".", ",");
 
     // Extras
     const respExtras = await fetch(`/api/dashboard/extras?${params}`);

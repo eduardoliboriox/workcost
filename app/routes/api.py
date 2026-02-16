@@ -387,3 +387,22 @@ def api_dashboard_tipos_solicitacao():
     dados = ranking_solicitacoes_por_tipo(filtros)
 
     return jsonify(dados)
+
+@bp.route("/dashboard/solicitacoes-resumo", methods=["GET"])
+@login_required
+def api_dashboard_solicitacoes_resumo():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    from app.services.solicitacoes_service import (
+        resumo_solicitacoes_dashboard
+    )
+
+    dados = resumo_solicitacoes_dashboard(filtros)
+
+    return jsonify(dados)
