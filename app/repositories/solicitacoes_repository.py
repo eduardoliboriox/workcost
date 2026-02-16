@@ -359,7 +359,7 @@ def atualizar_fechamento(
 def listar_extras_com_provisao():
     """
     Retorna todas as solicitações com:
-    - filial (cliente)
+    - unidade (unidade)
     - data_execucao
     - turnos
     - total provisão calculado
@@ -373,7 +373,7 @@ def listar_extras_com_provisao():
             cur.execute("""
                 SELECT
                     s.id,
-                    s.cliente,
+                    s.unidade,
                     s.data_execucao,
                     s.turnos
                 FROM solicitacoes s
@@ -391,7 +391,7 @@ def listar_extras_com_provisao():
         provisao = gerar_provisao(s, funcionarios)
 
         resultado.append({
-            "filial": s["cliente"],
+            "unidade": s["unidade"],
             "data_execucao": s["data_execucao"],
             "turnos": s["turnos"],  
             "total_provisao": provisao["total_geral"]
