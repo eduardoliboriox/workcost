@@ -14,7 +14,9 @@ def inicio():
 @bp.route("/dashboard")
 @login_required
 def dashboard():
+
     from datetime import date
+    from calendar import monthrange
     from app.services.solicitacoes_service import ranking_extras_dashboard
 
     data_inicial = request.args.get("data_inicial")
@@ -23,14 +25,18 @@ def dashboard():
     filial = request.args.get("filial")
 
     hoje = date.today()
-    primeiro_dia_ano = date(hoje.year, 1, 1)
-    ultimo_dia_ano = date(hoje.year, 12, 31)
-    
+    primeiro_dia_mes = date(hoje.year, hoje.month, 1)
+    ultimo_dia_mes = date(
+        hoje.year,
+        hoje.month,
+        monthrange(hoje.year, hoje.month)[1]
+    )
+
     if not data_inicial:
-        data_inicial = primeiro_dia_ano.isoformat()
-    
+        data_inicial = primeiro_dia_mes.isoformat()
+
     if not data_final:
-        data_final = ultimo_dia_ano.isoformat()
+        data_final = ultimo_dia_mes.isoformat()
 
     filtros = {
         "data_inicial": data_inicial,
@@ -40,7 +46,6 @@ def dashboard():
     }
 
     dados = resumo_dashboard(filtros)
-
     ranking_extras = ranking_extras_dashboard(filtros)
 
     return render_template(
