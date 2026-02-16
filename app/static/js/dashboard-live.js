@@ -42,16 +42,16 @@ function atualizarTabelaExtras(dados) {
   dados.forEach(f => {
     tbody.innerHTML += `
       <tr>
-        <td class="fw-semibold">${f.filial}</td>
+        <td class="fw-bold">${f.filial}</td>
         <td>
           <span class="badge bg-primary">
             ${f.percentual}%
           </span>
         </td>
-        <td class="text-warning fw-semibold">
+        <td class="text-warning fw-bold">
           R$ ${f.provisionado.toFixed(2)}
         </td>
-        <td class="text-success fw-semibold">
+        <td class="text-success fw-bold">
           R$ ${f.realizado.toFixed(2)}
         </td>
       </tr>
