@@ -132,7 +132,7 @@
     </h6>
 
     <div class="table-responsive">
-      <table class="table table-sm align-middle text-center mb-0 fw-bold">
+      <table class="table table-sm align-middle text-center mb-0">
         <thead>
           <tr>
             <th>Unidade</th>
@@ -144,7 +144,7 @@
         <tbody id="rankingExtrasBody">
           {% for f in ranking_extras %}
           <tr>
-            <td class="fw-bold">{{ f.filial }}</td>
+            <td class="fw-semibold">{{ f.filial }}</td>
             <td>
               <span class="badge bg-primary">
                 {{ f.percentual }}%
