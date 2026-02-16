@@ -7,37 +7,74 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    const resp = await fetch(`/api/dashboard/resumo?${params}`);
-    const data = await resp.json();
+    // ===============================
+    // KPIs
+    // ===============================
+    const respResumo = await fetch(`/api/dashboard/resumo?${params}`);
+    const dataResumo = await respResumo.json();
 
-    // ===== KPIs =====
-    document.getElementById("kpi-hc-planejado").innerText = data.kpis.hc_planejado;
-    document.getElementById("kpi-hc-real").innerText = data.kpis.hc_real;
-    document.getElementById("kpi-ausencias").innerText = data.kpis.ausencias;
-    document.getElementById("kpi-abs").innerText = data.kpis.absenteismo + "%";
-    document.getElementById("kpi-linhas").innerText = data.kpis.linhas;
+    document.getElementById("kpi-hc-planejado").innerText = dataResumo.kpis.hc_planejado;
+    document.getElementById("kpi-hc-real").innerText = dataResumo.kpis.hc_real;
+    document.getElementById("kpi-ausencias").innerText = dataResumo.kpis.ausencias;
+    document.getElementById("kpi-abs").innerText = dataResumo.kpis.absenteismo + "%";
+    document.getElementById("kpi-linhas").innerText = dataResumo.kpis.linhas;
 
-    // (Opcional depois) atualizar rankings sem reload
+    // ===============================
+    // Ranking Extras (NOVO)
+    // ===============================
+    const respExtras = await fetch(`/api/dashboard/extras?${params}`);
+    const rankingExtras = await respExtras.json();
+
+    atualizarTabelaExtras(rankingExtras);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
   }
 }
 
-// polling igual Power BI
-setInterval(atualizarDashboard, 5000);
-document.addEventListener("DOMContentLoaded", atualizarDashboard);
+function atualizarTabelaExtras(dados) {
 
+  const tbody = document.querySelector("#rankingExtrasBody");
+  if (!tbody) return;
 
-<script>
+  tbody.innerHTML = "";
+
+  dados.forEach(f => {
+    tbody.innerHTML += `
+      <tr>
+        <td class="fw-semibold">${f.filial}</td>
+        <td>
+          <span class="badge bg-primary">
+            ${f.percentual}%
+          </span>
+        </td>
+        <td class="text-warning fw-semibold">
+          R$ ${f.provisionado.toFixed(2)}
+        </td>
+        <td class="text-success fw-semibold">
+          R$ ${f.realizado.toFixed(2)}
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// ===============================
+// Filtros -> atualizar sem reload
+// ===============================
 document.addEventListener("DOMContentLoaded", function () {
 
   const form = document.getElementById("dashboardFilters");
   if (!form) return;
 
   form.querySelectorAll("input, select").forEach(el => {
-    el.addEventListener("change", () => form.submit());
+    el.addEventListener("change", () => {
+      atualizarDashboard();
+    });
   });
 
+  atualizarDashboard();
 });
-</script>
+
+// polling
+setInterval(atualizarDashboard, 5000);
