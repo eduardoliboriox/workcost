@@ -24,12 +24,13 @@ def dashboard():
 
     hoje = date.today()
     primeiro_dia_ano = date(hoje.year, 1, 1)
-
+    ultimo_dia_ano = date(hoje.year, 12, 31)
+    
     if not data_inicial:
         data_inicial = primeiro_dia_ano.isoformat()
-
+    
     if not data_final:
-        data_final = hoje.isoformat()
+        data_final = ultimo_dia_ano.isoformat()
 
     filtros = {
         "data_inicial": data_inicial,
