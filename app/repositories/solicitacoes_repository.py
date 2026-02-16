@@ -440,3 +440,22 @@ def listar_solicitacoes_para_ranking_cliente():
                 WHERE cliente IS NOT NULL
             """)
             return cur.fetchall()
+
+def listar_solicitacoes_para_ranking_tipo():
+    """
+    Retorna dados necessários para ranking por tipo de solicitação
+    (campo descricao).
+    """
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    id,
+                    descricao,
+                    data_execucao,
+                    turnos,
+                    unidade
+                FROM solicitacoes
+                WHERE descricao IS NOT NULL
+            """)
+            return cur.fetchall()
