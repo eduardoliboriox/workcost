@@ -31,6 +31,11 @@ async function atualizarDashboard() {
     const respClientes = await fetch(`/api/dashboard/clientes?${params}`);
     const rankingClientes = await respClientes.json();
     atualizarClientes(rankingClientes);
+        
+    // Tipos de Solicitação
+    const respTipos = await fetch(`/api/dashboard/tipos-solicitacao?${params}`);
+    const rankingTipos = await respTipos.json();
+    atualizarTipos(rankingTipos);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -82,6 +87,22 @@ function atualizarObjetivos(dados) {
       <li class="list-group-item d-flex justify-content-between">
         ${o.status}
         <span class="badge bg-danger">${o.percentual}%</span>
+      </li>
+    `;
+  });
+}
+
+function atualizarTipos(dados) {
+  const lista = document.getElementById("rankingTiposList");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach(t => {
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${t.tipo}
+        <span class="badge bg-info">${t.percentual}%</span>
       </li>
     `;
   });
