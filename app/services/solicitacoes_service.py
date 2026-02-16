@@ -355,9 +355,6 @@ def ranking_extras_dashboard(filtros: dict):
 
     for r in rows:
 
-        # ================================
-        # FILTRAR UNIDADE
-        # ================================
         filiais_solicitacao = [
             f.strip() for f in (r.get("unidade") or "").split(",")
         ]
@@ -373,9 +370,6 @@ def ranking_extras_dashboard(filtros: dict):
         if filial_filtro and filial_valida != filial_filtro:
             continue
 
-        # ================================
-        # FILTRAR DATA EXECUÇÃO
-        # ================================
         data_execucao = r.get("data_execucao")
 
         if not data_execucao:
@@ -387,9 +381,6 @@ def ranking_extras_dashboard(filtros: dict):
         if data_final and data_execucao > data_final:
             continue
 
-        # ================================
-        # FILTRAR TURNO
-        # ================================
         turnos_solicitacao = [
             t.strip() for t in (r.get("turnos") or "").split(",")
         ]
@@ -397,18 +388,12 @@ def ranking_extras_dashboard(filtros: dict):
         if turno_filtro and turno_filtro not in turnos_solicitacao:
             continue
 
-        # ================================
-        # CALCULAR PROVISÃO REAL
-        # ================================
         funcionarios = listar_funcionarios_por_solicitacao(r["id"])
         provisao = gerar_provisao(r, funcionarios)
         total = provisao["total_geral"]
 
         ranking[filial_valida]["quantidade"] += 1
 
-        # ================================
-        # REGRA SIMPLES
-        # ================================
         if data_execucao > hoje:
             ranking[filial_valida]["provisionado"] += total
         else:
@@ -437,6 +422,7 @@ def ranking_extras_dashboard(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
+    
 
 def objetivos_status_dashboard(filtros: dict):
 
@@ -476,7 +462,6 @@ def objetivos_status_dashboard(filtros: dict):
         if data_final and data_execucao > data_final:
             continue
 
-        # FILTRO FILIAL
         filiais_solicitacao = [
             f.strip() for f in (r.get("unidade") or "").split(",")
         ]
@@ -484,7 +469,6 @@ def objetivos_status_dashboard(filtros: dict):
         if filial_filtro and filial_filtro not in filiais_solicitacao:
             continue
 
-        # FILTRO TURNO
         turnos_solicitacao = [
             t.strip() for t in (r.get("turnos") or "").split(",")
         ]
@@ -513,6 +497,7 @@ def objetivos_status_dashboard(filtros: dict):
             "percentual": round((contagem["sim"] / total) * 100, 2)
         }
     ]
+    
 
 def ranking_solicitacoes_por_cliente(filtros: dict):
 
@@ -548,17 +533,14 @@ def ranking_solicitacoes_por_cliente(filtros: dict):
         if data_final and data_execucao > data_final:
             continue
 
-        # filtro unidade
         unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
         if filial_filtro and filial_filtro not in unidades:
             continue
 
-        # filtro turno
         turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
         if turno_filtro and turno_filtro not in turnos:
             continue
 
-        # pode haver múltiplos clientes
         clientes = [c.strip() for c in (r.get("cliente") or "").split(",")]
 
         for cliente in clientes:
@@ -571,6 +553,72 @@ def ranking_solicitacoes_por_cliente(filtros: dict):
     resultado = [
         {
             "cliente": nome,
+            "percentual": round((qtd / total) * 100, 2)
+        }
+        for nome, qtd in contagem.items()
+    ]
+
+    resultado.sort(key=lambda x: x["percentual"], reverse=True)
+
+    return resultado
+    
+
+def ranking_solicitacoes_por_tipo(filtros: dict):
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_solicitacoes_para_ranking_tipo
+    )
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_para_ranking_tipo()
+
+    contagem = {
+        "Hora extra": 0,
+        "Banco de Horas": 0,
+        "Compensação": 0
+    }
+
+    for r in rows:
+
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        descricao = (r.get("descricao") or "").strip()
+
+        if descricao in contagem:
+            contagem[descricao] += 1
+
+    total = sum(contagem.values()) or 1
+
+    resultado = [
+        {
+            "tipo": nome,
             "percentual": round((qtd / total) * 100, 2)
         }
         for nome, qtd in contagem.items()
