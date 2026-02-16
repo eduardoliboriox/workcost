@@ -27,9 +27,30 @@ async function atualizarDashboard() {
     const rankingObjetivos = await respObjetivos.json();
     atualizarObjetivos(rankingObjetivos);
 
+    // Clientes
+    const respClientes = await fetch(`/api/dashboard/clientes?${params}`);
+    const rankingClientes = await respClientes.json();
+    atualizarClientes(rankingClientes);
+
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
   }
+}
+
+function atualizarClientes(dados) {
+  const lista = document.getElementById("rankingClientesList");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach(c => {
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${c.cliente}
+        <span class="badge bg-warning">${c.percentual}%</span>
+      </li>
+    `;
+  });
 }
 
 function atualizarTabelaExtras(dados) {

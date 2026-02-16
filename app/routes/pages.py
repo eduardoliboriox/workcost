@@ -5,8 +5,10 @@ from flask_login import login_required, current_user
 from app.services.solicitacoes_service import (
     obter_solicitacoes_abertas,
     ranking_extras_dashboard,
-    objetivos_status_dashboard
+    objetivos_status_dashboard, 
+    ranking_solicitacoes_por_cliente
 )
+
 
 bp = Blueprint("pages", __name__)
 
@@ -52,12 +54,14 @@ def dashboard():
     dados = resumo_dashboard(filtros)
     ranking_extras = ranking_extras_dashboard(filtros)
     ranking_objetivos = objetivos_status_dashboard(filtros)
+    ranking_clientes = ranking_solicitacoes_por_cliente(filtros)
     
     return render_template(
         "dashboard.html",
         filtros=filtros,
         ranking_extras=ranking_extras,
         ranking_objetivos=ranking_objetivos,
+        ranking_clientes=ranking_clientes,
         active_menu="dashboard",
         **dados
     )

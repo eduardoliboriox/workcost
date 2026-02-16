@@ -422,3 +422,21 @@ def listar_objetivos_dashboard():
                 WHERE objetivo_status IS NOT NULL
             """)
             return cur.fetchall()
+
+def listar_solicitacoes_para_ranking_cliente():
+    """
+    Retorna dados necessários para ranking por cliente
+    """
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    id,
+                    cliente,
+                    data_execucao,
+                    turnos,
+                    unidade
+                FROM solicitacoes
+                WHERE cliente IS NOT NULL
+            """)
+            return cur.fetchall()
