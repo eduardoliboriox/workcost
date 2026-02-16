@@ -625,3 +625,77 @@ def ranking_solicitacoes_por_tipo(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
+
+def resumo_solicitacoes_dashboard(filtros: dict):
+    """
+    KPIs do Dashboard referentes às solicitações:
+    - Solicitações Abertas
+    - Solicitações Realizadas
+    - Total Gasto (provisão das fechadas)
+
+    Respeita filtros globais:
+    data_inicial, data_final, turno, filial
+    """
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_solicitacoes_com_status,
+        listar_funcionarios_por_solicitacao
+    )
+    from app.services.provisao_service import gerar_provisao
+
+    hoje = date.today()
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_com_status()
+
+    total_abertas = 0
+    total_fechadas = 0
+    total_gasto = 0.0
+
+    for r in rows:
+
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        if data_execucao > hoje:
+            total_abertas += 1
+            continue
+
+        if data_execucao <= hoje:
+            total_fechadas += 1
+
+            funcionarios = listar_funcionarios_por_solicitacao(r["id"])
+            provisao = gerar_provisao(r, funcionarios)
+            total_gasto += provisao["total_geral"]
+
+    return {
+        "abertas": total_abertas,
+        "fechadas": total_fechadas,
+        "total_gasto": round(total_gasto, 2)
+    }                                  
