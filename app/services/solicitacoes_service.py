@@ -319,6 +319,7 @@ def salvar_fechamento_solicitacao(
 
 
 def ranking_extras_dashboard(filtros: dict):
+
     from datetime import date
     from app.repositories.solicitacoes_repository import listar_extras_com_provisao
 
@@ -350,38 +351,44 @@ def ranking_extras_dashboard(filtros: dict):
 
     for item in dados:
 
-        filial = item["filial"]
+        filiais_solicitacao = [
+            f.strip() for f in (item["filial"] or "").split(",")
+        ]
+
+        filial_valida = next(
+            (f for f in filiais_solicitacao if f in FILIAIS_VALIDAS),
+            None
+        )
+
+        if not filial_valida:
+            continue
+
+        if filial_filtro and filial_valida != filial_filtro:
+            continue
+
         data_execucao = item["data_execucao"]
-        total = item["total_provisao"] or 0
 
-        # 🔹 Apenas filiais válidas
-        if filial not in FILIAIS_VALIDAS:
-            continue
-
-        # 🔹 Filtro por filial
-        if filial_filtro and filial != filial_filtro:
-            continue
-
-        # 🔹 Filtro por data
         if data_execucao:
             if data_inicial and data_execucao < data_inicial:
                 continue
             if data_final and data_execucao > data_final:
                 continue
 
-        # 🔹 Filtro por turno
-        if turno_filtro:
-            if turno_filtro not in item.get("filial", "") and turno_filtro not in str(item):
-                pass  # turno já está considerado na provisão
-        # OBS: turno já impacta provisão, mas se quiser filtrar por turno puro,
-        # precisaria retornar turnos no repository. Por enquanto mantemos simples.
+        turnos_solicitacao = [
+            t.strip() for t in (item.get("turnos") or "").split(",")
+        ]
 
-        ranking[filial]["quantidade"] += 1
+        if turno_filtro and turno_filtro not in turnos_solicitacao:
+            continue
+
+        total = item["total_provisao"] or 0
+
+        ranking[filial_valida]["quantidade"] += 1
 
         if data_execucao and data_execucao > hoje:
-            ranking[filial]["provisionado"] += total
+            ranking[filial_valida]["provisionado"] += total
         else:
-            ranking[filial]["realizado"] += total
+            ranking[filial_valida]["realizado"] += total
 
     total_extras = sum(v["quantidade"] for v in ranking.values()) or 1
 

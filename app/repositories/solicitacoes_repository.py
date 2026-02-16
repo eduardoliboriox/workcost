@@ -354,7 +354,7 @@ def listar_extras_com_provisao():
     Retorna todas as solicitações com:
     - filial (cliente)
     - data_execucao
-    - turnos (necessário para provisão)
+    - turnos
     - total provisão calculado
     """
 
@@ -386,6 +386,7 @@ def listar_extras_com_provisao():
         resultado.append({
             "filial": s["cliente"],
             "data_execucao": s["data_execucao"],
+            "turnos": s["turnos"],  
             "total_provisao": provisao["total_geral"]
         })
 
