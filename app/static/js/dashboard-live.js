@@ -42,7 +42,7 @@ function atualizarTabelaExtras(dados) {
   dados.forEach(f => {
     tbody.innerHTML += `
       <tr>
-        <td class="fw-bold">${f.filial}</td>
+        <td class="fw-semibold">${f.filial}</td>
         <td>
           <span class="badge bg-primary">
             ${f.percentual}%
