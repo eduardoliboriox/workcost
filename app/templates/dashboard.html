@@ -83,43 +83,43 @@
 
   </form>
 
-  <!-- KPIs -->
-  <div class="row g-3 mb-4 text-center">
-    <div class="col-md-2">
-      <div class="card shadow-sm p-3 kpi-card">
-        <small>HC Planejado</small>
-        <h4 id="kpi-hc-planejado">{{ kpis.hc_planejado }}</h4>
-      </div>
-    </div>
-
-    <div class="col-md-2">
-      <div class="card shadow-sm p-3 kpi-card">
-        <small>HC Real</small>
-        <h4 id="kpi-hc-real">{{ kpis.hc_real }}</h4>
-      </div>
-    </div>
-
-    <div class="col-md-2">
-      <div class="card shadow-sm p-3 kpi-card">
-        <small>Ausências</small>
-        <h4 id="kpi-ausencias" class="text-danger">{{ kpis.ausencias }}</h4>
-      </div>
-    </div>
-    
-    <div class="col-md-2">
-      <div class="card shadow-sm p-3 kpi-card">
-        <small>Absenteísmo Geral</small>
-        <h4 id="kpi-abs">{{ kpis.absenteismo }}%</h4>
-      </div>
-    </div>
-
-    <div class="col-md-2">
-      <div class="card shadow-sm p-3 kpi-card">
-        <small>Linhas Ativas</small>
-        <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
-      </div>
+<!-- KPIs -->
+<div class="row g-3 mb-4 text-center">
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3 kpi-card">
+      <small>Solicitações Abertas</small>
+      <h4 id="kpi-solicitacoes-abertas">0</h4>
     </div>
   </div>
+
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3 kpi-card">
+      <small>Solicitações Realizadas</small>
+      <h4 id="kpi-solicitacoes-fechadas">0</h4>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3 kpi-card">
+      <small>Total Gasto</small>
+      <h4 id="kpi-total-gasto" class="text-success">R$ 0,00</h4>
+    </div>
+  </div>
+  
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3 kpi-card">
+      <small>Absenteísmo Geral</small>
+      <h4 id="kpi-abs">{{ kpis.absenteismo }}%</h4>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3 kpi-card">
+      <small>Linhas Ativas</small>
+      <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
+    </div>
+  </div>
+</div>
   
 <div class="row g-3 mb-4">
 
