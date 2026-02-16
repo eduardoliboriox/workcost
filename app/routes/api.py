@@ -309,3 +309,21 @@ def api_salvar_fechamento(solicitacao_id):
     )
 
     return jsonify(result), 200
+
+
+@bp.route("/dashboard/extras", methods=["GET"])
+@login_required
+def api_dashboard_extras():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    from app.services.solicitacoes_service import ranking_extras_dashboard
+
+    dados = ranking_extras_dashboard(filtros)
+
+    return jsonify(dados)
