@@ -321,9 +321,12 @@ def ranking_extras_dashboard(filtros: dict):
 
     from datetime import date
     from app.repositories.solicitacoes_repository import (
-        listar_solicitacoes_com_status,
-        listar_aprovacoes_por_solicitacao
+        listar_solicitacoes_com_status
     )
+    from app.repositories.solicitacoes_repository import (
+        listar_funcionarios_por_solicitacao
+    )
+    from app.services.provisao_service import gerar_provisao
 
     hoje = date.today()
     FILIAIS_VALIDAS = ["VAC", "VTE", "VTT"]
@@ -340,12 +343,6 @@ def ranking_extras_dashboard(filtros: dict):
         data_final = date.fromisoformat(data_final)
 
     rows = listar_solicitacoes_com_status()
-    aprovacoes = listar_aprovacoes_por_solicitacao()
-
-    # mapa de aprovações
-    aprov_map = {}
-    for a in aprovacoes:
-        aprov_map.setdefault(a["solicitacao_id"], {})[a["role"]] = a
 
     ranking = {
         filial: {
@@ -359,7 +356,7 @@ def ranking_extras_dashboard(filtros: dict):
     for r in rows:
 
         # ================================
-        # FILIAL / UNIDADE
+        # FILTRAR UNIDADE
         # ================================
         filiais_solicitacao = [
             f.strip() for f in (r.get("unidade") or "").split(",")
@@ -377,18 +374,21 @@ def ranking_extras_dashboard(filtros: dict):
             continue
 
         # ================================
-        # DATA
+        # FILTRAR DATA EXECUÇÃO
         # ================================
-        data_execucao = r["data_execucao"]
+        data_execucao = r.get("data_execucao")
 
-        if data_execucao:
-            if data_inicial and data_execucao < data_inicial:
-                continue
-            if data_final and data_execucao > data_final:
-                continue
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
 
         # ================================
-        # TURNO
+        # FILTRAR TURNO
         # ================================
         turnos_solicitacao = [
             t.strip() for t in (r.get("turnos") or "").split(",")
@@ -400,39 +400,19 @@ def ranking_extras_dashboard(filtros: dict):
         # ================================
         # CALCULAR PROVISÃO REAL
         # ================================
-        from app.repositories.solicitacoes_repository import listar_funcionarios_por_solicitacao
-        from app.services.provisao_service import gerar_provisao
-
         funcionarios = listar_funcionarios_por_solicitacao(r["id"])
         provisao = gerar_provisao(r, funcionarios)
         total = provisao["total_geral"]
 
-        total_funcionarios = r["total_funcionarios"]
-        assinadas = r["assinadas"]
-
-        # todos roles aprovados?
-        roles_aprovados = all(
-            aprov_map.get(r["id"], {}).get(role)
-            for role in ROLES
-        )
-
-        # ================================
-        # REGRA DE NEGÓCIO REAL
-        # ================================
-        is_fechada = (
-            data_execucao
-            and total_funcionarios > 0
-            and assinadas == total_funcionarios
-            and roles_aprovados
-            and hoje > data_execucao
-        )
-
         ranking[filial_valida]["quantidade"] += 1
 
-        if is_fechada:
-            ranking[filial_valida]["realizado"] += total
-        else:
+        # ================================
+        # REGRA SIMPLES
+        # ================================
+        if data_execucao > hoje:
             ranking[filial_valida]["provisionado"] += total
+        else:
+            ranking[filial_valida]["realizado"] += total
 
     total_extras = sum(v["quantidade"] for v in ranking.values()) or 1
 
