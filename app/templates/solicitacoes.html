@@ -152,7 +152,7 @@
         <label class="form-label fw-bold">
           Unidade <small class="text-muted">/ Unidad</small>
         </label>
-        <select name="cliente" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
+        <select name="unidade" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
           {% for c in ['VAC','VTE','VTT'] %}
             <option value="{{ c }}"
               {% if modo == 'view' and solicitacao.cliente == c %}selected{% endif %}>
