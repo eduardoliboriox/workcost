@@ -165,18 +165,21 @@
   </div>
 </div>
   
-  <!-- Ranking por Setor -->
+  <!-- Status dos Objetivos -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
-      <h6 class="fw-bold text-danger">
-        <i class="bi bi-diagram-3"></i>
-        Ranking por Setor
-     </h6>
-      <ul class="list-group list-group-flush">
-        {% for s in ranking_setor %}
+      <h6 class="fw-bold text-danger mb-3">
+        <i class="bi bi-bullseye"></i>
+        Status dos Objetivos
+      </h6>
+  
+      <ul class="list-group list-group-flush" id="rankingObjetivosList">
+        {% for o in ranking_objetivos %}
         <li class="list-group-item d-flex justify-content-between">
-          {{ s.nome }}
-          <span class="badge bg-danger">{{ s.absenteismo }}%</span>
+          {{ o.status }}
+          <span class="badge bg-danger">
+            {{ o.percentual }}%
+          </span>
         </li>
         {% endfor %}
       </ul>
