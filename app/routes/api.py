@@ -367,3 +367,23 @@ def api_dashboard_clientes():
     dados = ranking_solicitacoes_por_cliente(filtros)
 
     return jsonify(dados)
+
+
+@bp.route("/dashboard/tipos-solicitacao", methods=["GET"])
+@login_required
+def api_dashboard_tipos_solicitacao():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    from app.services.solicitacoes_service import (
+        ranking_solicitacoes_por_tipo
+    )
+
+    dados = ranking_solicitacoes_por_tipo(filtros)
+
+    return jsonify(dados)
