@@ -2,7 +2,11 @@ from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from datetime import date
 from flask_login import login_required, current_user
-from app.services.solicitacoes_service import obter_solicitacoes_abertas
+from app.services.solicitacoes_service import (
+    obter_solicitacoes_abertas,
+    ranking_extras_dashboard,
+    objetivos_status_dashboard
+)
 
 bp = Blueprint("pages", __name__)
 
@@ -47,11 +51,13 @@ def dashboard():
 
     dados = resumo_dashboard(filtros)
     ranking_extras = ranking_extras_dashboard(filtros)
-
+    ranking_objetivos = objetivos_status_dashboard(filtros)
+    
     return render_template(
         "dashboard.html",
         filtros=filtros,
         ranking_extras=ranking_extras,
+        ranking_objetivos=ranking_objetivos,
         active_menu="dashboard",
         **dados
     )
