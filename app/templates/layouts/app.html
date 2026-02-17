@@ -16,6 +16,11 @@
 </head>
 
 <body>
+{% if ENVIRONMENT == "develop" %}
+<div style="background:#c0392b;color:white;text-align:center;padding:6px;font-weight:bold;position:sticky;top:0;z-index:9999;">
+🚧 AMBIENTE DE TESTE - WORKCOST VENTTOS (DEVELOP) 🚧
+</div>
+{% endif %}
 
 <!-- ================= HEADER MOBILE ================= -->
 <header class="mobile-header d-md-none">
