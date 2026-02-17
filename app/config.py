@@ -4,6 +4,8 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL")
     SECRET_KEY = os.getenv("SECRET_KEY", "dev")
 
+    ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
+
     PREFERRED_URL_SCHEME = "https"
     BASE_URL = os.getenv("BASE_URL")
 
