@@ -4,18 +4,19 @@
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
   <span class="me-auto">
-    WorkCost · Minhas extras
+    WorkCost · Minhas Extras
   </span>
 
   <div class="ms-auto d-flex gap-2">
-   
+
     <button class="btn btn-outline-purple"
             type="button"
             onclick="toggleFullscreen()">
       <i class="bi bi-arrows-fullscreen"></i>
-    </button>  
-    
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+    </button>
+
+    <a href="{{ url_for('auth.logout') }}"
+       class="btn btn-outline-danger">
       Sair
     </a>
   </div>
@@ -28,25 +29,26 @@
 
 <div class="page-pedidos">
 
-  <!-- =========================
-       FILTROS (DESKTOP + MOBILE)
-       ========================= -->
   <div class="card shadow-sm p-3 mb-3 filtros-pedidos">
     <div class="d-flex justify-content-between gap-2 flex-wrap">
+
       <input id="filterSearch"
              class="form-control flex-grow-1"
              placeholder="Pesquisar...">
 
       <div class="d-flex gap-2">
-        <input type="date" id="filterStartDate" class="form-control">
-        <input type="date" id="filterEndDate" class="form-control">
+        <input type="date"
+               id="filterStartDate"
+               class="form-control">
+
+        <input type="date"
+               id="filterEndDate"
+               class="form-control">
       </div>
+
     </div>
   </div>
 
-  <!-- =========================
-       DESKTOP
-       ========================= -->
   <div class="card shadow-sm p-4 pedidos-desktop">
 
     <table class="table table-bordered align-middle text-center">
@@ -61,14 +63,27 @@
           <th>Acessar</th>
         </tr>
       </thead>
+
       <tbody>
         {% for s in solicitacoes %}
         <tr>
           <td>{{ s.id }}</td>
+
           <td>{{ s.data.strftime("%d/%m/%Y") }}</td>
-          <td>{{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}</td>
+
+          <td>
+            {{ s.data_execucao.strftime("%d/%m/%Y")
+               if s.data_execucao else "-" }}
+          </td>
+
           <td>{{ s.solicitante }}</td>
-          <td>{{ s.descricao }}</td>
+
+          <td>
+            <div class="descricao-scroll">
+              {{ s.descricao }}
+            </div>
+          </td>
+
           <td>
             {% if s.status_solicitacao == "Confirmado" %}
               <span class="badge bg-success">Confirmada</span>
@@ -76,14 +91,25 @@
               <span class="badge bg-secondary">Pendente</span>
             {% endif %}
           </td>
+
           <td>
-            <a href="{{ url_for('pages.solicitacao_view',
-                                solicitacao_id=s.id,
-                                from='minhasextras') }}"
-               class="btn btn-sm btn-outline-primary">
-              Arquivo
-            </a>
+            <select class="form-select form-select-sm select-acessar-minhas"
+                    data-id="{{ s.id }}"
+                    data-arquivo="{{ url_for('pages.solicitacao_view',
+                                             solicitacao_id=s.id,
+                                             from='minhasextras') }}"
+                    data-provisao="{{ url_for('pages.solicitacao_provisao',
+                                              solicitacao_id=s.id) }}"
+                    data-pdf="{{ url_for('pages.solicitacao_documento',
+                                         solicitacao_id=s.id) }}">
+
+              <option value="">Selecionar</option>
+              <option value="arquivo">Arquivo</option>
+              <option value="provisao">Provisão</option>
+              <option value="pdf">PDF</option>
+            </select>
           </td>
+
         </tr>
         {% endfor %}
       </tbody>
@@ -91,10 +117,8 @@
 
   </div>
 
-  <!-- =========================
-       MOBILE CARDS
-       ========================= -->
   <div class="solicitacoes-mobile pedidos-mobile">
+
     {% for s in solicitacoes %}
     <div class="solicitacao-card">
 
@@ -109,12 +133,22 @@
       </div>
 
       <div class="card-content">
-        <div><strong>Data:</strong> {{ s.data.strftime("%d/%m/%Y") }}</div>
-        <div><strong>Realização:</strong>
-          {{ s.data_execucao.strftime("%d/%m/%Y") if s.data_execucao else "-" }}
+        <div><strong>Data:</strong>
+          {{ s.data.strftime("%d/%m/%Y") }}
         </div>
-        <div><strong>Solicitante:</strong> {{ s.solicitante }}</div>
-        <div><strong>Descrição:</strong> {{ s.descricao }}</div>
+
+        <div><strong>Realização:</strong>
+          {{ s.data_execucao.strftime("%d/%m/%Y")
+             if s.data_execucao else "-" }}
+        </div>
+
+        <div><strong>Solicitante:</strong>
+          {{ s.solicitante }}
+        </div>
+
+        <div><strong>Descrição:</strong>
+          {{ s.descricao }}
+        </div>
       </div>
 
       <div class="card-actions">
@@ -128,9 +162,38 @@
 
     </div>
     {% endfor %}
+
   </div>
 
 </div>
 
-<script src="{{ url_for('static', filename='js/minhasextras.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll(".select-acessar-minhas")
+    .forEach(select => {
+
+      select.addEventListener("change", function () {
+
+        const selected = this.value;
+        if (!selected) return;
+
+        const url = this.dataset[selected];
+
+        if (url) {
+          window.location.href = url;
+        }
+
+        this.value = "";
+      });
+
+    });
+
+});
+</script>
+
+<script src="{{ url_for('static',
+                        filename='js/minhasextras.js') }}">
+</script>
+
 {% endblock %}
