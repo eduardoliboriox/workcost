@@ -34,8 +34,11 @@ def create_app():
         return User.get(user_id)
 
     @app.context_processor
-    def inject_now():
-        return {"now": datetime.utcnow}
+    def inject_globals():
+        return {
+            "now": datetime.utcnow,
+            "ENVIRONMENT": app.config.get("ENVIRONMENT", "production")
+        }
 
     # 📌 Blueprints
     app.register_blueprint(pages_bp)
