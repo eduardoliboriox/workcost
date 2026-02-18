@@ -51,7 +51,7 @@ jobs:
           pip install black
 
       - name: Check code formatting (Black)
-        run: black --check .
+        run: black check .
 
       - name: Wait for Postgres
         run: sleep 5
