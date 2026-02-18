@@ -50,13 +50,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Wait for Postgres
-        run: |
-          sleep 5
+        run: sleep 5
 
-      - name: Test Flask app initialization
-        run: |
-          python -c "from app import create_app; create_app()"
+      - name: Run application health check
+        run: python -m app.health
 
       - name: Run tests
-        run: |
-          pytest || echo "No tests yet"
+        run: pytest || echo "No tests yet"
