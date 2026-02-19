@@ -486,5 +486,21 @@ async function abrirModalFerias(linha) {
 }
 </script>
 
+<script>
+function toggleDatas() {
+  const extras = document.querySelectorAll(".extra-data");
+  if (!extras.length) return;
+
+  const btn = document.getElementById("toggleDatasBtn");
+  const isHidden = extras[0].classList.contains("d-none");
+
+  extras.forEach(el => {
+    el.classList.toggle("d-none", !isHidden);
+  });
+
+  btn.textContent = isHidden ? "Recolher" : "Ver mais";
+}
+</script>
+
 <script src="{{ url_for('static', filename='js/dashboard-live.js') }}"></script>
 {% endblock %}
