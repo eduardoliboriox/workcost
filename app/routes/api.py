@@ -406,3 +406,21 @@ def api_dashboard_solicitacoes_resumo():
     dados = resumo_solicitacoes_dashboard(filtros)
 
     return jsonify(dados)
+
+
+@bp.route("/dashboard/absenteismo-por-data", methods=["GET"])
+@login_required
+def api_dashboard_absenteismo_por_data():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+    }
+
+    from app.services.solicitacoes_service import (
+        ranking_absenteismo_por_data
+    )
+
+    dados = ranking_absenteismo_por_data(filtros)
+
+    return jsonify(dados)
