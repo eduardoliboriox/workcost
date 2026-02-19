@@ -292,9 +292,11 @@
         <th><div>Término</div><small class="text-muted">end</small></th>
         <th><div>Transporte</div><small class="text-muted">transport</small></th>
         <th><div>Assinatura</div><small class="text-muted">signature</small></th>
-        <th></th>
-      </tr>
-    </thead>
+          {% if not print_mode %}
+          <th></th>
+          {% endif %}
+        </tr>
+      </thead>
       <tbody>
         {% if modo == 'view' %}
           {% for f in funcionarios %}
@@ -312,37 +314,30 @@
             <td><input class="form-control" value="{{ f.inicio }}" disabled></td>
             <td><input class="form-control" value="{{ f.termino }}" disabled></td>
             <td><input class="form-control" value="{{ f.transporte }}" disabled></td>
-                    <td>
-              {% if modo == 'view' %}
-                {% if f.signed_at %}
-                  <div class="signature-box signed">
-                    {{ f.signed_by }}
-                  </div>
-                {% else %}
-                  <div class="signature-box pending mb-1">
-                    pendente
-                  </div>
-            
-                  <input type="password"
-                         class="form-control form-control-sm signature-password mb-1"
-                         placeholder="Senha">
-            
-                  <button type="button"
-                          class="btn btn-sm btn-outline-success btn-sign">
-                    Confirmar
-                  </button>
-                {% endif %}
-              {% else %}
-                <div class="signature-box pending">
-                  pendente
-                </div>
-              {% endif %}
-            </td>
-            <td></td>
-          </tr>
-          {% endfor %}
+          <td>
+            {% if f.signed_at %}
+              <div class="signature-box signed">
+                {{ f.signed_by }}
+              </div>
+            {% else %}
+              <div class="signature-box pending">
+                pendente
+              </div>
+            {% endif %}
+          </td>
+
+          {% if not print_mode %}
+          <td>
+            <button type="button"
+                    class="btn btn-sm btn-danger">
+              X
+            </button>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
         {% endif %}
-  </tbody>
+      </tbody>
 
   </table>
 
