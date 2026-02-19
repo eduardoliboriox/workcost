@@ -1,5 +1,30 @@
+let dashboardIsLoading = false;
+let dashboardTimeout = null;
+
+function showDashboardLoading() {
+  const overlay = document.getElementById("dashboardLoadingOverlay");
+  if (overlay) overlay.classList.remove("d-none");
+}
+
+function hideDashboardLoading() {
+  const overlay = document.getElementById("dashboardLoadingOverlay");
+  if (overlay) overlay.classList.add("d-none");
+}
+
+function debounceDashboardUpdate(callback, delay = 400) {
+  clearTimeout(dashboardTimeout);
+  dashboardTimeout = setTimeout(callback, delay);
+}
+
 async function atualizarDashboard() {
+
+  if (dashboardIsLoading) return;
+
+  dashboardIsLoading = true;
+  showDashboardLoading();
+
   try {
+
     const params = new URLSearchParams({
       data_inicial: document.querySelector('[name="data_inicial"]').value,
       data_final: document.querySelector('[name="data_final"]').value,
@@ -7,51 +32,65 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    const respResumo = await fetch(`/api/dashboard/resumo?${params}`);
-    const dataResumo = await respResumo.json();
+    // ===============================
+    // PARALLEL REQUESTS (PROFISSIONAL)
+    // ===============================
+    const [
+      respResumo,
+      respSolicitacoes,
+      respExtras,
+      respObjetivos,
+      respClientes,
+      respTipos
+    ] = await Promise.all([
+      fetch(`/api/dashboard/resumo?${params}`),
+      fetch(`/api/dashboard/solicitacoes-resumo?${params}`),
+      fetch(`/api/dashboard/extras?${params}`),
+      fetch(`/api/dashboard/objetivos?${params}`),
+      fetch(`/api/dashboard/clientes?${params}`),
+      fetch(`/api/dashboard/tipos-solicitacao?${params}`)
+    ]);
 
+    const dataResumo = await respResumo.json();
+    const dataSolicitacoes = await respSolicitacoes.json();
+    const rankingExtras = await respExtras.json();
+    const rankingObjetivos = await respObjetivos.json();
+    const rankingClientes = await respClientes.json();
+    const rankingTipos = await respTipos.json();
+
+    // ===============================
+    // KPIs
+    // ===============================
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
 
     document.getElementById("kpi-linhas").innerText =
-      dataResumo.kpis.linhas;                                         
+      dataResumo.kpis.linhas;
 
-    const respSolicitacoes = await fetch(`/api/dashboard/solicitacoes-resumo?${params}`);
-    const dataSolicitacoes = await respSolicitacoes.json();
-    
     document.getElementById("kpi-solicitacoes-abertas").innerText =
       dataSolicitacoes.abertas;
-    
+
     document.getElementById("kpi-solicitacoes-fechadas").innerText =
       dataSolicitacoes.fechadas;
-    
+
     document.getElementById("kpi-total-gasto").innerText =
       "R$ " + dataSolicitacoes.total_gasto
         .toFixed(2)
         .replace(".", ",");
 
-    // Extras
-    const respExtras = await fetch(`/api/dashboard/extras?${params}`);
-    const rankingExtras = await respExtras.json();
+    // ===============================
+    // Atualizações visuais
+    // ===============================
     atualizarTabelaExtras(rankingExtras);
-
-    // Objetivos
-    const respObjetivos = await fetch(`/api/dashboard/objetivos?${params}`);
-    const rankingObjetivos = await respObjetivos.json();
     atualizarObjetivos(rankingObjetivos);
-
-    // Clientes
-    const respClientes = await fetch(`/api/dashboard/clientes?${params}`);
-    const rankingClientes = await respClientes.json();
     atualizarClientes(rankingClientes);
-        
-    // Tipos de Solicitação
-    const respTipos = await fetch(`/api/dashboard/tipos-solicitacao?${params}`);
-    const rankingTipos = await respTipos.json();
     atualizarTipos(rankingTipos);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
+  } finally {
+    dashboardIsLoading = false;
+    hideDashboardLoading();
   }
 }
 
@@ -128,11 +167,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.querySelectorAll("input, select").forEach(el => {
     el.addEventListener("change", () => {
-      atualizarDashboard();
+      debounceDashboardUpdate(() => atualizarDashboard());
     });
   });
 
   atualizarDashboard();
 });
 
-setInterval(atualizarDashboard, 5000);
+// Auto refresh controlado
+setInterval(() => {
+  if (!dashboardIsLoading) {
+    atualizarDashboard();
+  }
+}, 10000);
