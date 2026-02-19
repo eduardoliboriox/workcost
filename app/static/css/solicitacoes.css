@@ -454,9 +454,6 @@
   #funcionariosTable th:nth-child(9),
   #funcionariosTable td:nth-child(9) { width: 90px !important; }
 
-  #funcionariosTable th:nth-child(10),
-  #funcionariosTable td:nth-child(10) { width: 30px !important; }
-
   table { page-break-inside: auto; }
   tr { page-break-inside: avoid; }
   thead { display: table-header-group; }
