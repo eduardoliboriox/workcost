@@ -41,14 +41,16 @@ async function atualizarDashboard() {
       respExtras,
       respObjetivos,
       respClientes,
-      respTipos
+      respTipos,
+      respAbsData
     ] = await Promise.all([
       fetch(`/api/dashboard/resumo?${params}`),
       fetch(`/api/dashboard/solicitacoes-resumo?${params}`),
       fetch(`/api/dashboard/extras?${params}`),
       fetch(`/api/dashboard/objetivos?${params}`),
       fetch(`/api/dashboard/clientes?${params}`),
-      fetch(`/api/dashboard/tipos-solicitacao?${params}`)
+      fetch(`/api/dashboard/tipos-solicitacao?${params}`),
+      fetch(`/api/dashboard/absenteismo-por-data?${params}`)
     ]);
 
     const dataResumo = await respResumo.json();
@@ -57,7 +59,8 @@ async function atualizarDashboard() {
     const rankingObjetivos = await respObjetivos.json();
     const rankingClientes = await respClientes.json();
     const rankingTipos = await respTipos.json();
-
+    const rankingAbsData = await respAbsData.json();
+    
     // ===============================
     // KPIs
     // ===============================
@@ -85,6 +88,7 @@ async function atualizarDashboard() {
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
+    atualizarAbsenteismoPorData(rankingAbsData);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -158,6 +162,41 @@ function atualizarTipos(dados) {
       </li>
     `;
   });
+}
+
+function atualizarAbsenteismoPorData(dados) {
+
+  const lista = document.getElementById("rankingAbsenteismoDataList");
+  const btn = document.getElementById("toggleDatasBtn");
+
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach((d, index) => {
+
+    const dataFormatada =
+      new Date(d.data).toLocaleDateString("pt-BR");
+
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between
+          ${index >= 5 ? 'd-none extra-data' : ''}"
+          style="cursor:pointer"
+          onclick="abrirModalAbsenteismo('${d.data}')">
+        <span>${dataFormatada}</span>
+        <span class="badge bg-danger">${d.qtd}</span>
+      </li>
+    `;
+  });
+
+if (btn) {
+    if (dados.length > 5) {
+      btn.classList.remove("d-none");
+      btn.innerText = "Ver mais";
+    } else {
+      btn.classList.add("d-none");
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {

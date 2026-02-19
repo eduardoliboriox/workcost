@@ -459,3 +459,33 @@ def listar_solicitacoes_para_ranking_tipo():
                 WHERE descricao IS NOT NULL
             """)
             return cur.fetchall()
+
+
+def listar_faltas_por_data():
+    """
+    Retorna:
+    - data da solicitação
+    - matricula
+    - nome
+    - total de faltas por funcionário no dia
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    s.data,
+                    sf.matricula,
+                    sf.nome,
+                    COUNT(*) AS total_faltas
+                FROM solicitacao_frequencia f
+                JOIN solicitacoes s
+                    ON s.id = f.solicitacao_id
+                JOIN solicitacao_funcionarios sf
+                    ON sf.solicitacao_id = s.id
+                   AND ltrim(sf.matricula, '0') = ltrim(f.matricula, '0')
+                WHERE f.compareceu = FALSE
+                GROUP BY s.data, sf.matricula, sf.nome
+                ORDER BY s.data DESC
+            """)
+            return cur.fetchall()

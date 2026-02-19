@@ -699,3 +699,55 @@ def resumo_solicitacoes_dashboard(filtros: dict):
         "fechadas": total_fechadas,
         "total_gasto": round(total_gasto, 2)
     }                                  
+
+def ranking_absenteismo_por_data(filtros: dict):
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_faltas_por_data
+    )
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_faltas_por_data()
+
+    agrupado = {}
+
+    for r in rows:
+
+        data = r["data"]
+
+        if data_inicial and data < data_inicial:
+            continue
+
+        if data_final and data > data_final:
+            continue
+
+        agrupado.setdefault(data, []).append({
+            "matricula": r["matricula"],
+            "nome": r["nome"],
+            "total": r["total_faltas"]
+        })
+
+    resultado = []
+
+    for data, funcionarios in agrupado.items():
+
+        total_dia = sum(f["total"] for f in funcionarios)
+
+        resultado.append({
+            "data": data,
+            "qtd": total_dia,
+            "funcionarios": funcionarios
+        })
+
+    resultado.sort(key=lambda x: x["data"], reverse=True)
+
+    return resultado

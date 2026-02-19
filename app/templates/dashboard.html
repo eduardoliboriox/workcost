@@ -286,37 +286,25 @@
           </div>
         </div>
   
-        <!-- Ranking Absenteísmo -->
-          <div class="col-12 col-lg-6">
+        <!-- Ranking Absenteísmo por Data -->
+        <div class="col-12 col-lg-6">
           <div class="card shadow-sm p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h6 class="fw-bold text-danger mb-0">
                 <i class="bi bi-exclamation-triangle"></i>
-                Ranking de linhas por absenteísmo
+                Ranking de absenteísmo por data
               </h6>
-  
-              {% if ranking_linhas|length > 5 %}
+        
               <button class="btn btn-sm btn-outline-danger"
-                      onclick="toggleLinhas()"
-                      id="toggleLinhasBtn">
+                      onclick="toggleDatas()"
+                      id="toggleDatasBtn">
                 Ver mais
               </button>
-              {% endif %}
             </div>
-  
-            <ul class="list-group list-group-flush" id="rankingLinhasList">
-              {% for linha in ranking_linhas %}
-              <li class="list-group-item d-flex justify-content-between
-              {% if loop.index > 5 %}d-none extra-linha{% endif %}"
-              style="cursor:pointer"
-              onclick="abrirModalLinha('{{ linha.nome }}')">
-              
-                <span>{{ linha.nome }}</span>
-                <span class="badge bg-danger px-2 py-1">{{ linha.absenteismo }}%</span>
-              
-              </li>
-
-              {% endfor %}
+        
+            <ul class="list-group list-group-flush"
+                id="rankingAbsenteismoDataList">
+              <!-- preenchido via JS -->
             </ul>
           </div>
         </div>
@@ -495,6 +483,22 @@ async function abrirModalFerias(linha) {
   new bootstrap.Modal(
     document.getElementById("modalLinha")
   ).show();
+}
+</script>
+
+<script>
+function toggleDatas() {
+  const extras = document.querySelectorAll(".extra-data");
+  if (!extras.length) return;
+
+  const btn = document.getElementById("toggleDatasBtn");
+  const isHidden = extras[0].classList.contains("d-none");
+
+  extras.forEach(el => {
+    el.classList.toggle("d-none", !isHidden);
+  });
+
+  btn.textContent = isHidden ? "Recolher" : "Ver mais";
 }
 </script>
 
