@@ -533,37 +533,37 @@
 /* Matrícula */
 #funcionariosTable th:nth-child(2),
 #funcionariosTable td:nth-child(2) {
-  width: 110px;
+  width: 125px;
 }
 
 /* Nome */
 #funcionariosTable th:nth-child(3),
 #funcionariosTable td:nth-child(3) {
-  width: 240px;
+  width: 325px;
 }
 
 /* Endereço */
 #funcionariosTable th:nth-child(4),
 #funcionariosTable td:nth-child(4) {
-  width: 240px;
+  width: 320px;
 }
 
 /* Telefone */
 #funcionariosTable th:nth-child(5),
 #funcionariosTable td:nth-child(5) {
-  width: 140px;
+  width: 170px;
 }
 
 /* Início */
 #funcionariosTable th:nth-child(6),
 #funcionariosTable td:nth-child(6) {
-  width: 70px;
+  width: 90px;
 }
 
 /* Término */
 #funcionariosTable th:nth-child(7),
 #funcionariosTable td:nth-child(7) {
-  width: 70px;
+  width: 90px;
 }
 
 /* Transporte */
