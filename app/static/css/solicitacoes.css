@@ -283,12 +283,12 @@
 }
 
 /*
-  Importante:
-  - A escala final no mobile agora é calculada via JS (document-fit.js)
-  - O CSS só aplica o transform usando a variável --doc-scale
+  Canvas base do documento (desktop):
+  - Precisa comportar a tabela com colunas fixas
+  - O fit no mobile será calculado via JS usando a largura real do canvas
 */
 .document-desktop-canvas {
-  width: 1200px;
+  width: 1600px;
   transform-origin: top left;
 }
 
@@ -510,12 +510,6 @@
   table-layout: fixed;
   width: 100%;
 }
-
-/*
-  A tabela estava estourando a largura base do documento (1200px),
-  porque a soma das colunas fixas era maior que 1200.
-  Ajuste para caber no canvas mantendo legibilidade.
-*/
 
 #funcionariosTable th,
 #funcionariosTable td {
