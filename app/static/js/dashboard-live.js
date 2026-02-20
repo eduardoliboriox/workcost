@@ -1,11 +1,6 @@
 let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
-/* =========================================================
-   🔹 NOVO: armazenamento global seguro do absenteísmo
-   ========================================================= */
-let rankingAbsenteismoGlobal = [];
-
 function showDashboardLoading() {
   const overlay = document.getElementById("dashboardLoadingOverlay");
   if (overlay) overlay.classList.remove("d-none");
@@ -37,6 +32,9 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
+    // ===============================
+    // PARALLEL REQUESTS (PROFISSIONAL)
+    // ===============================
     const [
       respResumo,
       respSolicitacoes,
@@ -62,10 +60,10 @@ async function atualizarDashboard() {
     const rankingClientes = await respClientes.json();
     const rankingTipos = await respTipos.json();
     const rankingAbsData = await respAbsData.json();
-
-    /* 🔹 SALVA GLOBALMENTE */
-    rankingAbsenteismoGlobal = rankingAbsData;
-
+    
+    // ===============================
+    // KPIs
+    // ===============================
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
 
@@ -83,6 +81,9 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
+    // ===============================
+    // Atualizações visuais
+    // ===============================
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
@@ -97,43 +98,124 @@ async function atualizarDashboard() {
   }
 }
 
-/* =========================================================
-   🔹 NOVA FUNÇÃO — Modal Absenteísmo
-   ========================================================= */
-function abrirModalAbsenteismo(dataSelecionada) {
-
-  const registro = rankingAbsenteismoGlobal.find(
-    d => d.data === dataSelecionada
-  );
-
-  if (!registro) return;
-
-  document.getElementById("modalAbsDataTitulo").innerText =
-    `Absenteísmo — ${new Date(registro.data).toLocaleDateString("pt-BR")}`;
-
-  const lista = document.getElementById("modalAbsLista");
-  const totalSpan = document.getElementById("modalAbsTotal");
+function atualizarClientes(dados) {
+  const lista = document.getElementById("rankingClientesList");
+  if (!lista) return;
 
   lista.innerHTML = "";
-  let total = 0;
 
-  registro.funcionarios.forEach(f => {
-
-    total += f.total;
-
+  dados.forEach(c => {
     lista.innerHTML += `
       <li class="list-group-item d-flex justify-content-between">
-        <span>
-          <strong>${f.matricula}</strong> — ${f.nome}
-        </span>
-        <span class="badge bg-danger">${f.total}</span>
+        ${c.cliente}
+        <span class="badge bg-warning">${c.percentual}%</span>
+      </li>
+    `;
+  });
+}
+
+function atualizarTabelaExtras(dados) {
+  const tbody = document.querySelector("#rankingExtrasBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  dados.forEach(f => {
+    tbody.innerHTML += `
+      <tr>
+        <td class="fw-semibold">${f.filial}</td>
+        <td><span class="badge bg-primary">${f.percentual}%</span></td>
+        <td class="text-warning fw-bold">R$ ${f.provisionado.toFixed(2)}</td>
+        <td class="text-success fw-bold">R$ ${f.realizado.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+}
+
+function atualizarObjetivos(dados) {
+  const lista = document.getElementById("rankingObjetivosList");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach(o => {
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${o.status}
+        <span class="badge bg-danger">${o.percentual}%</span>
+      </li>
+    `;
+  });
+}
+
+function atualizarTipos(dados) {
+  const lista = document.getElementById("rankingTiposList");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach(t => {
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        ${t.tipo}
+        <span class="badge bg-info">${t.percentual}%</span>
+      </li>
+    `;
+  });
+}
+
+function atualizarAbsenteismoPorData(dados) {
+
+  const lista = document.getElementById("rankingAbsenteismoDataList");
+  const btn = document.getElementById("toggleDatasBtn");
+
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  dados.forEach((d, index) => {
+
+    const dataFormatada =
+      new Date(d.data).toLocaleDateString("pt-BR");
+
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between
+          ${index >= 5 ? 'd-none extra-data' : ''}"
+          style="cursor:pointer"
+          onclick="abrirModalAbsenteismo('${d.data}')">
+        <span>${dataFormatada}</span>
+        <span class="badge bg-danger">${d.qtd}</span>
       </li>
     `;
   });
 
-  totalSpan.innerText = total;
-
-  new bootstrap.Modal(
-    document.getElementById("modalAbsenteismo")
-  ).show();
+if (btn) {
+    if (dados.length > 5) {
+      btn.classList.remove("d-none");
+      btn.innerText = "Ver mais";
+    } else {
+      btn.classList.add("d-none");
+    }
+  }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.getElementById("dashboardFilters");
+  if (!form) return;
+
+  form.querySelectorAll("input, select").forEach(el => {
+    el.addEventListener("change", () => {
+      debounceDashboardUpdate(() => atualizarDashboard());
+    });
+  });
+
+  atualizarDashboard();
+});
+
+// Auto refresh controlado
+setInterval(() => {
+  if (!dashboardIsLoading) {
+    atualizarDashboard();
+  }
+}, 10000);
