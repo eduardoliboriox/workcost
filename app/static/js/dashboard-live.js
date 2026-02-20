@@ -2,8 +2,7 @@ let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
 /* ======================================================
-   CACHE LOCAL — ABSENTEÍSMO POR DATA
-   (Não interfere em nada do restante)
+   CACHE LOCAL ABSENTEÍSMO (ISOLADO)
    ====================================================== */
 let cacheAbsenteismoData = [];
 
@@ -38,15 +37,7 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    const [
-      respResumo,
-      respSolicitacoes,
-      respExtras,
-      respObjetivos,
-      respClientes,
-      respTipos,
-      respAbsData
-    ] = await Promise.all([
+    const responses = await Promise.all([
       fetch(`/api/dashboard/resumo?${params}`),
       fetch(`/api/dashboard/solicitacoes-resumo?${params}`),
       fetch(`/api/dashboard/extras?${params}`),
@@ -56,15 +47,17 @@ async function atualizarDashboard() {
       fetch(`/api/dashboard/absenteismo-por-data?${params}`)
     ]);
 
-    const dataResumo = await respResumo.json();
-    const dataSolicitacoes = await respSolicitacoes.json();
-    const rankingExtras = await respExtras.json();
-    const rankingObjetivos = await respObjetivos.json();
-    const rankingClientes = await respClientes.json();
-    const rankingTipos = await respTipos.json();
-    const rankingAbsData = await respAbsData.json();
+    const [
+      dataResumo,
+      dataSolicitacoes,
+      rankingExtras,
+      rankingObjetivos,
+      rankingClientes,
+      rankingTipos,
+      rankingAbsData
+    ] = await Promise.all(responses.map(r => r.json()));
 
-    /* 🔥 Apenas armazenamos — não alteramos nada do fluxo */
+    /* 🔥 salva cache sem afetar nada */
     cacheAbsenteismoData = rankingAbsData || [];
 
     // ===============================
@@ -87,9 +80,6 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
-    // ===============================
-    // Atualizações visuais (INALTERADO)
-    // ===============================
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
@@ -105,7 +95,7 @@ async function atualizarDashboard() {
 }
 
 /* ======================================================
-   ABSENTEÍSMO POR DATA
+   ABSENTEÍSMO POR DATA (INALTERADO)
    ====================================================== */
 
 function atualizarAbsenteismoPorData(dados) {
@@ -144,7 +134,7 @@ function atualizarAbsenteismoPorData(dados) {
 }
 
 /* ======================================================
-   🔥 FUNÇÃO DO MINI MODAL (NOVO)
+   🔥 MINI MODAL ABSENTEÍSMO (NOVO)
    ====================================================== */
 
 function abrirModalAbsenteismo(data) {
@@ -170,6 +160,7 @@ function abrirModalAbsenteismo(data) {
     `Absenteísmo — ${dataFormatada}`;
 
   lista.innerHTML = "";
+
   let total = 0;
 
   if (!registro.funcionarios?.length) {
