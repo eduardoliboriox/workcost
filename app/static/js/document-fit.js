@@ -1,10 +1,15 @@
 (function () {
   "use strict";
 
-  const BASE_WIDTH = 1200;
-
   function clamp(n, min, max) {
     return Math.max(min, Math.min(max, n));
+  }
+
+  function getCanvasBaseWidth(canvas) {
+    // Preferimos medir a largura "real" do conteúdo (sem depender de constante)
+    // scrollWidth costuma refletir bem quando há conteúdo interno que define tamanho.
+    // fallback para offsetWidth.
+    return canvas.scrollWidth || canvas.offsetWidth || 1200;
   }
 
   function applyDocumentFit() {
@@ -15,23 +20,24 @@
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // No desktop: não força fit (mantém layout normal)
+    // Desktop: mantém comportamento existente
     if (!isMobile) {
       canvas.style.removeProperty("--doc-scale");
       wrapper.style.removeProperty("height");
       return;
     }
 
-    // Largura real disponível (já respeita padding do container)
+    // Largura disponível no wrapper (respeita padding do container)
     const availableWidth = wrapper.clientWidth || window.innerWidth;
 
-    // escala proporcional ao BASE_WIDTH (1200px)
-    const scale = clamp(availableWidth / BASE_WIDTH, 0.1, 1);
+    // Base width real do canvas (sem hardcode)
+    const baseWidth = getCanvasBaseWidth(canvas);
+
+    const scale = clamp(availableWidth / baseWidth, 0.1, 1);
 
     canvas.style.setProperty("--doc-scale", String(scale));
 
-    // Ajuste de altura para evitar corte, já que transform não impacta layout
-    // Usa scrollHeight para pegar altura real do conteúdo
+    // Ajusta altura do wrapper porque transform não afeta layout
     const contentHeight = canvas.scrollHeight;
     wrapper.style.height = Math.ceil(contentHeight * scale) + "px";
   }
