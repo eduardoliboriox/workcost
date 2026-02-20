@@ -527,7 +527,7 @@
 /* Item */
 #funcionariosTable th:nth-child(1),
 #funcionariosTable td:nth-child(1) {
-  width: 50px;
+  width: 60px;
 }
 
 /* Matrícula */
@@ -557,25 +557,25 @@
 /* Início */
 #funcionariosTable th:nth-child(6),
 #funcionariosTable td:nth-child(6) {
-  width: 90px;
+  width: 110px;
 }
 
 /* Término */
 #funcionariosTable th:nth-child(7),
 #funcionariosTable td:nth-child(7) {
-  width: 90px;
+  width: 110px;
 }
 
 /* Transporte */
 #funcionariosTable th:nth-child(8),
 #funcionariosTable td:nth-child(8) {
-  width: 130px;
+  width: 185px;
 }
 
 /* Assinatura */
 #funcionariosTable th:nth-child(9),
 #funcionariosTable td:nth-child(9) {
-  width: 120px;
+  width: 150px;
 }
 
 /* botão excluir (somente quando não é print_mode) */
