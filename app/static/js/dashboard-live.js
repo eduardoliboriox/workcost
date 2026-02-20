@@ -1,6 +1,15 @@
 let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
+/* ======================================================
+   CACHE GLOBAL ABSENTEÍSMO
+   ====================================================== */
+let cacheAbsenteismo = [];
+
+/* ======================================================
+   LOADING
+   ====================================================== */
+
 function showDashboardLoading() {
   const overlay = document.getElementById("dashboardLoadingOverlay");
   if (overlay) overlay.classList.remove("d-none");
@@ -15,6 +24,10 @@ function debounceDashboardUpdate(callback, delay = 400) {
   clearTimeout(dashboardTimeout);
   dashboardTimeout = setTimeout(callback, delay);
 }
+
+/* ======================================================
+   ATUALIZAÇÃO PRINCIPAL
+   ====================================================== */
 
 async function atualizarDashboard() {
 
@@ -32,9 +45,6 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    // ===============================
-    // PARALLEL REQUESTS (PROFISSIONAL)
-    // ===============================
     const [
       respResumo,
       respSolicitacoes,
@@ -60,10 +70,9 @@ async function atualizarDashboard() {
     const rankingClientes = await respClientes.json();
     const rankingTipos = await respTipos.json();
     const rankingAbsData = await respAbsData.json();
-    
-    // ===============================
-    // KPIs
-    // ===============================
+
+    /* ================= KPIs ================= */
+
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
 
@@ -81,9 +90,8 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
-    // ===============================
-    // Atualizações visuais
-    // ===============================
+    /* ================= Atualizações ================= */
+
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
@@ -98,73 +106,13 @@ async function atualizarDashboard() {
   }
 }
 
-function atualizarClientes(dados) {
-  const lista = document.getElementById("rankingClientesList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(c => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${c.cliente}
-        <span class="badge bg-warning">${c.percentual}%</span>
-      </li>
-    `;
-  });
-}
-
-function atualizarTabelaExtras(dados) {
-  const tbody = document.querySelector("#rankingExtrasBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  dados.forEach(f => {
-    tbody.innerHTML += `
-      <tr>
-        <td class="fw-semibold">${f.filial}</td>
-        <td><span class="badge bg-primary">${f.percentual}%</span></td>
-        <td class="text-warning fw-bold">R$ ${f.provisionado.toFixed(2)}</td>
-        <td class="text-success fw-bold">R$ ${f.realizado.toFixed(2)}</td>
-      </tr>
-    `;
-  });
-}
-
-function atualizarObjetivos(dados) {
-  const lista = document.getElementById("rankingObjetivosList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(o => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${o.status}
-        <span class="badge bg-danger">${o.percentual}%</span>
-      </li>
-    `;
-  });
-}
-
-function atualizarTipos(dados) {
-  const lista = document.getElementById("rankingTiposList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(t => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${t.tipo}
-        <span class="badge bg-info">${t.percentual}%</span>
-      </li>
-    `;
-  });
-}
+/* ======================================================
+   ABSENTEÍSMO POR DATA
+   ====================================================== */
 
 function atualizarAbsenteismoPorData(dados) {
+
+  cacheAbsenteismo = dados || [];
 
   const lista = document.getElementById("rankingAbsenteismoDataList");
   const btn = document.getElementById("toggleDatasBtn");
@@ -173,7 +121,7 @@ function atualizarAbsenteismoPorData(dados) {
 
   lista.innerHTML = "";
 
-  dados.forEach((d, index) => {
+  cacheAbsenteismo.forEach((d, index) => {
 
     const dataFormatada =
       new Date(d.data).toLocaleDateString("pt-BR");
@@ -189,8 +137,8 @@ function atualizarAbsenteismoPorData(dados) {
     `;
   });
 
-if (btn) {
-    if (dados.length > 5) {
+  if (btn) {
+    if (cacheAbsenteismo.length > 5) {
       btn.classList.remove("d-none");
       btn.innerText = "Ver mais";
     } else {
@@ -199,21 +147,88 @@ if (btn) {
   }
 }
 
+function abrirModalAbsenteismo(data) {
+
+  const registro =
+    cacheAbsenteismo.find(d => d.data === data);
+
+  if (!registro) return;
+
+  const titulo =
+    document.getElementById("modalLinhaTitulo");
+
+  const lista =
+    document.getElementById("modalLista");
+
+  const totalSpan =
+    document.getElementById("modalTotal");
+
+  const dataFormatada =
+    new Date(data).toLocaleDateString("pt-BR");
+
+  titulo.innerText =
+    `Faltas em ${dataFormatada}`;
+
+  lista.innerHTML = "";
+  let total = 0;
+
+  if (!registro.funcionarios ||
+      !registro.funcionarios.length) {
+
+    lista.innerHTML = `
+      <li class="list-group-item text-muted">
+        Nenhuma falta registrada
+      </li>
+    `;
+
+  } else {
+
+    registro.funcionarios.forEach(f => {
+
+      total += f.total;
+
+      lista.innerHTML += `
+        <li class="list-group-item d-flex justify-content-between">
+          <div>
+            <div class="fw-semibold">${f.nome}</div>
+            <small class="text-muted">
+              Matrícula: ${f.matricula}
+            </small>
+          </div>
+          <span class="badge bg-danger">
+            ${f.total}
+          </span>
+        </li>
+      `;
+    });
+  }
+
+  totalSpan.innerText = total;
+
+  new bootstrap.Modal(
+    document.getElementById("modalLinha")
+  ).show();
+}
+
+/* ======================================================
+   INIT
+   ====================================================== */
+
 document.addEventListener("DOMContentLoaded", function () {
 
   const form = document.getElementById("dashboardFilters");
   if (!form) return;
 
-  form.querySelectorAll("input, select").forEach(el => {
-    el.addEventListener("change", () => {
-      debounceDashboardUpdate(() => atualizarDashboard());
+  form.querySelectorAll("input, select")
+    .forEach(el => {
+      el.addEventListener("change", () => {
+        debounceDashboardUpdate(() => atualizarDashboard());
+      });
     });
-  });
 
   atualizarDashboard();
 });
 
-// Auto refresh controlado
 setInterval(() => {
   if (!dashboardIsLoading) {
     atualizarDashboard();
