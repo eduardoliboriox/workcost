@@ -271,23 +271,40 @@
 }
 
 /* =========================================
-   DOCUMENT MODE — MOBILE VIEWPORT FIX
+   DOCUMENT MODE — MOBILE PROPORTIONAL SCALE
    ========================================= */
+
 .document-mobile-wrapper {
   width: 100%;
 }
 
 @media (max-width: 768px) {
 
+  /*
+    Estratégia:
+    - Documento continua com largura real 1200px
+    - Aplicamos scale proporcional
+    - Permitimos zoom natural do navegador
+    - Sem scroll horizontal forçado
+  */
+
   .document-mobile-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
   .document-desktop-canvas {
-    min-width: 1200px; 
-    padding: 16px;
+
+    width: 1200px;   /* largura base real do documento */
+    transform-origin: top left;
+
+    /*
+      Escala automática baseada na largura da tela
+      100vw / 1200px
+    */
+    transform: scale(calc(100vw / 1200));
+
   }
+
 }
 
 /* =========================================
