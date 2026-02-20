@@ -1,6 +1,11 @@
 let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
+/* ======================================================
+   CACHE GLOBAL ABSENTEÍSMO 
+   ====================================================== */
+let cacheAbsenteismo = [];
+
 function showDashboardLoading() {
   const overlay = document.getElementById("dashboardLoadingOverlay");
   if (overlay) overlay.classList.remove("d-none");
@@ -32,9 +37,6 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    // ===============================
-    // PARALLEL REQUESTS (PROFISSIONAL)
-    // ===============================
     const [
       respResumo,
       respSolicitacoes,
@@ -60,7 +62,10 @@ async function atualizarDashboard() {
     const rankingClientes = await respClientes.json();
     const rankingTipos = await respTipos.json();
     const rankingAbsData = await respAbsData.json();
-    
+
+    /* 🔹 salva no cache para o modal */
+    cacheAbsenteismo = rankingAbsData || [];
+
     // ===============================
     // KPIs
     // ===============================
@@ -81,14 +86,11 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
-    // ===============================
-    // Atualizações visuais
-    // ===============================
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
-    atualizarAbsenteismoPorData(rankingAbsData);
+    atualizarAbsenteismoPorData(cacheAbsenteismo);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -98,71 +100,9 @@ async function atualizarDashboard() {
   }
 }
 
-function atualizarClientes(dados) {
-  const lista = document.getElementById("rankingClientesList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(c => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${c.cliente}
-        <span class="badge bg-warning">${c.percentual}%</span>
-      </li>
-    `;
-  });
-}
-
-function atualizarTabelaExtras(dados) {
-  const tbody = document.querySelector("#rankingExtrasBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  dados.forEach(f => {
-    tbody.innerHTML += `
-      <tr>
-        <td class="fw-semibold">${f.filial}</td>
-        <td><span class="badge bg-primary">${f.percentual}%</span></td>
-        <td class="text-warning fw-bold">R$ ${f.provisionado.toFixed(2)}</td>
-        <td class="text-success fw-bold">R$ ${f.realizado.toFixed(2)}</td>
-      </tr>
-    `;
-  });
-}
-
-function atualizarObjetivos(dados) {
-  const lista = document.getElementById("rankingObjetivosList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(o => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${o.status}
-        <span class="badge bg-danger">${o.percentual}%</span>
-      </li>
-    `;
-  });
-}
-
-function atualizarTipos(dados) {
-  const lista = document.getElementById("rankingTiposList");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach(t => {
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${t.tipo}
-        <span class="badge bg-info">${t.percentual}%</span>
-      </li>
-    `;
-  });
-}
+/* ======================================================
+   ABSENTEÍSMO POR DATA
+   ====================================================== */
 
 function atualizarAbsenteismoPorData(dados) {
 
@@ -189,7 +129,7 @@ function atualizarAbsenteismoPorData(dados) {
     `;
   });
 
-if (btn) {
+  if (btn) {
     if (dados.length > 5) {
       btn.classList.remove("d-none");
       btn.innerText = "Ver mais";
@@ -197,6 +137,68 @@ if (btn) {
       btn.classList.add("d-none");
     }
   }
+}
+
+function abrirModalAbsenteismo(data) {
+
+  const registro =
+    cacheAbsenteismo.find(d => d.data === data);
+
+  if (!registro) return;
+
+  const titulo =
+    document.getElementById("modalAbsDataTitulo");
+
+  const lista =
+    document.getElementById("modalAbsLista");
+
+  const totalSpan =
+    document.getElementById("modalAbsTotal");
+
+  const dataFormatada =
+    new Date(data).toLocaleDateString("pt-BR");
+
+  titulo.innerText =
+    `Absenteísmo — ${dataFormatada}`;
+
+  lista.innerHTML = "";
+  let total = 0;
+
+  if (!registro.funcionarios?.length) {
+
+    lista.innerHTML = `
+      <li class="list-group-item text-muted">
+        Nenhuma falta registrada
+      </li>
+    `;
+
+  } else {
+
+    registro.funcionarios.forEach(f => {
+
+      total += f.total;
+
+      lista.innerHTML += `
+        <li class="list-group-item d-flex justify-content-between">
+          <div>
+            <div class="fw-semibold">${f.nome}</div>
+            <small class="text-muted">
+              Matrícula: ${f.matricula}
+            </small>
+          </div>
+          <span class="badge bg-danger">
+            ${f.total}
+          </span>
+        </li>
+      `;
+    });
+  }
+
+  totalSpan.innerText = total;
+
+  new bootstrap.Modal(
+    document.getElementById("modalAbsenteismo")
+  ).show();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -213,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
   atualizarDashboard();
 });
 
-// Auto refresh controlado
 setInterval(() => {
   if (!dashboardIsLoading) {
     atualizarDashboard();
