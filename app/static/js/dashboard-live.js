@@ -2,9 +2,9 @@ let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
 /* ======================================================
-   CACHE GLOBAL ABSENTEÍSMO 
+   CACHE LOCAL ABSENTEÍSMO (ISOLADO)
    ====================================================== */
-let cacheAbsenteismo = [];
+let cacheAbsenteismoData = [];
 
 function showDashboardLoading() {
   const overlay = document.getElementById("dashboardLoadingOverlay");
@@ -37,15 +37,7 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    const [
-      respResumo,
-      respSolicitacoes,
-      respExtras,
-      respObjetivos,
-      respClientes,
-      respTipos,
-      respAbsData
-    ] = await Promise.all([
+    const responses = await Promise.all([
       fetch(`/api/dashboard/resumo?${params}`),
       fetch(`/api/dashboard/solicitacoes-resumo?${params}`),
       fetch(`/api/dashboard/extras?${params}`),
@@ -55,19 +47,21 @@ async function atualizarDashboard() {
       fetch(`/api/dashboard/absenteismo-por-data?${params}`)
     ]);
 
-    const dataResumo = await respResumo.json();
-    const dataSolicitacoes = await respSolicitacoes.json();
-    const rankingExtras = await respExtras.json();
-    const rankingObjetivos = await respObjetivos.json();
-    const rankingClientes = await respClientes.json();
-    const rankingTipos = await respTipos.json();
-    const rankingAbsData = await respAbsData.json();
+    const [
+      dataResumo,
+      dataSolicitacoes,
+      rankingExtras,
+      rankingObjetivos,
+      rankingClientes,
+      rankingTipos,
+      rankingAbsData
+    ] = await Promise.all(responses.map(r => r.json()));
 
-    /* 🔹 salva no cache para o modal */
-    cacheAbsenteismo = rankingAbsData || [];
+    /* 🔥 salva cache sem afetar nada */
+    cacheAbsenteismoData = rankingAbsData || [];
 
     // ===============================
-    // KPIs
+    // KPIs (INALTERADO)
     // ===============================
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
@@ -90,7 +84,7 @@ async function atualizarDashboard() {
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
-    atualizarAbsenteismoPorData(cacheAbsenteismo);
+    atualizarAbsenteismoPorData(rankingAbsData);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -101,7 +95,7 @@ async function atualizarDashboard() {
 }
 
 /* ======================================================
-   ABSENTEÍSMO POR DATA
+   ABSENTEÍSMO POR DATA (INALTERADO)
    ====================================================== */
 
 function atualizarAbsenteismoPorData(dados) {
@@ -139,10 +133,14 @@ function atualizarAbsenteismoPorData(dados) {
   }
 }
 
+/* ======================================================
+   🔥 MINI MODAL ABSENTEÍSMO (NOVO)
+   ====================================================== */
+
 function abrirModalAbsenteismo(data) {
 
   const registro =
-    cacheAbsenteismo.find(d => d.data === data);
+    cacheAbsenteismoData.find(d => d.data === data);
 
   if (!registro) return;
 
@@ -162,6 +160,7 @@ function abrirModalAbsenteismo(data) {
     `Absenteísmo — ${dataFormatada}`;
 
   lista.innerHTML = "";
+
   let total = 0;
 
   if (!registro.funcionarios?.length) {
