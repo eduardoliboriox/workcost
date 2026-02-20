@@ -2,9 +2,10 @@ let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
 /* ======================================================
-   CACHE GLOBAL ABSENTEÍSMO 
+   CACHE LOCAL — ABSENTEÍSMO POR DATA
+   (Não interfere em nada do restante)
    ====================================================== */
-let cacheAbsenteismo = [];
+let cacheAbsenteismoData = [];
 
 function showDashboardLoading() {
   const overlay = document.getElementById("dashboardLoadingOverlay");
@@ -63,11 +64,11 @@ async function atualizarDashboard() {
     const rankingTipos = await respTipos.json();
     const rankingAbsData = await respAbsData.json();
 
-    /* 🔹 salva no cache para o modal */
-    cacheAbsenteismo = rankingAbsData || [];
+    /* 🔥 Apenas armazenamos — não alteramos nada do fluxo */
+    cacheAbsenteismoData = rankingAbsData || [];
 
     // ===============================
-    // KPIs
+    // KPIs (INALTERADO)
     // ===============================
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
@@ -86,11 +87,14 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
+    // ===============================
+    // Atualizações visuais (INALTERADO)
+    // ===============================
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
-    atualizarAbsenteismoPorData(cacheAbsenteismo);
+    atualizarAbsenteismoPorData(rankingAbsData);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -139,10 +143,14 @@ function atualizarAbsenteismoPorData(dados) {
   }
 }
 
+/* ======================================================
+   🔥 FUNÇÃO DO MINI MODAL (NOVO)
+   ====================================================== */
+
 function abrirModalAbsenteismo(data) {
 
   const registro =
-    cacheAbsenteismo.find(d => d.data === data);
+    cacheAbsenteismoData.find(d => d.data === data);
 
   if (!registro) return;
 
