@@ -464,7 +464,7 @@ def listar_solicitacoes_para_ranking_tipo():
 def listar_faltas_por_data():
     """
     Retorna:
-    - data da solicitação
+    - data_execucao da solicitação
     - matricula
     - nome
     - total de faltas por funcionário no dia
@@ -474,7 +474,7 @@ def listar_faltas_por_data():
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT
-                    s.data,
+                    s.data_execucao AS data,
                     sf.matricula,
                     sf.nome,
                     COUNT(*) AS total_faltas
@@ -485,7 +485,8 @@ def listar_faltas_por_data():
                     ON sf.solicitacao_id = s.id
                    AND ltrim(sf.matricula, '0') = ltrim(f.matricula, '0')
                 WHERE f.compareceu = FALSE
-                GROUP BY s.data, sf.matricula, sf.nome
-                ORDER BY s.data DESC
+                  AND s.data_execucao IS NOT NULL
+                GROUP BY s.data_execucao, sf.matricula, sf.nome
+                ORDER BY s.data_execucao DESC
             """)
             return cur.fetchall()
