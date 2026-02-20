@@ -336,32 +336,27 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalAbsenteismoData" tabindex="-1">
+<!-- Modal Absenteísmo por Data -->
+<div class="modal fade" id="modalAbsenteismo" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">
 
       <div class="modal-header">
-        <h6 class="modal-title" id="modalAbsenteismoTitulo">
-          Detalhes do Absenteísmo
-        </h6>
-        <button type="button" class="btn-close"
-                data-bs-dismiss="modal"></button>
+        <h6 class="modal-title" id="modalAbsDataTitulo"></h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body p-2">
-        <ul class="list-group list-group-flush"
-            id="modalAbsenteismoLista">
-        </ul>
+        <ul class="list-group list-group-flush" id="modalAbsLista"></ul>
 
         <div class="mt-2 text-end fw-bold">
-          Total no dia:
-          <span id="modalAbsenteismoTotal">0</span>
+          Total de faltas: <span id="modalAbsTotal">0</span>
         </div>
       </div>
 
     </div>
   </div>
-</div>  
+</div>
 
 <script>
 function toggleCargos() {
@@ -502,86 +497,7 @@ async function abrirModalFerias(linha) {
   ).show();
 }
 </script>
-
-<script>
-let cacheAbsenteismo = [];
-
-function atualizarAbsenteismoPorData(dados) {
-
-  cacheAbsenteismo = dados; // 🔥 guarda dados para o modal
-
-  const lista = document.getElementById("rankingAbsenteismoDataList");
-  const btn = document.getElementById("toggleDatasBtn");
-
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  dados.forEach((d, index) => {
-
-    const dataFormatada =
-      new Date(d.data).toLocaleDateString("pt-BR");
-
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between
-          ${index >= 5 ? 'd-none extra-data' : ''}"
-          style="cursor:pointer"
-          onclick="abrirModalAbsenteismo('${d.data}')">
-        <span>${dataFormatada}</span>
-        <span class="badge bg-danger">${d.qtd}</span>
-      </li>
-    `;
-  });
-
-  if (btn) {
-    if (dados.length > 5) {
-      btn.classList.remove("d-none");
-      btn.innerText = "Ver mais";
-    } else {
-      btn.classList.add("d-none");
-    }
-  }
-}
-
-function abrirModalAbsenteismo(data) {
-
-  const registro = cacheAbsenteismo.find(d => d.data === data);
-  if (!registro) return;
-
-  const titulo = document.getElementById("modalAbsenteismoTitulo");
-  const lista = document.getElementById("modalAbsenteismoLista");
-  const totalSpan = document.getElementById("modalAbsenteismoTotal");
-
-  const dataFormatada =
-    new Date(data).toLocaleDateString("pt-BR");
-
-  titulo.innerText = `Faltas em ${dataFormatada}`;
-
-  lista.innerHTML = "";
-  let total = 0;
-
-  registro.funcionarios.forEach(f => {
-    total += f.total;
-
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        <div>
-          <div class="fw-semibold">${f.nome}</div>
-          <small class="text-muted">Matrícula: ${f.matricula}</small>
-        </div>
-        <span class="badge bg-danger">${f.total}</span>
-      </li>
-    `;
-  });
-
-  totalSpan.innerText = total;
-
-  new bootstrap.Modal(
-    document.getElementById("modalAbsenteismoData")
-  ).show();
-}
-</script>
-
+  
 <script>
 const btnHoje = document.getElementById("btnHoje");
 if (btnHoje) {
@@ -608,8 +524,6 @@ function toggleDatas() {
   btn.textContent = isHidden ? "Recolher" : "Ver mais";
 }
 </script>
-
-  
 
 <script src="{{ url_for('static', filename='js/dashboard-live.js') }}"></script>
 {% endblock %}
