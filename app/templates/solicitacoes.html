@@ -100,6 +100,7 @@
   <input type="hidden" name="funcionarios_json" id="funcionariosJson">
 
   {% set setores_selecionados = solicitacao.setores.split(',') if modo == 'view' else [] %}
+  {% set unidades_selecionadas = solicitacao.unidade.split(',') if modo == 'view' and solicitacao.unidade else [] %}
   
   <!-- =======================
        DADOS GERAIS
@@ -155,7 +156,7 @@
         <select name="unidade" class="form-select" {% if modo == 'view' %}disabled{% endif %}>
           {% for c in ['VAC','VTE','VTT'] %}
             <option value="{{ c }}"
-              {% if modo == 'view' and solicitacao.cliente == c %}selected{% endif %}>
+              {% if modo == 'view' and c in unidades_selecionadas %}selected{% endif %}>
               {{ c }}
             </option>
           {% endfor %}
