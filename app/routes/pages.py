@@ -295,7 +295,7 @@ def manifest():
 def offline():
     return render_template("offline.html")
 
-@bp.route("/manifest.webmanifest")
+@bp.route("/manifest.webmanifest", endpoint="pwa_manifest")
 def manifest():
     from flask import current_app, send_from_directory, make_response
     import os
