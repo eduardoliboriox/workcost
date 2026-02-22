@@ -291,7 +291,7 @@ def manifest():
 # PWA (root scope)
 # ==============================
 
-@bp.route("/offline")
+@bp.route("/offline", endpoint="offline_page")
 def offline():
     return render_template("offline.html")
 
