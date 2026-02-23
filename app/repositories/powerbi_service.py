@@ -4,7 +4,7 @@ from datetime import date
 from typing import Any
 
 
-def _normalize_filtros(raw: dict | None) -> dict[str, Any]:
+def _normalize_filtros(raw: dict) -> dict:
     """
     Normaliza filtros vindos de request.args para evitar None inesperado.
     Mantém compatibilidade com o que o template/JS já espera.
@@ -16,7 +16,6 @@ def _normalize_filtros(raw: dict | None) -> dict[str, Any]:
     filtros["data_inicial"] = filtros.get("data_inicial") or hoje
     filtros["data_final"] = filtros.get("data_final") or hoje
 
-    # estes podem ser vazios mesmo
     filtros["turno"] = filtros.get("turno") or ""
     filtros["filial"] = filtros.get("filial") or ""
     filtros["setor"] = filtros.get("setor") or ""
@@ -25,26 +24,20 @@ def _normalize_filtros(raw: dict | None) -> dict[str, Any]:
     return filtros
 
 
-def resumo_powerbi_solicitacoes(filtros: dict | None) -> dict[str, Any]:
+def resumo_powerbi_solicitacoes(filtros: dict) -> dict[str, Any]:
     """
-    PowerBI (Gestores) — foco no sistema de solicitações:
-    - KPIs de solicitações (abertas/realizadas/total gasto)
-    - KPIs complementares (extras provisionado/realizado, absenteismo, linhas ativas)
-    - Rankings (clientes, extras por unidade, tipos)
+    PowerBI (gestores) — foco em solicitações, extras, gastos e faltas.
 
-    Retorno padronizado:
+    Retorna:
       {
         "filtros": {...},
         "kpis": {...},
-        "rankings": {
-          "clientes": [...],
-          "extras": [...],
-          "tipos": [...]
-        }
+        "rankings": { "clientes": [...], "extras": [...], "tipos": [...] }
       }
     """
     filtros = _normalize_filtros(filtros)
 
+    # services já existentes (sem HC planejado)
     from app.services.solicitacoes_service import (
         ranking_extras_dashboard,
         ranking_solicitacoes_por_cliente,
@@ -55,6 +48,11 @@ def resumo_powerbi_solicitacoes(filtros: dict | None) -> dict[str, Any]:
 
     sol = resumo_solicitacoes_dashboard(filtros)
     extras = ranking_extras_dashboard(filtros)
+    abs_linhas = kpis_dashboard_abs_linhas(filtros)
+
+    clientes = ranking_solicitacoes_por_cliente(filtros)
+    tipos = ranking_solicitacoes_por_tipo(filtros)
+
     extras_provisionado = round(
         sum(float(x.get("provisionado") or 0) for x in (extras or [])),
         2,
@@ -63,11 +61,6 @@ def resumo_powerbi_solicitacoes(filtros: dict | None) -> dict[str, Any]:
         sum(float(x.get("realizado") or 0) for x in (extras or [])),
         2,
     )
-
-    abs_linhas = kpis_dashboard_abs_linhas(filtros)
-
-    clientes = ranking_solicitacoes_por_cliente(filtros)
-    tipos = ranking_solicitacoes_por_tipo(filtros)
 
     kpis = {
         "solicitacoes_abertas": int(sol.get("abertas") or 0),
