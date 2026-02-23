@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 from datetime import date
 from flask_login import login_required, current_user
-from app.repositories.powerbi_service import resumo_powerbi_solicitacoes
+from app.services.powerbi_service import resumo_powerbi_solicitacoes
 from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from app.services.solicitacoes_service import (
     obter_solicitacoes_abertas,
@@ -103,10 +103,7 @@ def powerbi():
         "linha": request.args.get("linha"),
     }
 
-    from app.services.powerbi_service import resumo_powerbi_solicitacoes
-
     data = resumo_powerbi_solicitacoes(filtros)
-    filtros = data["filtros"]
 
     return render_template(
         "powerbi.html",
