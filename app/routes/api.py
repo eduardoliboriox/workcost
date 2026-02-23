@@ -10,6 +10,7 @@ from app.services.pcp_service import ranking_linhas_ferias
 from app.services.relatorios_service import gerar_relatorio
 from app.services.solicitacoes_service import criar_solicitacao
 from app.services.employees_service import buscar_funcionario
+from app.repositories.powerbi_service import resumo_powerbi_solicitacoes
 from app.auth.service import confirm_employee_extra
 
 bp = Blueprint("api", __name__)
