@@ -493,11 +493,6 @@ def listar_faltas_por_data():
 # =========================================================
 # DASHBOARD KPIs (Absenteísmo Geral / Linhas Ativas)
 # =========================================================
-
-from psycopg.rows import dict_row
-from app.extensions import get_db
-
-
 def contar_absenteismo_geral(
     data_inicial: str | None = None,
     data_final: str | None = None,
