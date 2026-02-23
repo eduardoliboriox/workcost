@@ -2,22 +2,26 @@ import json
 from app.repositories.solicitacoes_repository import (
     inserir_solicitacao,
     listar_solicitacoes_abertas,
-    listar_aprovacoes_por_solicitacao, 
+    listar_aprovacoes_por_solicitacao,
     buscar_solicitacao_por_id,
     listar_funcionarios_por_solicitacao,
     listar_aprovacoes_por_solicitacao_id,
-    registrar_aprovacao, 
+    registrar_aprovacao,
     registrar_assinatura_funcionario,
-    listar_solicitacoes_abertas_por_matricula, 
+    listar_solicitacoes_abertas_por_matricula,
     atualizar_recebido_em,
     atualizar_lancado_em,
-    deletar_solicitacao_por_id, 
+    deletar_solicitacao_por_id,
     listar_solicitacoes_com_status,
     listar_frequencia_por_solicitacao,
     salvar_frequencia,
     contar_presencas,
     contar_absenteismo_geral,
-    contar_linhas_ativas
+    contar_linhas_ativas, 
+    listar_objetivos_dashboard,
+    listar_solicitacoes_para_ranking_cliente,
+    listar_solicitacoes_para_ranking_tipo,
+    listar_faltas_por_data
 )
 from flask_login import current_user
 from datetime import date, timedelta
@@ -35,7 +39,7 @@ def criar_solicitacao(form):
             "data": form["data"],
             "data_execucao": form.get("data_execucao"),
             "turnos": ",".join(form.getlist("turnos")),
-            "unidade": form.get("unidade"),   
+            "unidade": form.get("unidade"),
             "setores": ",".join(form.getlist("setores")),
             "cliente": ",".join(form.getlist("clientes")),
             "descricao": form["descricao"],
@@ -141,7 +145,7 @@ def confirmar_presenca_funcionario(
         f for f in funcionarios
         if f["matricula"].lstrip("0") == matricula.lstrip("0")
     )
-    
+
     return {
         "success": True,
         "signed_by": funcionario["signed_by"],
@@ -212,6 +216,7 @@ def obter_minhas_extras(matricula: str):
 
     return resultado
 
+
 def excluir_solicitacao(solicitacao_id: int):
     """
     Exclusão definitiva da solicitação.
@@ -258,7 +263,7 @@ def obter_solicitacoes_fechadas():
         ):
 
             efetivo_real = contar_presencas(r["id"])
-            
+
             resultado.append({
                 "id": r["id"],
                 "data": r["data"],
@@ -271,6 +276,7 @@ def obter_solicitacoes_fechadas():
             })
 
     return resultado
+
 
 def obter_frequencia(solicitacao_id: int):
     funcionarios = listar_funcionarios_por_solicitacao(solicitacao_id)
@@ -424,7 +430,7 @@ def ranking_extras_dashboard(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
-    
+
 
 def objetivos_status_dashboard(filtros: dict):
 
@@ -499,7 +505,7 @@ def objetivos_status_dashboard(filtros: dict):
             "percentual": round((contagem["sim"] / total) * 100, 2)
         }
     ]
-    
+
 
 def ranking_solicitacoes_por_cliente(filtros: dict):
 
@@ -563,7 +569,7 @@ def ranking_solicitacoes_por_cliente(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
-    
+
 
 def ranking_solicitacoes_por_tipo(filtros: dict):
 
@@ -627,6 +633,7 @@ def ranking_solicitacoes_por_tipo(filtros: dict):
     resultado.sort(key=lambda x: x["percentual"], reverse=True)
 
     return resultado
+
 
 def resumo_solicitacoes_dashboard(filtros: dict):
     """
@@ -700,7 +707,8 @@ def resumo_solicitacoes_dashboard(filtros: dict):
         "abertas": total_abertas,
         "fechadas": total_fechadas,
         "total_gasto": round(total_gasto, 2)
-    }                                  
+    }
+
 
 def ranking_absenteismo_por_data(filtros: dict):
 
@@ -753,19 +761,69 @@ def ranking_absenteismo_por_data(filtros: dict):
     resultado.sort(key=lambda x: x["data"], reverse=True)
 
     return resultado
-    
+
+
+def _clientes_ativos_kpi(filtros: dict) -> int:
+    """
+    KPI: Clientes Ativos
+    - Não usa "linhas ativas" (não existe informação confiável por linha).
+    - Conta clientes únicos dentro do recorte de filtros globais.
+    - Como 'cliente' pode vir multi-valor (CSV), splitamos e deduplicamos via set.
+    """
+
+    from datetime import date
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_para_ranking_cliente()
+
+    ativos = set()
+
+    for r in rows:
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        clientes = [c.strip() for c in (r.get("cliente") or "").split(",")]
+        for c in clientes:
+            if c:
+                ativos.add(c)
+
+    return len(ativos)
+
 
 def kpis_dashboard_abs_linhas(filtros: dict):
     """
-    KPIs do dashboard (somente os 2 campos que faltavam):
+    KPIs do dashboard:
     - absenteismo (%): baseado na solicitacao_frequencia
-    - linhas (int): proxy operacional = total de colaboradores em extras futuras
+    - linhas (int): **agora representa CLIENTES ATIVOS** (por compatibilidade de chave/JS/template)
 
     Respeita filtros globais:
     data_inicial, data_final, turno, filial
     """
-
-    from datetime import date
 
     data_inicial = filtros.get("data_inicial") or None
     data_final = filtros.get("data_final") or None
@@ -785,15 +843,114 @@ def kpis_dashboard_abs_linhas(filtros: dict):
     else:
         abs_percent = round((total_faltas / total_registros) * 100, 1)
 
-    linhas_ativas = contar_linhas_ativas(
-        data_inicial=data_inicial,
-        data_final=data_final,
-        turno=turno,
-        filial=filial,
-        hoje=date.today()
-    )
+    clientes_ativos = _clientes_ativos_kpi(filtros)
 
     return {
         "absenteismo": abs_percent,
-        "linhas": linhas_ativas
+        "linhas": clientes_ativos
     }
+
+def ranking_gastos_provisao_dashboard(filtros: dict):
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import listar_solicitacoes_com_status
+    from app.services.relatorios_service import gerar_provisao_gastos_extra
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_com_status()
+
+    totais = {}
+
+    def _add(tipo: str, valor: float):
+        if not tipo:
+            return
+        totais[tipo] = float(totais.get(tipo, 0.0)) + float(valor or 0.0)
+
+    def _normalizar_gastos(payload):
+
+        if payload is None:
+            return []
+
+        if isinstance(payload, list):
+            return payload
+
+        if isinstance(payload, dict):
+            if isinstance(payload.get("gastos"), list):
+                return payload["gastos"]
+
+            itens = []
+            for k, v in payload.items():
+                if isinstance(v, (int, float)) and isinstance(k, str):
+                    itens.append({"tipo": k, "valor": v})
+            return itens
+
+        return []
+
+    for r in rows:
+        solicitacao_id = r.get("id")
+        data_execucao = r.get("data_execucao")
+        if not solicitacao_id or not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        gastos_payload = gerar_provisao_gastos_extra(solicitacao_id)
+        gastos = _normalizar_gastos(gastos_payload)
+
+        for item in gastos:
+            if not isinstance(item, dict):
+                continue
+
+            tipo = (
+                item.get("tipo")
+                or item.get("nome")
+                or item.get("descricao")
+                or ""
+            )
+            valor = (
+                item.get("valor")
+                or item.get("total")
+                or item.get("valor_total")
+                or 0
+            )
+
+            try:
+                _add(str(tipo).strip(), float(valor or 0))
+            except Exception:
+                continue
+
+    total_geral = sum(totais.values()) or 0.0
+
+    resultado = []
+    for tipo, total in totais.items():
+        percentual = 0.0 if total_geral <= 0 else round((total / total_geral) * 100, 1)
+        resultado.append({
+            "tipo": tipo,
+            "percentual": percentual,
+            "total": round(float(total), 2)
+        })
+
+    resultado.sort(key=lambda x: x["total"], reverse=True)
+    return resultado
