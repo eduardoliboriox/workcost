@@ -10,7 +10,7 @@ from app.services.pcp_service import ranking_linhas_ferias
 from app.services.relatorios_service import gerar_relatorio
 from app.services.solicitacoes_service import criar_solicitacao
 from app.services.employees_service import buscar_funcionario
-from app.repositories.powerbi_service import resumo_powerbi_solicitacoes
+from app.services.powerbi_service import resumo_powerbi_solicitacoes
 from app.auth.service import confirm_employee_extra
 
 bp = Blueprint("api", __name__)
@@ -128,8 +128,6 @@ def api_powerbi_resumo():
         "setor": request.args.get("setor"),
         "linha": request.args.get("linha"),
     }
-
-    from app.services.powerbi_service import resumo_powerbi_solicitacoes
 
     data = resumo_powerbi_solicitacoes(filtros)
 
