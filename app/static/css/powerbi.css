@@ -213,3 +213,19 @@
 #modalLinhaPowerBI .list-group-item {
     color: #212529 !important; 
 }
+
+/* ===============================
+   POWER BI — EXECUTIVE ADDITIONS
+   =============================== */
+
+#exec-summary-text strong {
+  font-weight: 700;
+}
+
+#topLinhasList .list-group-item:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.powerbi-wrapper .progress {
+  background-color: rgba(0,0,0,0.08);
+}
