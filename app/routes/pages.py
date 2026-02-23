@@ -272,25 +272,6 @@ def solicitacao_frequencia(solicitacao_id):
 # PWA (root scope)
 # ==============================
 
-@bp.route("/offline")
-def offline():
-    return render_template("offline.html")
-
-@bp.route("/manifest.webmanifest")
-def manifest():
-    from flask import current_app, send_from_directory, make_response
-    import os
-
-    static_dir = os.path.join(current_app.root_path, "static")
-    resp = make_response(send_from_directory(static_dir, "manifest.webmanifest"))
-    resp.headers["Content-Type"] = "application/manifest+json; charset=utf-8"
-    resp.headers["Cache-Control"] = "public, max-age=3600"
-    return resp
-
-# ==============================
-# PWA (root scope)
-# ==============================
-
 @bp.route("/offline", endpoint="offline_page")
 def offline():
     return render_template("offline.html")
