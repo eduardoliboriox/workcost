@@ -27,59 +27,76 @@
 {% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4">
 
-  <h5 class="fw-bold mb-3">
-    Solicitação #{{ solicitacao.id }}
-  </h5>
+<!-- Reaproveita o mesmo "document-fit" já usado em solicitacoes.html -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/provisao.css') }}">
 
-  <div class="mb-3">
-    <strong>Data:</strong>
-    {{ solicitacao.data.strftime("%d/%m/%Y") }}
+<div class="document-mobile-wrapper">
+  <div class="document-desktop-canvas provisao-canvas">
+
+    <div class="card shadow-sm p-4">
+
+      <h5 class="fw-bold mb-3">
+        Solicitação #{{ solicitacao.id }}
+      </h5>
+
+      <div class="mb-3">
+        <strong>Data:</strong>
+        {{ solicitacao.data.strftime("%d/%m/%Y") }}
+      </div>
+
+      <div class="mb-4">
+        <strong>Turno:</strong>
+        {{ solicitacao.turnos }}
+      </div>
+
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Matrícula</th>
+            <th>Nome</th>
+            <th>Horas</th>
+            <th>Noturnas</th>
+            <th>Refeição</th>
+            <th>Transporte</th>
+            <th>Adic. Noturno</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for f in funcionarios %}
+          <tr>
+            <td>{{ f.matricula }}</td>
+            <td>{{ f.nome }}</td>
+            <td>{{ f.horas_total }}</td>
+            <td>{{ f.horas_noturnas }}</td>
+            <td>R$ {{ "%.2f"|format(f.custo_refeicao) }}</td>
+            <td>R$ {{ "%.2f"|format(f.custo_transporte) }}</td>
+            <td>R$ {{ "%.2f"|format(f.adicional_noturno) }}</td>
+            <td class="fw-bold">
+              R$ {{ "%.2f"|format(f.total) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="text-end mt-4">
+        <h4 class="fw-bold">
+          Total Geral: R$ {{ "%.2f"|format(total_geral) }}
+        </h4>
+      </div>
+
+    </div>
+
+    {{ super() }}
+
   </div>
-
-  <div class="mb-4">
-    <strong>Turno:</strong>
-    {{ solicitacao.turnos }}
-  </div>
-
-  <table class="table table-bordered text-center align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>Matrícula</th>
-        <th>Nome</th>
-        <th>Horas</th>
-        <th>Noturnas</th>
-        <th>Refeição</th>
-        <th>Transporte</th>
-        <th>Adic. Noturno</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {% for f in funcionarios %}
-      <tr>
-        <td>{{ f.matricula }}</td>
-        <td>{{ f.nome }}</td>
-        <td>{{ f.horas_total }}</td>
-        <td>{{ f.horas_noturnas }}</td>
-        <td>R$ {{ "%.2f"|format(f.custo_refeicao) }}</td>
-        <td>R$ {{ "%.2f"|format(f.custo_transporte) }}</td>
-        <td>R$ {{ "%.2f"|format(f.adicional_noturno) }}</td>
-        <td class="fw-bold">
-          R$ {{ "%.2f"|format(f.total) }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <div class="text-end mt-4">
-    <h4 class="fw-bold">
-      Total Geral: R$ {{ "%.2f"|format(total_geral) }}
-    </h4>
-  </div>
-
 </div>
+
+<!-- Aplica o scale automático no mobile (mesma lógica do arquivo da solicitação) -->
+<script src="{{ url_for('static', filename='js/document-fit.js') }}"></script>
+
 {% endblock %}
