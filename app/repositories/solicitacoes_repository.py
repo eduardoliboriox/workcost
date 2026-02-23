@@ -489,3 +489,121 @@ def listar_faltas_por_data():
                 ORDER BY s.data DESC
             """)
             return cur.fetchall()
+
+# =========================================================
+# DASHBOARD KPIs (Absenteísmo Geral / Linhas Ativas)
+# =========================================================
+
+def contar_absenteismo_geral(
+    data_inicial: date | None,
+    data_final: date | None,
+    turno: str | None,
+    filial: str | None
+):
+    """
+    Absenteísmo Geral:
+    - baseado na tabela solicitacao_frequencia
+    - período usa data_execucao da solicitacao
+    - filtros globais: data_inicial, data_final, turno, filial
+    Retorna: (total_registros, total_faltas)
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    COUNT(*) AS total_registros,
+                    COUNT(*) FILTER (WHERE f.compareceu = FALSE) AS total_faltas
+                FROM solicitacao_frequencia f
+                JOIN solicitacoes s
+                  ON s.id = f.solicitacao_id
+                WHERE s.data_execucao IS NOT NULL
+                  AND (%s::date IS NULL OR s.data_execucao >= %s::date)
+                  AND (%s::date IS NULL OR s.data_execucao <= %s::date)
+                  AND (
+                        %s IS NULL OR %s = ''
+                        OR %s = ANY (
+                            regexp_split_to_array(
+                                replace(COALESCE(s.unidade,''), ' ', ''),
+                                ','
+                            )
+                        )
+                  )
+                  AND (
+                        %s IS NULL OR %s = ''
+                        OR %s = ANY (
+                            regexp_split_to_array(
+                                replace(COALESCE(s.turnos,''), ' ', ''),
+                                ','
+                            )
+                        )
+                  )
+            """, (
+                data_inicial, data_inicial,
+                data_final, data_final,
+                filial, filial, filial,
+                turno, turno, turno
+            ))
+
+            row = cur.fetchone() or {}
+            return (
+                int(row.get("total_registros") or 0),
+                int(row.get("total_faltas") or 0),
+            )
+
+
+def contar_linhas_ativas(
+    data_inicial: date | None,
+    data_final: date | None,
+    turno: str | None,
+    filial: str | None,
+    hoje: date
+):
+    """
+    Linhas Ativas (proxy):
+    - total de colaboradores escalados em extras FUTURAS
+      (s.data_execucao >= hoje)
+    - respeita filtros globais (data_inicial, data_final, turno, filial)
+    Retorna: int
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    COUNT(sf.id) AS total
+                FROM solicitacao_funcionarios sf
+                JOIN solicitacoes s
+                  ON s.id = sf.solicitacao_id
+                WHERE s.data_execucao IS NOT NULL
+                  AND s.data_execucao >= %s::date
+                  AND (%s::date IS NULL OR s.data_execucao >= %s::date)
+                  AND (%s::date IS NULL OR s.data_execucao <= %s::date)
+                  AND (
+                        %s IS NULL OR %s = ''
+                        OR %s = ANY (
+                            regexp_split_to_array(
+                                replace(COALESCE(s.unidade,''), ' ', ''),
+                                ','
+                            )
+                        )
+                  )
+                  AND (
+                        %s IS NULL OR %s = ''
+                        OR %s = ANY (
+                            regexp_split_to_array(
+                                replace(COALESCE(s.turnos,''), ' ', ''),
+                                ','
+                            )
+                        )
+                  )
+            """, (
+                hoje,
+                data_inicial, data_inicial,
+                data_final, data_final,
+                filial, filial, filial,
+                turno, turno, turno
+            ))
+
+            row = cur.fetchone() or {}
+            return int(row.get("total") or 0)
