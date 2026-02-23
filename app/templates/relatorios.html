@@ -3,36 +3,35 @@
 
 {% block page_title %}
 <div class="d-flex align-items-center w-100">
-  <!-- Breadcrumb / título -->
   <span class="me-auto">
-    Venttos - WorkCost &rarr; Relatórios
+    WorkCost · Relatórios de Gestão
   </span>
 
-  <!-- Botões de navegação -->
-  <div class="btn-group gap-2" role="group" aria-label="Dashboard Actions">
+  <div class="ms-auto d-flex gap-2">
     <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar
     </a>
+
     <a href="{{ url_for('pages.relatorios') }}" class="btn btn-outline-info active" aria-current="page">
       <i class="bi bi-file-earmark-text"></i> Relatórios
     </a>
+
     <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-primary">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
-    
-     <button class="btn btn-outline-purple"
+
+    <button class="btn btn-outline-purple"
             type="button"
             onclick="toggleFullscreen()">
       <i class="bi bi-arrows-fullscreen"></i>
     </button>
-    
+
     {% if current_user.is_authenticated %}
     <a href="{{ url_for('auth.logout') }}"
        class="btn btn-outline-danger">
       <i class="bi bi-box-arrow-right"></i> Sair
     </a>
     {% endif %}
-    
   </div>
 </div>
 {% endblock %}
@@ -40,40 +39,301 @@
 {% block content %}
 <div class="container-fluid">
 
-  <!-- Filtros -->
-  <form id="formRelatorio" class="row g-3 mb-4">
-    <div class="col-md-4">
-      <label class="form-label">Setor</label>
-      <select class="form-select" name="setor">
-        <option value="">Todos</option>
-        <option>IM</option>
-        <option>PA</option>
-        <option>SMT</option>
-        <option>PTH</option>
-        <option>VTT</option>
-      </select>
+  <!-- ===============================
+       FILTROS (GESTÃO)
+       =============================== -->
+  <div class="card shadow-sm p-3 mb-3">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="fw-bold">
+        <i class="bi bi-funnel"></i> Filtros do Relatório
+      </div>
+      <div class="text-muted small">
+        Dica: use "Período" para preencher datas automaticamente.
+      </div>
     </div>
 
-    <div class="col-md-4">
-      <label class="form-label">Período</label>
-      <select class="form-select" name="tipo">
-        <option value="SEMANAL">Semanal</option>
-        <option value="MENSAL" selected>Mensal</option>
-        <option value="ANUAL">Anual</option>
-      </select>
+    <form id="formRelatorio" class="row g-3 mt-1">
+
+      <div class="col-12 col-md-3">
+        <label class="form-label fw-bold">Período</label>
+        <select class="form-select" name="periodo" id="periodoSelect">
+          <option value="SEMANAL">Semanal (últimos 7 dias)</option>
+          <option value="MENSAL" selected>Mensal (mês atual)</option>
+          <option value="ANUAL">Anual (ano atual)</option>
+          <option value="CUSTOM">Personalizado</option>
+        </select>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <label class="form-label fw-bold">Data Inicial</label>
+        <input type="date" class="form-control" name="data_inicial" id="dataInicial">
+      </div>
+
+      <div class="col-6 col-md-3">
+        <label class="form-label fw-bold">Data Final</label>
+        <input type="date" class="form-control" name="data_final" id="dataFinal">
+      </div>
+
+      <div class="col-6 col-md-3">
+        <label class="form-label fw-bold">Turno</label>
+        <select class="form-select" name="turno" id="turnoSelect">
+          <option value="">Todos</option>
+          <option value="1T">1º Turno</option>
+          <option value="2T">2º Turno</option>
+          <option value="3T">3º Turno</option>
+        </select>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <label class="form-label fw-bold">Unidade</label>
+        <select class="form-select" name="filial" id="filialSelect">
+          <option value="">Todas</option>
+          <option value="VAC">VAC</option>
+          <option value="VTE">VTE</option>
+          <option value="VTT">VTT</option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-6 d-flex align-items-end gap-2">
+        <button class="btn btn-primary flex-grow-1" type="submit" id="btnGerarRelatorio">
+          <i class="bi bi-file-earmark-text"></i> Gerar Relatório
+        </button>
+
+        <button class="btn btn-outline-secondary" type="button" id="btnLimparFiltros">
+          <i class="bi bi-eraser"></i>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ===============================
+       LOADING
+       =============================== -->
+  <div id="relatorioLoading" class="d-none">
+    <div class="card shadow-sm p-3">
+      <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border" role="status"></div>
+        <div class="fw-bold">Gerando relatório...</div>
+      </div>
+      <div class="text-muted small mt-1">
+        Carregando KPIs, ranking financeiro e absenteísmo.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================
+       RESULTADO
+       =============================== -->
+  <div id="resultadoRelatorio" class="d-none">
+
+    <!-- KPIs principais -->
+    <div class="row g-3 mb-3 text-center">
+
+      <div class="col-12 col-md-3">
+        <div class="card shadow-sm p-3">
+          <small class="text-muted">Absenteísmo Geral</small>
+          <h3 class="mb-0" id="kpiAbs">0%</h3>
+          <div class="small text-muted mt-1">
+            baseado em frequência registrada
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="card shadow-sm p-3">
+          <small class="text-muted">Solicitações (Abertas)</small>
+          <h3 class="mb-0" id="kpiAbertas">0</h3>
+          <div class="small text-muted mt-1">
+            execuções futuras no período
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="card shadow-sm p-3">
+          <small class="text-muted">Solicitações (Realizadas)</small>
+          <h3 class="mb-0" id="kpiFechadas">0</h3>
+          <div class="small text-muted mt-1">
+            execuções até hoje
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="card shadow-sm p-3">
+          <small class="text-muted">Total Gasto (Realizado)</small>
+          <h3 class="mb-0 text-success" id="kpiGasto">R$ 0,00</h3>
+          <div class="small text-muted mt-1" id="kpiGastoInfo">
+            custo médio: R$ 0,00 / solicitação
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="col-md-4 d-flex align-items-end">
-      <button class="btn btn-primary w-100">
-        <i class="bi bi-file-earmark-text"></i>
-        Gerar Relatório
-      </button>
+    <!-- Financeiro e Rankings -->
+    <div class="row g-3 mb-3">
+
+      <!-- Resumo Financeiro -->
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="fw-bold mb-3">
+            <i class="bi bi-cash-coin"></i> Resumo Financeiro (Extras)
+          </h6>
+
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+            <div class="text-muted">Provisionado (futuras)</div>
+            <div class="fw-bold text-warning" id="financeProvisionado">R$ 0,00</div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+            <div class="text-muted">Realizado (passadas)</div>
+            <div class="fw-bold text-success" id="financeRealizado">R$ 0,00</div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">Participação (por unidade)</div>
+            <div class="fw-bold" id="financeNota">Ranking ao lado</div>
+          </div>
+
+          <div class="alert alert-light border mt-3 mb-0 small">
+            Este resumo usa as extras do período filtrado e separa valores
+            entre <strong>futuras</strong> (provisionadas) e <strong>passadas</strong> (realizadas).
+          </div>
+        </div>
+      </div>
+
+      <!-- Ranking por Unidade -->
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="fw-bold text-primary mb-3">
+            <i class="bi bi-geo-alt"></i> Ranking por Unidade
+          </h6>
+
+          <div class="table-responsive">
+            <table class="table table-sm align-middle text-center mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Unidade</th>
+                  <th>% Extras</th>
+                  <th>Provisionado</th>
+                  <th>Realizado</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaUnidades">
+                <tr>
+                  <td colspan="4" class="text-muted">Sem dados</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ranking por Cliente -->
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="fw-bold text-warning mb-3">
+            <i class="bi bi-building"></i> Ranking por Cliente
+          </h6>
+
+          <ul class="list-group list-group-flush" id="listaClientes">
+            <li class="list-group-item text-muted">Sem dados</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
-  </form>
 
-  <!-- Resultado -->
-  <div id="resultadoRelatorio"></div>
+    <!-- Absenteísmo -->
+    <div class="row g-3 mb-3">
 
+      <!-- Top datas com faltas -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm p-3 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-danger mb-0">
+              <i class="bi bi-exclamation-triangle"></i> Faltas — Top datas
+            </h6>
+
+            <button class="btn btn-sm btn-outline-danger d-none"
+                    id="btnVerMaisDatas"
+                    type="button">
+              Ver mais
+            </button>
+          </div>
+
+          <ul class="list-group list-group-flush" id="listaFaltasPorData">
+            <li class="list-group-item text-muted">Sem dados</li>
+          </ul>
+
+          <div class="small text-muted mt-2">
+            Clique em uma data para ver detalhes (matrícula / nome / quantidade).
+          </div>
+        </div>
+      </div>
+
+      <!-- Ranking por tipo de solicitação (opcional, sem HC/linhas) -->
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="fw-bold text-info mb-3">
+            <i class="bi bi-list-check"></i> Ranking por Tipo de Solicitação
+          </h6>
+
+          <ul class="list-group list-group-flush" id="listaTipos">
+            <li class="list-group-item text-muted">Sem dados</li>
+          </ul>
+
+          <div class="small text-muted mt-2">
+            Baseado no campo <strong>descrição</strong> (tipo) das solicitações.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===============================
+     MODAL — Detalhe de faltas por data
+     =============================== -->
+<div class="modal fade" id="modalFaltasData" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow">
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalFaltasTitulo">Faltas</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-2">
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle mb-2">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 140px;">Matrícula</th>
+                <th>Nome</th>
+                <th style="width: 140px;" class="text-end">Quantidade</th>
+              </tr>
+            </thead>
+            <tbody id="modalFaltasBody">
+              <tr>
+                <td colspan="3" class="text-muted text-center">Sem dados</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-2 text-end fw-bold">
+          Total: <span id="modalFaltasTotal">0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 {% endblock %}
 
