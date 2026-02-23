@@ -1,6 +1,6 @@
 from flask_login import login_required
 from flask import Blueprint, request, jsonify
-from app.services import modelos_service 
+from app.services import modelos_service
 from app.services.lancamentos_service import (
     criar_lancamento,
     faltas_por_linha,
@@ -130,9 +130,12 @@ def api_powerbi_resumo():
 
     from app.services.powerbi_service import resumo_powerbi_solicitacoes
 
-    dados = resumo_powerbi_solicitacoes(filtros)
+    data = resumo_powerbi_solicitacoes(filtros)
 
-    return jsonify(dados)
+    return jsonify({
+        "kpis": data["kpis"],
+        "ranking_faltas": data["ranking_faltas"]
+    })
 
 @bp.route("/dashboard/resumo", methods=["GET"])
 def api_dashboard_resumo():

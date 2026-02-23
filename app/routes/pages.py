@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request
-from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from datetime import date
 from flask_login import login_required, current_user
+from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from app.services.solicitacoes_service import (
     obter_solicitacoes_abertas,
     ranking_extras_dashboard,
-    objetivos_status_dashboard, 
+    objetivos_status_dashboard,
     ranking_solicitacoes_por_cliente,
     kpis_dashboard_abs_linhas
 )
@@ -102,20 +102,21 @@ def powerbi():
         "linha": request.args.get("linha"),
     }
 
-    hoje = date.today().isoformat()
-    filtros["data_inicial"] = filtros["data_inicial"] or hoje
-    filtros["data_final"] = filtros["data_final"] or hoje
-
     from app.services.powerbi_service import resumo_powerbi_solicitacoes
 
-    dados = resumo_powerbi_solicitacoes(filtros)
+    data = resumo_powerbi_solicitacoes(filtros)
+    filtros = data["filtros"]
+
+    ranking = data["ranking_faltas"]
 
     return render_template(
         "powerbi.html",
         filtros=filtros,
         active_menu="dashboard",
-        kpis=dados["kpis"],
-        rankings=dados["rankings"],
+        ranking_faltas_powerbi=ranking,
+        ranking_linhas_faltas_powerbi=ranking,
+        kpis=data["kpis"],
+        dados=data.get("dados", [])
     )
 
 @bp.route("/solicitacoes")
