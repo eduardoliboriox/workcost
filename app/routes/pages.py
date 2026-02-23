@@ -8,7 +8,8 @@ from app.services.solicitacoes_service import (
     ranking_extras_dashboard,
     objetivos_status_dashboard,
     ranking_solicitacoes_por_cliente,
-    kpis_dashboard_abs_linhas
+    kpis_dashboard_abs_linhas,
+    ranking_gastos_provisao_dashboard
 )
 
 
@@ -56,18 +57,21 @@ def dashboard():
     dados = resumo_dashboard(filtros)
     ranking_extras = ranking_extras_dashboard(filtros)
     ranking_objetivos = objetivos_status_dashboard(filtros)
-    ranking_clientes = ranking_solicitacoes_por_cliente(filtros)    
+    ranking_clientes = ranking_solicitacoes_por_cliente(filtros)
+    ranking_gastos = ranking_gastos_provisao_dashboard(filtros)
+
     kpis_fix = kpis_dashboard_abs_linhas(filtros)
     dados.setdefault("kpis", {})
     dados["kpis"]["absenteismo"] = kpis_fix["absenteismo"]
     dados["kpis"]["linhas"] = kpis_fix["linhas"]
-    
+
     return render_template(
         "dashboard.html",
         filtros=filtros,
         ranking_extras=ranking_extras,
         ranking_objetivos=ranking_objetivos,
         ranking_clientes=ranking_clientes,
+        ranking_gastos=ranking_gastos,
         active_menu="dashboard",
         **dados
     )
@@ -269,7 +273,7 @@ def solicitacao_documento(solicitacao_id):
         aprovacoes=detalhe["aprovacoes"],
         origem=None,
         print_mode=True,
-        provisao=provisao,   
+        provisao=provisao,
         active_menu=None
     )
 

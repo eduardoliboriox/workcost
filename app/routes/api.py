@@ -8,7 +8,10 @@ from app.services.lancamentos_service import (
 )
 from app.services.pcp_service import ranking_linhas_ferias
 from app.services.relatorios_service import gerar_relatorio
-from app.services.solicitacoes_service import criar_solicitacao
+from app.services.solicitacoes_service import (
+    criar_solicitacao,
+    ranking_gastos_provisao_dashboard
+)
 from app.services.employees_service import buscar_funcionario
 from app.services.powerbi_service import resumo_powerbi_solicitacoes
 from app.auth.service import confirm_employee_extra
@@ -163,6 +166,19 @@ def api_dashboard_resumo():
         "ranking_linhas_ferias": dados["ranking_linhas_ferias"],
         "ranking_cargos": dados["ranking_cargos"]
     })
+
+@bp.route("/dashboard/gastos-provisao", methods=["GET"])
+@login_required
+def api_dashboard_gastos_provisao():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    return jsonify(ranking_gastos_provisao_dashboard(filtros))
 
 
 @bp.route("/solicitacoes", methods=["POST"])
