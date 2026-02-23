@@ -1,20 +1,24 @@
 from __future__ import annotations
 
+from calendar import monthrange
 from datetime import date
 from typing import Any
 
 
+def _default_month_range(today: date | None = None) -> tuple[str, str]:
+    hoje = today or date.today()
+    primeiro = date(hoje.year, hoje.month, 1)
+    ultimo = date(hoje.year, hoje.month, monthrange(hoje.year, hoje.month)[1])
+    return primeiro.isoformat(), ultimo.isoformat()
+
+
 def _normalize_filtros(raw: dict) -> dict:
-    """
-    Normaliza filtros vindos de request.args para evitar None inesperado.
-    Mantém compatibilidade com o que o template/JS já espera.
-    """
     filtros = dict(raw or {})
 
-    hoje = date.today().isoformat()
+    padrao_inicio, padrao_fim = _default_month_range()
 
-    filtros["data_inicial"] = filtros.get("data_inicial") or hoje
-    filtros["data_final"] = filtros.get("data_final") or hoje
+    filtros["data_inicial"] = filtros.get("data_inicial") or padrao_inicio
+    filtros["data_final"] = filtros.get("data_final") or padrao_fim
 
     filtros["turno"] = filtros.get("turno") or ""
     filtros["filial"] = filtros.get("filial") or ""
@@ -25,19 +29,8 @@ def _normalize_filtros(raw: dict) -> dict:
 
 
 def resumo_powerbi_solicitacoes(filtros: dict) -> dict[str, Any]:
-    """
-    PowerBI (gestores) — foco em solicitações, extras, gastos e faltas.
-
-    Retorna:
-      {
-        "filtros": {...},
-        "kpis": {...},
-        "rankings": { "clientes": [...], "extras": [...], "tipos": [...] }
-      }
-    """
     filtros = _normalize_filtros(filtros)
 
-    # services já existentes (sem HC planejado)
     from app.services.solicitacoes_service import (
         ranking_extras_dashboard,
         ranking_solicitacoes_por_cliente,

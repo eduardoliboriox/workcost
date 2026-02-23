@@ -144,7 +144,6 @@
   border: 6px solid transparent;
 }
 
-/* Borda dinâmica */
 .powerbi-wrapper.powerbi-danger {
   border-color: #dc3545;
 }
@@ -153,7 +152,6 @@
   border-color: #198754;
 }
 
-/* Tipografia branca */
 .powerbi-wrapper h1,
 .powerbi-wrapper h2,
 .powerbi-wrapper h3,
@@ -166,19 +164,16 @@
   color: #ffffff;
 }
 
-/* Cards permanecem claros */
 .powerbi-wrapper .card {
   background-color: #ffffff;
   color: #212529;
 }
 
-/* Listas */
 .powerbi-wrapper .list-group-item {
   background-color: #ffffff;
   color: #212529;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .powerbi-wrapper {
     padding: 1rem;
@@ -186,14 +181,12 @@
   }
 }
 
-/* KPIs – garantir leitura em cards brancos */
 .powerbi-wrapper .card small {
   color: #212529 !important;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-/* KPIs – padrão */
 .powerbi-wrapper .card h4 {
   color: #212529;
   font-size: 2.1rem;   
@@ -201,12 +194,10 @@
   margin-top: 2px;
 }
 
-/* Exceção semântica */
 .powerbi-wrapper .card h4.text-danger {
   color: #dc3545;
 }
  
-/* Força textos dentro do modal Power BI para escuro */
 #modalLinhaPowerBI,
 #modalLinhaPowerBI h6,
 #modalLinhaPowerBI span,
@@ -228,4 +219,8 @@
 
 .powerbi-wrapper .progress {
   background-color: rgba(0,0,0,0.08);
+}
+
+#topClientesList .list-group-item .fw-semibold {
+  color: #212529 !important;
 }
