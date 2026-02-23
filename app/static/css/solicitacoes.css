@@ -310,33 +310,33 @@
      - "Fluxo de Aprovação": assinaturas lado a lado
      - "Recebido / RH / Lançado": 3 colunas lado a lado
      Observação:
-     - Escopado ao documento da tela de solicitações (canvas),
-       para NÃO afetar outros cards/páginas.
+     - aplicamos somente no mobile e somente nesta tela (CSS do solicitacoes)
+     - não mexe em JS nem no HTML
      ===================================================== */
 
   /* =========================
      DADOS GERAIS — 3 COLUNAS
      ========================= */
 
-  .document-desktop-canvas .card .row.g-4 {
+  .card .row.g-4 {
     display: flex !important;
     flex-wrap: wrap !important;
   }
 
-  /* força os .col-md-4 virarem 1/3 no mobile (somente dentro do documento) */
-  .document-desktop-canvas .card .row.g-4 > [class*="col-"] {
+  /* força os .col-md-4 virarem 1/3 no mobile */
+  .card .row.g-4 > [class*="col-"] {
     flex: 0 0 33.333% !important;
     max-width: 33.333% !important;
   }
 
   /* espaçamento/legibilidade no mobile fit */
-  .document-desktop-canvas .card .row.g-4 > [class*="col-"] label.form-label {
+  .card .row.g-4 > [class*="col-"] label.form-label {
     font-size: 10.5px;
   }
 
-  .document-desktop-canvas .card .row.g-4 > [class*="col-"] .form-control,
-  .document-desktop-canvas .card .row.g-4 > [class*="col-"] .form-select,
-  .document-desktop-canvas .card .row.g-4 > [class*="col-"] .multiselect-display {
+  .card .row.g-4 > [class*="col-"] .form-control,
+  .card .row.g-4 > [class*="col-"] .form-select,
+  .card .row.g-4 > [class*="col-"] .multiselect-display {
     font-size: 11px;
     padding: 6px 8px;
   }
@@ -345,7 +345,7 @@
      APPROVAL FLOW — INLINE
      ========================= */
 
-  .document-desktop-canvas .approval-flow {
+  .approval-flow {
     display: flex !important;
     flex-wrap: nowrap !important;
     justify-content: space-between !important;
@@ -353,23 +353,23 @@
   }
 
   /* 5 itens lado a lado (~19% cada) */
-  .document-desktop-canvas .approval-flow .approval-item {
+  .approval-flow .approval-item {
     flex: 0 0 19% !important;
     max-width: 19% !important;
     min-width: unset !important;
     margin: 0 !important;
   }
 
-  .document-desktop-canvas .approval-flow .approval-box {
+  .approval-flow .approval-box {
     width: 100% !important;
   }
 
-  .document-desktop-canvas .approval-input-wrapper {
+  .approval-input-wrapper {
     width: 100% !important;
   }
 
-  .document-desktop-canvas .approval-role,
-  .document-desktop-canvas .approval-username {
+  .approval-role,
+  .approval-username {
     font-size: 10px !important;
     line-height: 1.15;
   }
@@ -378,7 +378,7 @@
      RECEBIDO / RH / LANÇADO
      ========================= */
 
-  .document-desktop-canvas .row.align-items-center.g-3 > [class*="col-"] {
+  .row.align-items-center.g-3 > [class*="col-"] {
     flex: 0 0 33.333% !important;
     max-width: 33.333% !important;
   }
