@@ -767,16 +767,11 @@ def kpis_dashboard_abs_linhas(filtros: dict):
 
     from datetime import date
 
-    data_inicial = filtros.get("data_inicial")
-    data_final = filtros.get("data_final")
-    turno = filtros.get("turno")
-    filial = filtros.get("filial")
+    data_inicial = filtros.get("data_inicial") or None
+    data_final = filtros.get("data_final") or None
 
-    if data_inicial:
-        data_inicial = date.fromisoformat(data_inicial)
-
-    if data_final:
-        data_final = date.fromisoformat(data_final)
+    turno = filtros.get("turno") or None
+    filial = filtros.get("filial") or None
 
     total_registros, total_faltas = contar_absenteismo_geral(
         data_inicial=data_inicial,
