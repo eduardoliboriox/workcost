@@ -6,9 +6,9 @@ from app.services.solicitacoes_service import (
     obter_solicitacoes_abertas,
     ranking_extras_dashboard,
     objetivos_status_dashboard, 
-    ranking_solicitacoes_por_cliente
+    ranking_solicitacoes_por_cliente,
+    kpis_dashboard_abs_linhas
 )
-
 
 bp = Blueprint("pages", __name__)
 
@@ -54,7 +54,11 @@ def dashboard():
     dados = resumo_dashboard(filtros)
     ranking_extras = ranking_extras_dashboard(filtros)
     ranking_objetivos = objetivos_status_dashboard(filtros)
-    ranking_clientes = ranking_solicitacoes_por_cliente(filtros)
+    ranking_clientes = ranking_solicitacoes_por_cliente(filtros)    
+    kpis_fix = kpis_dashboard_abs_linhas(filtros)
+    dados.setdefault("kpis", {})
+    dados["kpis"]["absenteismo"] = kpis_fix["absenteismo"]
+    dados["kpis"]["linhas"] = kpis_fix["linhas"]
     
     return render_template(
         "dashboard.html",

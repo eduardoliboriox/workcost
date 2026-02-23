@@ -152,8 +152,14 @@ def api_dashboard_resumo():
     }
 
     from app.services.pcp_service import resumo_dashboard
+    from app.services.solicitacoes_service import kpis_dashboard_abs_linhas
 
     dados = resumo_dashboard(filtros)
+
+    kpis_fix = kpis_dashboard_abs_linhas(filtros)
+    dados.setdefault("kpis", {})
+    dados["kpis"]["absenteismo"] = kpis_fix["absenteismo"]
+    dados["kpis"]["linhas"] = kpis_fix["linhas"]
 
     return jsonify({
         "kpis": dados["kpis"],

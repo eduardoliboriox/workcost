@@ -15,7 +15,9 @@ from app.repositories.solicitacoes_repository import (
     listar_solicitacoes_com_status,
     listar_frequencia_por_solicitacao,
     salvar_frequencia,
-    contar_presencas
+    contar_presencas,
+    contar_absenteismo_geral,
+    contar_linhas_ativas
 )
 from flask_login import current_user
 from datetime import date, timedelta
@@ -751,3 +753,52 @@ def ranking_absenteismo_por_data(filtros: dict):
     resultado.sort(key=lambda x: x["data"], reverse=True)
 
     return resultado
+    
+
+def kpis_dashboard_abs_linhas(filtros: dict):
+    """
+    KPIs do dashboard (somente os 2 campos que faltavam):
+    - absenteismo (%): baseado na solicitacao_frequencia
+    - linhas (int): proxy operacional = total de colaboradores em extras futuras
+
+    Respeita filtros globais:
+    data_inicial, data_final, turno, filial
+    """
+
+    from datetime import date
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno = filtros.get("turno")
+    filial = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    total_registros, total_faltas = contar_absenteismo_geral(
+        data_inicial=data_inicial,
+        data_final=data_final,
+        turno=turno,
+        filial=filial
+    )
+
+    if total_registros <= 0:
+        abs_percent = 0.0
+    else:
+        abs_percent = round((total_faltas / total_registros) * 100, 1)
+
+    linhas_ativas = contar_linhas_ativas(
+        data_inicial=data_inicial,
+        data_final=data_final,
+        turno=turno,
+        filial=filial,
+        hoje=date.today()
+    )
+
+    return {
+        "absenteismo": abs_percent,
+        "linhas": linhas_ativas
+    }
