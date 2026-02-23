@@ -15,7 +15,7 @@
     <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-primary active">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
-  
+
     <button class="btn btn-outline-purple"
             type="button"
             onclick="toggleFullscreen()">
@@ -28,7 +28,6 @@
       <i class="bi bi-box-arrow-right"></i> Sair
     </a>
     {% endif %}
-
   </div>
 </div>
 {% endblock %}
@@ -154,27 +153,108 @@
       <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
     </div>
   </div>
+
+  <!-- KPI NOVO -->
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3">
+      <small>GAP HC</small>
+      <h4 id="kpi-gap-hc" class="text-muted">0</h4>
+    </div>
+  </div>
+</div>
+
+<!-- FAIXA EXECUTIVA (diretoria gosta disso) -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm p-3 h-100">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="fw-bold mb-0">
+          <i class="bi bi-graph-up-arrow"></i>
+          Resumo Executivo
+        </h6>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge bg-danger-subtle text-danger-emphasis">
+            Linhas críticas: <span id="kpi-linhas-criticas">0</span>
+          </span>
+          <span class="badge bg-secondary-subtle text-secondary-emphasis">
+            Total de faltas (ranking): <span id="kpi-total-faltas">0</span>
+          </span>
+        </div>
+      </div>
+
+      <p class="mt-2 mb-3 text-muted" id="exec-summary-text">
+        Carregando visão executiva...
+      </p>
+
+      <!-- Barras simples para diretoria (HC e Status) -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="small fw-semibold mb-1">HC (Real vs Planejado)</div>
+          <div class="progress" style="height: 14px;">
+            <div class="progress-bar" id="bar-hc-real" role="progressbar" style="width:0%"></div>
+          </div>
+          <div class="d-flex justify-content-between small text-muted mt-1">
+            <span>0</span>
+            <span id="bar-hc-label">0 / 0</span>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="small fw-semibold mb-1">Distribuição de status</div>
+          <div class="progress" style="height: 14px;">
+            <div class="progress-bar bg-danger" id="bar-status-critico" role="progressbar" style="width:0%"></div>
+          </div>
+          <div class="d-flex justify-content-between small text-muted mt-1">
+            <span>Crítico</span>
+            <span id="bar-status-label">0% crítico</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm p-3 h-100">
+      <h6 class="fw-bold text-danger mb-3">
+        <i class="bi bi-trophy"></i>
+        Top linhas (faltas)
+      </h6>
+
+      <ul class="list-group list-group-flush" id="topLinhasList">
+        <!-- preenchido via JS -->
+      </ul>
+
+      <div class="small text-muted mt-2">
+        * Clique na linha no ranking abaixo para detalhes por cargo.
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ================= RANKING DE LINHAS POR ABSENTEÍSMO ================= -->
 <div class="card shadow-sm p-3 mt-4">
-  <h6 class="fw-bold text-danger mb-3">
-    <i class="bi bi-bar-chart"></i>
-    Ranking de linhas por faltas
-  </h6>
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h6 class="fw-bold text-danger mb-0">
+      <i class="bi bi-bar-chart"></i>
+      Ranking de linhas por faltas
+    </h6>
+
+    <span class="badge bg-light text-dark">
+      Atualiza automaticamente
+    </span>
+  </div>
 
   <div id="rankingPowerBI" class="d-flex align-items-end gap-3" style="height:220px">
     {% for l in ranking_faltas_powerbi %}
-      <!-- Cada coluna clicável -->
-      <div class="text-center" style="width:60px; cursor:pointer;" 
+      <div class="text-center" style="width:60px; cursor:pointer;"
            onclick="abrirModalLinhaPowerBI('{{ l.linha }}')">
-  
-        <!-- valor -->
+
         <div class="fw-bold small mb-1">
           {{ l.faltas }}
         </div>
-  
-        <!-- coluna -->
+
         <div
           style="
             height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
@@ -182,8 +262,7 @@
             border-radius: 6px;
           ">
         </div>
-  
-        <!-- label -->
+
         <small class="d-block mt-1">{{ l.linha }}</small>
       </div>
     {% endfor %}
@@ -201,15 +280,12 @@
       </div>
 
       <div class="modal-body p-2">
-        <!-- Lista de cargos por linha (via fetch) -->
         <ul class="list-group list-group-flush mb-3" id="modalListaPowerBI"></ul>
-        
-        <!-- Total de faltas -->
+
         <div class="text-end fw-bold mb-3">
           Total: <span id="modalTotalPowerBI">0</span>
         </div>
 
-        <!-- Ranking de linhas (opcional dentro do modal) -->
         <h6 class="fw-bold text-danger">Ranking de Linhas</h6>
         <ul class="list-group list-group-flush" id="rankingLinhasPowerBIList">
           {% for linha in ranking_linhas_faltas_powerbi %}
@@ -268,11 +344,9 @@ document.querySelectorAll(".auto-submit").forEach(el => {
 <script>
 async function abrirModalLinhaPowerBI(linha) {
 
-  // Atualiza o título do modal
   document.getElementById("modalLinhaPowerBITitulo").innerText =
     `Faltas — ${linha}`;
 
-  // Monta os parâmetros do fetch
   const params = new URLSearchParams({
     linha: linha,
     data_inicial: "{{ filtros.data_inicial }}",
@@ -281,7 +355,6 @@ async function abrirModalLinhaPowerBI(linha) {
     filial: "{{ filtros.filial or '' }}"
   });
 
-  // Chama a API para pegar os dados da linha
   const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
   const dados = await resp.json();
 
@@ -309,7 +382,6 @@ async function abrirModalLinhaPowerBI(linha) {
 
   totalSpan.innerText = total;
 
-  // Mostra o modal
   new bootstrap.Modal(
     document.getElementById("modalLinhaPowerBI")
   ).show();
