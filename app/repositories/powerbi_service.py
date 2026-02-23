@@ -1,84 +1,58 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
-
-from app.services.solicitacoes_service import (
-    resumo_solicitacoes_dashboard,
-    ranking_extras_dashboard,
-    ranking_solicitacoes_por_cliente,
-    ranking_solicitacoes_por_tipo,
-    kpis_dashboard_abs_linhas,
-    ranking_absenteismo_por_data,
-)
+from datetime import date
+from typing import Any
 
 
-def _base_filters(filtros: dict) -> dict:
+def _normalize_filtros(raw: dict) -> dict:
     """
-    Normaliza os filtros para o que realmente existe em 'solicitacoes'.
-
-    Observação:
-    - PowerBI antigo tinha setor/linha (PCP). Para solicitacoes, hoje usamos:
-      data_inicial, data_final, turno, filial.
-    - Se vierem setor/linha, são ignorados aqui (sem quebrar o form).
+    Normaliza filtros vindos de request.args para evitar None inesperado.
+    Mantém compatibilidade com o que o template/JS já espera.
     """
-    return {
-        "data_inicial": filtros.get("data_inicial"),
-        "data_final": filtros.get("data_final"),
-        "turno": filtros.get("turno"),
-        "filial": filtros.get("filial"),
-    }
+    filtros = dict(raw or {})
+
+    hoje = date.today().isoformat()
+
+    filtros["data_inicial"] = filtros.get("data_inicial") or hoje
+    filtros["data_final"] = filtros.get("data_final") or hoje
+
+    # estes podem ser vazios mesmo
+    filtros["turno"] = filtros.get("turno") or ""
+    filtros["filial"] = filtros.get("filial") or ""
+    filtros["setor"] = filtros.get("setor") or ""
+    filtros["linha"] = filtros.get("linha") or ""
+
+    return filtros
 
 
-def resumo_powerbi_solicitacoes(filtros: dict) -> Dict[str, Any]:
+def resumo_powerbi_solicitacoes(filtros: dict) -> dict[str, Any]:
     """
-    Resumo consolidado para a página Power BI focada em Solicitações.
-    Retorna:
-      - kpis (solicitacoes + abs + linhas + extras totals)
-      - rankings (extras, clientes, tipos, abs_por_data)
+    Fonte da verdade do PowerBI:
+    - resumo_dashboard (kpis gerais e ranking por linha, etc)
+    - ranking_linhas_faltas_powerbi (ranking de linhas por faltas)
+
+    Retorna no formato que o frontend do powerbi já consome:
+      {
+        "filtros": ...,
+        "kpis": ...,
+        "ranking_faltas": [...]
+      }
     """
-    f = _base_filters(filtros)
+    filtros = _normalize_filtros(filtros)
 
-    kpis_solic = resumo_solicitacoes_dashboard(f)
-    kpis_abs = kpis_dashboard_abs_linhas(f)
-
-    ranking_extras = ranking_extras_dashboard(f)
-    ranking_clientes = ranking_solicitacoes_por_cliente(f)
-    ranking_tipos = ranking_solicitacoes_por_tipo(f)
-
-    # absenteísmo por data usa só data_inicial/data_final
-    abs_por_data = ranking_absenteismo_por_data({
-        "data_inicial": f.get("data_inicial"),
-        "data_final": f.get("data_final"),
-    })
-
-    # Totais de extras (provisionado/realizado) somando o ranking por unidade
-    total_extras_provisionado = round(
-        sum(float(x.get("provisionado") or 0) for x in ranking_extras), 2
-    )
-    total_extras_realizado = round(
-        sum(float(x.get("realizado") or 0) for x in ranking_extras), 2
+    # Import local para evitar import circular
+    from app.services.pcp_service import (
+        resumo_dashboard,
+        ranking_linhas_faltas_powerbi,
     )
 
-    # KPI extra: volume de extras em % por unidade já existe via ranking_extras,
-    # mas aqui queremos totais em R$ para diretoria/gestores.
-    kpis = {
-        "solicitacoes_abertas": int(kpis_solic.get("abertas") or 0),
-        "solicitacoes_realizadas": int(kpis_solic.get("fechadas") or 0),
-        "total_gasto": float(kpis_solic.get("total_gasto") or 0.0),
-
-        "extras_provisionado": float(total_extras_provisionado),
-        "extras_realizado": float(total_extras_realizado),
-
-        "absenteismo": float(kpis_abs.get("absenteismo") or 0.0),
-        "linhas": int(kpis_abs.get("linhas") or 0),
-    }
+    resumo = resumo_dashboard(filtros)
 
     return {
-        "kpis": kpis,
-        "rankings": {
-            "extras": ranking_extras,
-            "clientes": ranking_clientes,
-            "tipos": ranking_tipos,
-            "abs_por_data": abs_por_data,
-        }
+        "filtros": filtros,
+        "kpis": (resumo.get("kpis") or {}),
+        "ranking_faltas": ranking_linhas_faltas_powerbi(filtros),
+        # se o resumo_dashboard também devolve "dados" (cards/linhas),
+        # repassamos sem acoplar o template a outro service
+        "dados": resumo.get("dados") or resumo.get("linhas") or resumo.get("itens") or [],
     }
