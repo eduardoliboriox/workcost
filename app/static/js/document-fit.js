@@ -6,9 +6,6 @@
   }
 
   function getCanvasBaseWidth(canvas) {
-    // Preferimos medir a largura "real" do conteúdo (sem depender de constante)
-    // scrollWidth costuma refletir bem quando há conteúdo interno que define tamanho.
-    // fallback para offsetWidth.
     return canvas.scrollWidth || canvas.offsetWidth || 1200;
   }
 
@@ -27,19 +24,17 @@
       return;
     }
 
-    // Largura disponível no wrapper (respeita padding do container)
     const availableWidth = wrapper.clientWidth || window.innerWidth;
-
-    // Base width real do canvas (sem hardcode)
     const baseWidth = getCanvasBaseWidth(canvas);
 
     const scale = clamp(availableWidth / baseWidth, 0.1, 1);
 
     canvas.style.setProperty("--doc-scale", String(scale));
 
-    // Ajusta altura do wrapper porque transform não afeta layout
-    const contentHeight = canvas.scrollHeight;
-    wrapper.style.height = Math.ceil(contentHeight * scale) + "px";
+    requestAnimationFrame(() => {
+      const rect = canvas.getBoundingClientRect();
+      wrapper.style.height = Math.ceil(rect.height) + "px";
+    });
   }
 
   let resizeTimer = null;
