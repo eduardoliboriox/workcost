@@ -494,31 +494,30 @@ def listar_faltas_por_data():
 # DASHBOARD KPIs (Absenteísmo Geral / Linhas Ativas)
 # =========================================================
 
+from psycopg.rows import dict_row
+from app.extensions import get_db
+
+
 def contar_absenteismo_geral(
-    data_inicial: str | None,
-    data_final: str | None,
+    data_inicial: str | None = None,
+    data_final: str | None = None,
     turno: str | None = None,
     filial: str | None = None
 ):
     """
     Retorna:
-    - total_registros (registros de frequência no período)
-    - total_faltas (compareceu = FALSE no período)
+      (total_registros, total_faltas)
 
-    Respeita filtros globais:
-    - data_inicial, data_final (date)
-    - turno, filial (text)
+    Base:
+    - solicitacao_frequencia (compareceu TRUE/FALSE)
+    - solicitacoes (para filtrar por data_execucao, turnos e unidade)
+
+    IMPORTANTÍSSIMO:
+    - casts ::date e ::text para evitar IndeterminateDatatype quando params = None
     """
-
-    # Normaliza (evita '' gerando filtros estranhos)
-    data_inicial = (data_inicial or None)
-    data_final = (data_final or None)
-    turno = (turno or None)
-    filial = (filial or None)
 
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
-
             cur.execute("""
                 SELECT
                     COUNT(*) AS total_registros,
@@ -527,20 +526,25 @@ def contar_absenteismo_geral(
                 JOIN solicitacoes s
                   ON s.id = f.solicitacao_id
                 WHERE
-                    (%s::date IS NULL OR s.data_execucao >= %s::date)
-                AND (%s::date IS NULL OR s.data_execucao <= %s::date)
-
-                -- turno: s.turnos é string tipo "1T,2T" (compatível com teu padrão)
-                AND (
-                    %s::text IS NULL
-                    OR s.turnos LIKE ('%%' || %s::text || '%%')
-                )
-
-                -- filial/unidade: s.unidade é string tipo "VAC,VTE" (compatível com teu padrão)
-                AND (
-                    %s::text IS NULL
-                    OR s.unidade LIKE ('%%' || %s::text || '%%')
-                )
+                    (
+                      %s::date IS NULL
+                      OR s.data_execucao >= %s::date
+                    )
+                  AND
+                    (
+                      %s::date IS NULL
+                      OR s.data_execucao <= %s::date
+                    )
+                  AND
+                    (
+                      %s::text IS NULL
+                      OR s.turnos ILIKE ('%%' || %s::text || '%%')
+                    )
+                  AND
+                    (
+                      %s::text IS NULL
+                      OR s.unidade ILIKE ('%%' || %s::text || '%%')
+                    )
             """, (
                 data_inicial, data_inicial,
                 data_final, data_final,
@@ -549,63 +553,71 @@ def contar_absenteismo_geral(
             ))
 
             row = cur.fetchone() or {}
+            return (
+                int(row.get("total_registros") or 0),
+                int(row.get("total_faltas") or 0),
+            )
 
-            total_registros = int(row.get("total_registros") or 0)
-            total_faltas = int(row.get("total_faltas") or 0)
-
-            return total_registros, total_faltas
 
 def contar_linhas_ativas(
-    data_inicial: date | None,
-    data_final: date | None,
-    turno: str | None,
-    filial: str | None,
-    hoje: date
+    data_inicial: str | None = None,
+    data_final: str | None = None,
+    turno: str | None = None,
+    filial: str | None = None,
+    hoje=None
 ):
     """
-    Linhas Ativas (proxy):
-    - total de colaboradores escalados em extras FUTURAS
-      (s.data_execucao >= hoje)
-    - respeita filtros globais (data_inicial, data_final, turno, filial)
-    Retorna: int
+    KPI 'Linhas Ativas' (proxy operacional):
+    - quantidade de colaboradores (distinct matrícula) escalados em solicitações FUTURAS
+      (data_execucao > hoje), respeitando filtros globais.
+
+    Observação:
+    - hoje é passado pelo service (date.today()).
+    - cast explícito em params opcionais evita IndeterminateDatatype.
     """
+
+    from datetime import date
+    if hoje is None:
+        hoje = date.today()
 
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute("""
                 SELECT
-                    COUNT(sf.id) AS total
-                FROM solicitacao_funcionarios sf
-                JOIN solicitacoes s
-                  ON s.id = sf.solicitacao_id
-                WHERE s.data_execucao IS NOT NULL
-                  AND s.data_execucao >= %s::date
-                  AND (%s::date IS NULL OR s.data_execucao >= %s::date)
-                  AND (%s::date IS NULL OR s.data_execucao <= %s::date)
-                  AND (
-                        %s IS NULL OR %s = ''
-                        OR %s = ANY (
-                            regexp_split_to_array(
-                                replace(COALESCE(s.unidade,''), ' ', ''),
-                                ','
-                            )
-                        )
-                  )
-                  AND (
-                        %s IS NULL OR %s = ''
-                        OR %s = ANY (
-                            regexp_split_to_array(
-                                replace(COALESCE(s.turnos,''), ' ', ''),
-                                ','
-                            )
-                        )
-                  )
+                    COUNT(DISTINCT ltrim(sf.matricula, '0')) AS total
+                FROM solicitacoes s
+                JOIN solicitacao_funcionarios sf
+                  ON sf.solicitacao_id = s.id
+                WHERE
+                    s.data_execucao IS NOT NULL
+                  AND
+                    s.data_execucao > %s::date
+                  AND
+                    (
+                      %s::date IS NULL
+                      OR s.data_execucao >= %s::date
+                    )
+                  AND
+                    (
+                      %s::date IS NULL
+                      OR s.data_execucao <= %s::date
+                    )
+                  AND
+                    (
+                      %s::text IS NULL
+                      OR s.turnos ILIKE ('%%' || %s::text || '%%')
+                    )
+                  AND
+                    (
+                      %s::text IS NULL
+                      OR s.unidade ILIKE ('%%' || %s::text || '%%')
+                    )
             """, (
                 hoje,
                 data_inicial, data_inicial,
                 data_final, data_final,
-                filial, filial, filial,
-                turno, turno, turno
+                turno, turno,
+                filial, filial
             ))
 
             row = cur.fetchone() or {}
