@@ -10,6 +10,7 @@ from app.services.solicitacoes_service import (
     kpis_dashboard_abs_linhas
 )
 
+
 bp = Blueprint("pages", __name__)
 
 @bp.route("/")
@@ -104,16 +105,17 @@ def powerbi():
     hoje = date.today().isoformat()
     filtros["data_inicial"] = filtros["data_inicial"] or hoje
     filtros["data_final"] = filtros["data_final"] or hoje
-    
-    dados = resumo_dashboard(filtros)
-    ranking_faltas_powerbi = ranking_linhas_faltas_powerbi(filtros)
-    
+
+    from app.services.powerbi_service import resumo_powerbi_solicitacoes
+
+    dados = resumo_powerbi_solicitacoes(filtros)
+
     return render_template(
         "powerbi.html",
         filtros=filtros,
         active_menu="dashboard",
-        ranking_faltas_powerbi=ranking_faltas_powerbi,
-        **dados
+        kpis=dados["kpis"],
+        rankings=dados["rankings"],
     )
 
 @bp.route("/solicitacoes")

@@ -14,7 +14,6 @@ from app.auth.service import confirm_employee_extra
 
 bp = Blueprint("api", __name__)
 
-
 @bp.route("/modelos", methods=["GET"])
 def listar():
     return jsonify(modelos_service.listar_modelos())
@@ -26,7 +25,6 @@ def cadastrar():
 @bp.route("/modelos", methods=["DELETE"])
 def excluir():
     return jsonify(modelos_service.excluir_modelo(request.form))
-
 
 @bp.route("/cargos", methods=["GET"])
 def listar_cargos():
@@ -130,17 +128,11 @@ def api_powerbi_resumo():
         "linha": request.args.get("linha"),
     }
 
-    from app.services.pcp_service import (
-        resumo_dashboard,
-        ranking_linhas_faltas_powerbi
-    )
+    from app.services.powerbi_service import resumo_powerbi_solicitacoes
 
-    resumo = resumo_dashboard(filtros)
+    dados = resumo_powerbi_solicitacoes(filtros)
 
-    return jsonify({
-        "kpis": resumo["kpis"],
-        "ranking_faltas": ranking_linhas_faltas_powerbi(filtros)
-    })
+    return jsonify(dados)
 
 @bp.route("/dashboard/resumo", methods=["GET"])
 def api_dashboard_resumo():

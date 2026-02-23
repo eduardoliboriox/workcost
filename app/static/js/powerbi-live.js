@@ -3,12 +3,6 @@ function safeNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
-function formatSignedNumber(n) {
-  const num = safeNumber(n);
-  if (num > 0) return `+${num}`;
-  return `${num}`;
-}
-
 function clampPercent(p) {
   const n = safeNumber(p);
   if (n < 0) return 0;
@@ -16,43 +10,51 @@ function clampPercent(p) {
   return n;
 }
 
-function buildExecutiveSummary({
-  hcPlanejado,
-  hcReal,
-  gap,
-  ausencias,
-  absPercent,
-  linhasCriticas,
-  totalLinhasRanking,
-  totalFaltasRanking
-}) {
-  const statusHc =
-    gap < 0 ? "abaixo" : (gap > 0 ? "acima" : "em linha");
+function formatBRL(v) {
+  const n = safeNumber(v);
+  return "R$ " + n.toFixed(2).replace(".", ",");
+}
 
-  const statusCritico =
-    linhasCriticas > 0
-      ? "atenção imediata"
-      : "operação estável";
+// cache para modal unidade
+let extrasRankingCache = [];
+
+function buildExecutiveSummary({
+  abertas,
+  realizadas,
+  totalGasto,
+  extrasProv,
+  extrasReal,
+  absPercent,
+  linhas
+}) {
+  const direcaoGasto =
+    extrasProv > 0
+      ? (extrasReal > extrasProv ? "acima" : (extrasReal < extrasProv ? "abaixo" : "em linha"))
+      : "em linha";
+
+  const statusAbs =
+    absPercent > 0 ? "atenção" : "estável";
 
   return `
-    No período filtrado, o HC real está <strong>${statusHc}</strong> do planejado
-    (<strong>${hcReal}</strong> vs <strong>${hcPlanejado}</strong>, GAP <strong>${formatSignedNumber(gap)}</strong>).
-    Foram registradas <strong>${ausencias}</strong> ausências, com absenteísmo geral em <strong>${absPercent}%</strong>.
-    No ranking atual, <strong>${linhasCriticas}</strong> de <strong>${totalLinhasRanking}</strong> linhas estão em condição crítica
-    (total de <strong>${totalFaltasRanking}</strong> faltas somadas no ranking).
-    Direcionamento: <strong>${statusCritico}</strong>.
+    No período filtrado, foram registradas <strong>${abertas}</strong> solicitações abertas e
+    <strong>${realizadas}</strong> solicitações realizadas.
+    O gasto total estimado das realizadas é <strong>${formatBRL(totalGasto)}</strong>.
+    Em extras, o realizado está <strong>${direcaoGasto}</strong> do provisionado
+    (<strong>${formatBRL(extrasReal)}</strong> vs <strong>${formatBRL(extrasProv)}</strong>).
+    Absenteísmo geral em <strong>${absPercent}%</strong> e <strong>${linhas}</strong> linhas ativas.
+    Direcionamento: <strong>${statusAbs}</strong>.
   `.trim();
 }
 
-function renderTopLinhas(ranking) {
-  const ul = document.getElementById("topLinhasList");
+function renderTopClientes(clientes) {
+  const ul = document.getElementById("topClientesList");
   if (!ul) return;
 
   ul.innerHTML = "";
 
-  const top = (Array.isArray(ranking) ? ranking : [])
+  const top = (Array.isArray(clientes) ? clientes : [])
     .slice()
-    .sort((a, b) => safeNumber(b.faltas) - safeNumber(a.faltas))
+    .sort((a, b) => safeNumber(b.percentual) - safeNumber(a.percentual))
     .slice(0, 5);
 
   if (!top.length) {
@@ -64,115 +66,129 @@ function renderTopLinhas(ranking) {
     return;
   }
 
-  top.forEach((l, idx) => {
-    const linha = l.linha || "-";
-    const faltas = safeNumber(l.faltas);
-    const isCritico = (l.status || "").toUpperCase() === "CRITICO";
-
+  top.forEach((c, idx) => {
     ul.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between align-items-center"
-          style="cursor:pointer"
-          onclick="abrirModalLinhaPowerBI('${linha}')">
-        <div class="d-flex align-items-center gap-2">
-          <span class="badge ${isCritico ? "bg-danger" : "bg-success"}">${idx + 1}</span>
-          <span class="fw-semibold">${linha}</span>
-        </div>
-        <span class="badge bg-dark">${faltas}</span>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">${c.cliente || "-"}</span>
+        <span class="badge bg-warning">${safeNumber(c.percentual).toFixed(2)}%</span>
       </li>
     `;
   });
 }
 
-function renderExecutiveWidgets(data) {
-  const kpis = data?.kpis || {};
-  const ranking = Array.isArray(data?.ranking_faltas) ? data.ranking_faltas : [];
+function renderRankingUnidades(extras) {
+  const container = document.querySelector("#rankingPowerBI");
+  if (!container) return;
 
-  const hcPlanejado = safeNumber(kpis.hc_planejado);
-  const hcReal = safeNumber(kpis.hc_real);
-  const ausencias = safeNumber(kpis.ausencias);
-  const absPercent = safeNumber(kpis.absenteismo);
+  container.innerHTML = "";
+  extrasRankingCache = Array.isArray(extras) ? extras : [];
 
-  const gap = hcReal - hcPlanejado;
+  const max = Math.max(...extrasRankingCache.map(x => safeNumber(x.percentual)), 1);
 
-  const linhasCriticas = ranking.filter(
-    x => (x.status || "").toUpperCase() === "CRITICO"
-  ).length;
+  extrasRankingCache.forEach(e => {
+    const filial = e.filial || "-";
+    const pct = safeNumber(e.percentual);
 
-  const totalFaltasRanking = ranking.reduce(
-    (acc, x) => acc + safeNumber(x.faltas),
-    0
-  );
+    container.innerHTML += `
+      <div class="text-center" style="width:70px; cursor:pointer"
+           onclick="abrirModalUnidadePowerBI('${filial}')">
+        <div class="fw-bold small mb-1">${pct.toFixed(1)}%</div>
+        <div style="
+          height:${(pct * 180) / max}px;
+          background:#0d6efd;
+          border-radius:6px;">
+        </div>
+        <small class="d-block mt-1">${filial}</small>
+      </div>
+    `;
+  });
 
-  const totalLinhasRanking = ranking.length;
+  if (!extrasRankingCache.length) {
+    container.innerHTML = `<div class="text-muted small mt-3">Sem dados para exibir.</div>`;
+  }
+}
 
-  // KPI GAP HC
-  const gapEl = document.getElementById("kpi-gap-hc");
-  if (gapEl) {
-    gapEl.innerText = formatSignedNumber(gap);
-    gapEl.classList.remove("text-muted", "text-success", "text-danger");
-    if (gap < 0) gapEl.classList.add("text-danger");
-    else if (gap > 0) gapEl.classList.add("text-success");
-    else gapEl.classList.add("text-muted");
+function renderExecutiveBars({ extrasProv, extrasReal, abertas, realizadas }) {
+  // barra gasto (realizado vs provisionado)
+  const barGasto = document.getElementById("bar-gasto");
+  const barGastoLeft = document.getElementById("bar-gasto-left");
+  const barGastoLabel = document.getElementById("bar-gasto-label");
+
+  if (barGasto) {
+    const denom = extrasProv > 0 ? extrasProv : (extrasReal > 0 ? extrasReal : 1);
+    const pct = clampPercent((extrasReal / denom) * 100);
+
+    barGasto.style.width = `${pct}%`;
+    barGasto.classList.remove("bg-success", "bg-danger", "bg-warning");
+
+    if (extrasProv <= 0 && extrasReal <= 0) {
+      barGasto.classList.add("bg-secondary");
+    } else if (extrasReal > extrasProv) {
+      barGasto.classList.add("bg-warning");
+    } else {
+      barGasto.classList.add("bg-success");
+    }
   }
 
-  // chips executivos
-  const critEl = document.getElementById("kpi-linhas-criticas");
-  if (critEl) critEl.innerText = String(linhasCriticas);
+  if (barGastoLeft) barGastoLeft.innerText = formatBRL(extrasReal);
+  if (barGastoLabel) barGastoLabel.innerText = `${formatBRL(extrasReal)} / ${formatBRL(extrasProv)}`;
 
-  const totalEl = document.getElementById("kpi-total-faltas");
-  if (totalEl) totalEl.innerText = String(totalFaltasRanking);
+  // barra solicitacoes (abertas vs total)
+  const barSol = document.getElementById("bar-solicitacoes");
+  const barSolLabel = document.getElementById("bar-solicitacoes-label");
 
-  // resumo texto
-  const summaryEl = document.getElementById("exec-summary-text");
-  if (summaryEl) {
-    summaryEl.innerHTML = buildExecutiveSummary({
-      hcPlanejado,
-      hcReal,
-      gap,
-      ausencias,
-      absPercent,
-      linhasCriticas,
-      totalLinhasRanking,
-      totalFaltasRanking
-    });
+  const total = safeNumber(abertas) + safeNumber(realizadas);
+  const pctSol = total > 0 ? clampPercent((safeNumber(abertas) / total) * 100) : 0;
+
+  if (barSol) barSol.style.width = `${pctSol}%`;
+  if (barSolLabel) barSolLabel.innerText = `${abertas} / ${total}`;
+}
+
+function abrirModalUnidadePowerBI(filial) {
+  const modalEl = document.getElementById("modalLinhaPowerBI");
+  if (!modalEl) return;
+
+  const tituloEl = document.getElementById("modalLinhaPowerBITitulo");
+  const lista = document.getElementById("modalListaPowerBI");
+  const totalSpan = document.getElementById("modalTotalPowerBI");
+
+  if (!tituloEl || !lista || !totalSpan) return;
+
+  const item = extrasRankingCache.find(x => (x.filial || "") === filial);
+
+  tituloEl.innerText = `Extras — ${filial}`;
+  lista.innerHTML = "";
+
+  if (!item) {
+    lista.innerHTML = `
+      <li class="list-group-item text-muted">
+        Nenhum dado para esta unidade.
+      </li>
+    `;
+    totalSpan.innerText = "0";
+  } else {
+    const prov = safeNumber(item.provisionado);
+    const real = safeNumber(item.realizado);
+
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        % no período
+        <span class="badge bg-primary">${safeNumber(item.percentual).toFixed(1)}%</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        Provisionado
+        <span class="badge bg-warning">${formatBRL(prov)}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        Realizado
+        <span class="badge bg-success">${formatBRL(real)}</span>
+      </li>
+    `;
+
+    totalSpan.innerText = formatBRL(real);
   }
 
-  // barra HC (real / planejado)
-  const barHc = document.getElementById("bar-hc-real");
-  const barHcLabel = document.getElementById("bar-hc-label");
-
-  if (barHc) {
-    const denom = hcPlanejado > 0 ? hcPlanejado : (hcReal > 0 ? hcReal : 1);
-    const pct = clampPercent((hcReal / denom) * 100);
-
-    barHc.style.width = `${pct}%`;
-
-    // cor pela condição (sem mexer em css global)
-    barHc.classList.remove("bg-success", "bg-danger", "bg-warning");
-    if (gap < 0) barHc.classList.add("bg-danger");
-    else if (gap > 0) barHc.classList.add("bg-warning");
-    else barHc.classList.add("bg-success");
-  }
-
-  if (barHcLabel) {
-    barHcLabel.innerText = `${hcReal} / ${hcPlanejado}`;
-  }
-
-  // barra de status (% crítico)
-  const barCrit = document.getElementById("bar-status-critico");
-  const barStatusLabel = document.getElementById("bar-status-label");
-
-  if (barCrit) {
-    const pctCrit = totalLinhasRanking > 0
-      ? clampPercent((linhasCriticas / totalLinhasRanking) * 100)
-      : 0;
-
-    barCrit.style.width = `${pctCrit}%`;
-    if (barStatusLabel) barStatusLabel.innerText = `${pctCrit.toFixed(0)}% crítico`;
-  }
-
-  // top linhas
-  renderTopLinhas(ranking);
+  new bootstrap.Modal(modalEl).show();
 }
 
 async function atualizarPowerBI() {
@@ -180,45 +196,69 @@ async function atualizarPowerBI() {
     const params = new URLSearchParams({
       data_inicial: document.querySelector('[name="data_inicial"]').value,
       data_final: document.querySelector('[name="data_final"]').value,
-      turno: document.querySelector('[name="turno"]').value,
-      filial: document.querySelector('[name="filial"]').value,
-      setor: document.querySelector('[name="setor"]').value,
-      linha: document.querySelector('[name="linha"]').value
+      turno: document.querySelector('[name="turno"]').value || '',
+      filial: document.querySelector('[name="filial"]').value || '',
+      setor: document.querySelector('[name="setor"]')?.value || '',
+      linha: document.querySelector('[name="linha"]')?.value || ''
     });
 
     const resp = await fetch(`/api/powerbi/resumo?${params}`);
     const data = await resp.json();
 
+    const k = data?.kpis || {};
+    const r = data?.rankings || {};
+
     // ===== KPIs =====
-    document.querySelector("#kpi-hc-planejado").innerText = data.kpis.hc_planejado;
-    document.querySelector("#kpi-hc-real").innerText = data.kpis.hc_real;
-    document.querySelector("#kpi-ausencias").innerText = data.kpis.ausencias;
-    document.querySelector("#kpi-abs").innerText = data.kpis.absenteismo + "%";
-    document.querySelector("#kpi-linhas").innerText = data.kpis.linhas;
+    document.querySelector("#kpi-solicitacoes-abertas").innerText =
+      safeNumber(k.solicitacoes_abertas);
 
-    // ===== EXECUTIVE WIDGETS (NOVO) =====
-    renderExecutiveWidgets(data);
+    document.querySelector("#kpi-solicitacoes-realizadas").innerText =
+      safeNumber(k.solicitacoes_realizadas);
 
-    // ===== RANKING DE LINHAS =====
-    const container = document.querySelector("#rankingPowerBI");
-    container.innerHTML = "";
+    document.querySelector("#kpi-total-gasto").innerText =
+      formatBRL(k.total_gasto);
 
-    const max = Math.max(...data.ranking_faltas.map(l => l.altura), 1);
+    document.querySelector("#kpi-extras-provisionado").innerText =
+      formatBRL(k.extras_provisionado);
 
-    data.ranking_faltas.forEach(l => {
-      container.innerHTML += `
-        <div class="text-center" style="width:60px; cursor:pointer"
-             onclick="abrirModalLinhaPowerBI('${l.linha}')">
-          <div class="fw-bold small">${l.faltas}</div>
-          <div style="
-            height:${(l.altura * 180) / max}px;
-            background:${l.status === 'CRITICO' ? '#dc3545' : '#198754'};
-            border-radius:6px;">
-          </div>
-          <small>${l.linha}</small>
-        </div>
-      `;
+    document.querySelector("#kpi-extras-realizado").innerText =
+      formatBRL(k.extras_realizado);
+
+    document.querySelector("#kpi-abs").innerText =
+      safeNumber(k.absenteismo).toFixed(1) + "%";
+
+    const chipAbs = document.querySelector("#kpi-abs-chip");
+    if (chipAbs) chipAbs.innerText = safeNumber(k.absenteismo).toFixed(1) + "%";
+
+    const linhasEl = document.querySelector("#kpi-linhas");
+    if (linhasEl) linhasEl.innerText = safeNumber(k.linhas);
+
+    // ===== RESUMO EXECUTIVO =====
+    const summaryEl = document.getElementById("exec-summary-text");
+    if (summaryEl) {
+      summaryEl.innerHTML = buildExecutiveSummary({
+        abertas: safeNumber(k.solicitacoes_abertas),
+        realizadas: safeNumber(k.solicitacoes_realizadas),
+        totalGasto: safeNumber(k.total_gasto),
+        extrasProv: safeNumber(k.extras_provisionado),
+        extrasReal: safeNumber(k.extras_realizado),
+        absPercent: safeNumber(k.absenteismo).toFixed(1),
+        linhas: safeNumber(k.linhas)
+      });
+    }
+
+    renderExecutiveBars({
+      extrasProv: safeNumber(k.extras_provisionado),
+      extrasReal: safeNumber(k.extras_realizado),
+      abertas: safeNumber(k.solicitacoes_abertas),
+      realizadas: safeNumber(k.solicitacoes_realizadas)
     });
+
+    // ===== TOP CLIENTES =====
+    renderTopClientes(r.clientes || []);
+
+    // ===== RANKING UNIDADES =====
+    renderRankingUnidades(r.extras || []);
 
   } catch (e) {
     console.error("Erro ao atualizar PowerBI", e);

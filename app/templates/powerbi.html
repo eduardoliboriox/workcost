@@ -35,7 +35,7 @@
 {% block content %}
 
 <div class="powerbi-wrapper
-     {% if kpis.ausencias > 0 %}
+     {% if kpis.absenteismo > 0 %}
        powerbi-danger
      {% else %}
        powerbi-success
@@ -58,20 +58,9 @@
         <label>Filial</label>
         <select name="filial" class="form-select auto-submit">
           <option value="">Todas</option>
+          <option value="VAC" {% if filtros.filial=='VAC' %}selected{% endif %}>VAC</option>
           <option value="VTE" {% if filtros.filial=='VTE' %}selected{% endif %}>VTE</option>
           <option value="VTT" {% if filtros.filial=='VTT' %}selected{% endif %}>VTT</option>
-        </select>
-      </div>
-
-      <!-- SETOR -->
-      <div class="col-md">
-        <label>Setor</label>
-        <select name="setor" id="setorSelect" class="form-select auto-submit">
-          <option value="">Todos</option>
-          <option value="IM" {% if filtros.setor=='IM' %}selected{% endif %}>IM</option>
-          <option value="PA" {% if filtros.setor=='PA' %}selected{% endif %}>PA</option>
-          <option value="SMT" {% if filtros.setor=='SMT' %}selected{% endif %}>SMT</option>
-          <option value="PTH" {% if filtros.setor=='PTH' %}selected{% endif %}>PTH</option>
         </select>
       </div>
 
@@ -83,14 +72,6 @@
           <option value="1T" {% if filtros.turno=='1T' %}selected{% endif %}>1º</option>
           <option value="2T" {% if filtros.turno=='2T' %}selected{% endif %}>2º</option>
           <option value="3T" {% if filtros.turno=='3T' %}selected{% endif %}>3º</option>
-        </select>
-      </div>
-
-      <!-- LINHA -->
-      <div class="col-md">
-        <label>Linha</label>
-        <select name="linha" id="linhaSelect" class="form-select auto-submit">
-          <option value="">Todas</option>
         </select>
       </div>
 
@@ -111,6 +92,10 @@
                value="{{ filtros.data_final }}">
       </div>
 
+      <!-- Mantém compatível com layout antigo (não impacta solicitacoes) -->
+      <input type="hidden" name="setor" value="{{ filtros.setor or '' }}">
+      <input type="hidden" name="linha" value="{{ filtros.linha or '' }}">
+
     </div>
   </div>
 </form>
@@ -119,24 +104,36 @@
 <div class="row g-3 mb-4 text-center">
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
-      <small>HC Planejado</small>
-      <h4 id="kpi-hc-planejado">{{ kpis.hc_planejado }}</h4>
+      <small>Solicitações Abertas</small>
+      <h4 id="kpi-solicitacoes-abertas">{{ kpis.solicitacoes_abertas }}</h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
-      <small>HC Real</small>
-      <h4 id="kpi-hc-real">{{ kpis.hc_real }}</h4>
+      <small>Solicitações Realizadas</small>
+      <h4 id="kpi-solicitacoes-realizadas">{{ kpis.solicitacoes_realizadas }}</h4>
     </div>
   </div>
 
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
-      <small>Ausências</small>
-      <h4 id="kpi-ausencias" class="{% if kpis.ausencias == 0 %}text-success{% else %}text-danger{% endif %}">
-          {{ kpis.ausencias }}
-      </h4>
+      <small>Total Gasto</small>
+      <h4 id="kpi-total-gasto" class="text-success">R$ 0,00</h4>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3">
+      <small>Extras Provisionadas</small>
+      <h4 id="kpi-extras-provisionado" class="text-warning">R$ 0,00</h4>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card shadow-sm p-3">
+      <small>Extras Realizadas</small>
+      <h4 id="kpi-extras-realizado" class="text-success">R$ 0,00</h4>
     </div>
   </div>
 
@@ -144,21 +141,6 @@
     <div class="card shadow-sm p-3">
       <small>Absenteísmo Geral</small>
       <h4 id="kpi-abs">{{ kpis.absenteismo }}%</h4>
-    </div>
-  </div>
-
-  <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>Linhas Ativas</small>
-      <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
-    </div>
-  </div>
-
-  <!-- KPI NOVO -->
-  <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>GAP HC</small>
-      <h4 id="kpi-gap-hc" class="text-muted">0</h4>
     </div>
   </div>
 </div>
@@ -170,15 +152,15 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="fw-bold mb-0">
           <i class="bi bi-graph-up-arrow"></i>
-          Resumo Executivo
+          Resumo Executivo (Solicitações)
         </h6>
 
         <div class="d-flex gap-2 flex-wrap">
-          <span class="badge bg-danger-subtle text-danger-emphasis">
-            Linhas críticas: <span id="kpi-linhas-criticas">0</span>
-          </span>
           <span class="badge bg-secondary-subtle text-secondary-emphasis">
-            Total de faltas (ranking): <span id="kpi-total-faltas">0</span>
+            Linhas ativas: <span id="kpi-linhas">{{ kpis.linhas }}</span>
+          </span>
+          <span class="badge bg-danger-subtle text-danger-emphasis">
+            Absenteísmo: <span id="kpi-abs-chip">{{ kpis.absenteismo }}%</span>
           </span>
         </div>
       </div>
@@ -187,27 +169,27 @@
         Carregando visão executiva...
       </p>
 
-      <!-- Barras simples para diretoria (HC e Status) -->
+      <!-- Barras simples (Gasto e Extras) -->
       <div class="row g-3">
         <div class="col-md-6">
-          <div class="small fw-semibold mb-1">HC (Real vs Planejado)</div>
+          <div class="small fw-semibold mb-1">Gasto (Realizado vs Provisionado)</div>
           <div class="progress" style="height: 14px;">
-            <div class="progress-bar" id="bar-hc-real" role="progressbar" style="width:0%"></div>
+            <div class="progress-bar" id="bar-gasto" role="progressbar" style="width:0%"></div>
           </div>
           <div class="d-flex justify-content-between small text-muted mt-1">
-            <span>0</span>
-            <span id="bar-hc-label">0 / 0</span>
+            <span id="bar-gasto-left">R$ 0,00</span>
+            <span id="bar-gasto-label">R$ 0,00 / R$ 0,00</span>
           </div>
         </div>
 
         <div class="col-md-6">
-          <div class="small fw-semibold mb-1">Distribuição de status</div>
+          <div class="small fw-semibold mb-1">Volume de solicitações</div>
           <div class="progress" style="height: 14px;">
-            <div class="progress-bar bg-danger" id="bar-status-critico" role="progressbar" style="width:0%"></div>
+            <div class="progress-bar bg-info" id="bar-solicitacoes" role="progressbar" style="width:0%"></div>
           </div>
           <div class="d-flex justify-content-between small text-muted mt-1">
-            <span>Crítico</span>
-            <span id="bar-status-label">0% crítico</span>
+            <span>Abertas</span>
+            <span id="bar-solicitacoes-label">0 / 0</span>
           </div>
         </div>
       </div>
@@ -217,28 +199,37 @@
 
   <div class="col-lg-4">
     <div class="card shadow-sm p-3 h-100">
-      <h6 class="fw-bold text-danger mb-3">
+      <h6 class="fw-bold text-warning mb-3">
         <i class="bi bi-trophy"></i>
-        Top linhas (faltas)
+        Top clientes (solicitações)
       </h6>
 
-      <ul class="list-group list-group-flush" id="topLinhasList">
-        <!-- preenchido via JS -->
+      <ul class="list-group list-group-flush" id="topClientesList">
+        {% if rankings and rankings.clientes %}
+          {% for c in rankings.clientes[:5] %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">{{ c.cliente }}</span>
+            <span class="badge bg-warning">{{ c.percentual }}%</span>
+          </li>
+          {% endfor %}
+        {% else %}
+          <li class="list-group-item text-muted">Sem dados para exibir.</li>
+        {% endif %}
       </ul>
 
       <div class="small text-muted mt-2">
-        * Clique na linha no ranking abaixo para detalhes por cargo.
+        * Percentual relativo ao período filtrado.
       </div>
     </div>
   </div>
 </div>
 
-<!-- ================= RANKING DE LINHAS POR ABSENTEÍSMO ================= -->
+<!-- ================= RANKING DE UNIDADES (EXTRAS) ================= -->
 <div class="card shadow-sm p-3 mt-4">
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-    <h6 class="fw-bold text-danger mb-0">
-      <i class="bi bi-bar-chart"></i>
-      Ranking de linhas por faltas
+    <h6 class="fw-bold text-primary mb-0">
+      <i class="bi bi-geo-alt"></i>
+      Ranking por unidade (extras)
     </h6>
 
     <span class="badge bg-light text-dark">
@@ -247,29 +238,34 @@
   </div>
 
   <div id="rankingPowerBI" class="d-flex align-items-end gap-3" style="height:220px">
-    {% for l in ranking_faltas_powerbi %}
-      <div class="text-center" style="width:60px; cursor:pointer;"
-           onclick="abrirModalLinhaPowerBI('{{ l.linha }}')">
+    {% if rankings and rankings.extras %}
+      {% set maxp = (rankings.extras | map(attribute='percentual') | max) %}
+      {% for e in rankings.extras %}
+        <div class="text-center" style="width:70px; cursor:pointer;"
+             onclick="abrirModalUnidadePowerBI('{{ e.filial }}')">
 
-        <div class="fw-bold small mb-1">
-          {{ l.faltas }}
+          <div class="fw-bold small mb-1">
+            {{ e.percentual }}%
+          </div>
+
+          <div
+            style="
+              height: {{ (e.percentual * 180 / (maxp if maxp else 1)) }}px;
+              background-color: #0d6efd;
+              border-radius: 6px;
+            ">
+          </div>
+
+          <small class="d-block mt-1">{{ e.filial }}</small>
         </div>
-
-        <div
-          style="
-            height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
-            background-color: {{ '#dc3545' if l.status == 'CRITICO' else '#198754' }};
-            border-radius: 6px;
-          ">
-        </div>
-
-        <small class="d-block mt-1">{{ l.linha }}</small>
-      </div>
-    {% endfor %}
+      {% endfor %}
+    {% else %}
+      <div class="text-muted small mt-3">Sem dados para exibir com os filtros atuais.</div>
+    {% endif %}
   </div>
 </div>
 
-<!-- Modal de Faltas PowerBI -->
+<!-- Modal Unidade PowerBI -->
 <div class="modal fade" id="modalLinhaPowerBI" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">
@@ -286,16 +282,18 @@
           Total: <span id="modalTotalPowerBI">0</span>
         </div>
 
-        <h6 class="fw-bold text-danger">Ranking de Linhas</h6>
-        <ul class="list-group list-group-flush" id="rankingLinhasPowerBIList">
-          {% for linha in ranking_linhas_faltas_powerbi %}
-          <li class="list-group-item d-flex justify-content-between"
-              style="cursor:pointer"
-              onclick="abrirModalLinhaPowerBI('{{ linha.linha }}')">
-            <span>{{ linha.linha }}</span>
-            <span class="badge bg-danger px-2 py-1">{{ linha.faltas }}</span>
-          </li>
-          {% endfor %}
+        <h6 class="fw-bold text-info">Ranking por tipo (período)</h6>
+        <ul class="list-group list-group-flush" id="rankingTiposPowerBIList">
+          {% if rankings and rankings.tipos %}
+            {% for t in rankings.tipos[:8] %}
+            <li class="list-group-item d-flex justify-content-between">
+              <span>{{ t.tipo }}</span>
+              <span class="badge bg-info px-2 py-1">{{ t.percentual }}%</span>
+            </li>
+            {% endfor %}
+          {% else %}
+            <li class="list-group-item text-muted">Sem dados para exibir.</li>
+          {% endif %}
         </ul>
       </div>
 
@@ -309,83 +307,12 @@
 
 {% block scripts %}
 <script>
-/* ===== LINHAS POR SETOR ===== */
-const linhas = {
-  IM:["IM-01","IM-02"],
-  PA:["PA-01","PA-02"],
-  SMT:["SMT-01","SMT-02"],
-  PTH:["PTH-01"]
-};
-
-function atualizarLinhas(){
-  const setor = document.getElementById("setorSelect").value;
-  const linhaSelect = document.getElementById("linhaSelect");
-  const atual = "{{ filtros.linha or '' }}";
-
-  linhaSelect.innerHTML = `<option value="">Todas</option>`;
-  (linhas[setor] || []).forEach(l=>{
-    linhaSelect.innerHTML += `
-      <option value="${l}" ${l===atual?'selected':''}>${l}</option>
-    `;
-  });
-}
-
-document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
-document.addEventListener("DOMContentLoaded", atualizarLinhas);
-
 /* ===== AUTO SUBMIT (POWER BI STYLE) ===== */
 document.querySelectorAll(".auto-submit").forEach(el => {
   el.addEventListener("change", () => {
     document.getElementById("filtrosForm").submit();
   });
 });
-</script>
-
-<script>
-async function abrirModalLinhaPowerBI(linha) {
-
-  document.getElementById("modalLinhaPowerBITitulo").innerText =
-    `Faltas — ${linha}`;
-
-  const params = new URLSearchParams({
-    linha: linha,
-    data_inicial: "{{ filtros.data_inicial }}",
-    data_final: "{{ filtros.data_final }}",
-    turno: "{{ filtros.turno or '' }}",
-    filial: "{{ filtros.filial or '' }}"
-  });
-
-  const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
-  const dados = await resp.json();
-
-  const lista = document.getElementById("modalListaPowerBI");
-  const totalSpan = document.getElementById("modalTotalPowerBI");
-
-  lista.innerHTML = "";
-  let total = 0;
-
-  if (!dados.length) {
-    lista.innerHTML = `
-      <li class="list-group-item text-muted">
-        Nenhuma falta registrada
-      </li>`;
-  } else {
-    dados.forEach(c => {
-      total += c.total;
-      lista.innerHTML += `
-        <li class="list-group-item d-flex justify-content-between">
-          ${c.nome}
-          <span class="badge bg-danger">${c.total}</span>
-        </li>`;
-    });
-  }
-
-  totalSpan.innerText = total;
-
-  new bootstrap.Modal(
-    document.getElementById("modalLinhaPowerBI")
-  ).show();
-}
 </script>
 
 <script src="{{ url_for('static', filename='js/powerbi-live.js') }}"></script>
