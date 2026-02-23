@@ -4,7 +4,7 @@ from datetime import date
 from typing import Any
 
 
-def _normalize_filtros(raw: dict) -> dict:
+def _normalize_filtros(raw: dict | None) -> dict[str, Any]:
     """
     Normaliza filtros vindos de request.args para evitar None inesperado.
     Mantém compatibilidade com o que o template/JS já espera.
@@ -25,34 +25,66 @@ def _normalize_filtros(raw: dict) -> dict:
     return filtros
 
 
-def resumo_powerbi_solicitacoes(filtros: dict) -> dict[str, Any]:
+def resumo_powerbi_solicitacoes(filtros: dict | None) -> dict[str, Any]:
     """
-    Fonte da verdade do PowerBI:
-    - resumo_dashboard (kpis gerais e ranking por linha, etc)
-    - ranking_linhas_faltas_powerbi (ranking de linhas por faltas)
+    PowerBI (Gestores) — foco no sistema de solicitações:
+    - KPIs de solicitações (abertas/realizadas/total gasto)
+    - KPIs complementares (extras provisionado/realizado, absenteismo, linhas ativas)
+    - Rankings (clientes, extras por unidade, tipos)
 
-    Retorna no formato que o frontend do powerbi já consome:
+    Retorno padronizado:
       {
-        "filtros": ...,
-        "kpis": ...,
-        "ranking_faltas": [...]
+        "filtros": {...},
+        "kpis": {...},
+        "rankings": {
+          "clientes": [...],
+          "extras": [...],
+          "tipos": [...]
+        }
       }
     """
     filtros = _normalize_filtros(filtros)
 
-    # Import local para evitar import circular
-    from app.services.pcp_service import (
-        resumo_dashboard,
-        ranking_linhas_faltas_powerbi,
+    from app.services.solicitacoes_service import (
+        ranking_extras_dashboard,
+        ranking_solicitacoes_por_cliente,
+        ranking_solicitacoes_por_tipo,
+        resumo_solicitacoes_dashboard,
+        kpis_dashboard_abs_linhas,
     )
 
-    resumo = resumo_dashboard(filtros)
+    sol = resumo_solicitacoes_dashboard(filtros)
+    extras = ranking_extras_dashboard(filtros)
+    extras_provisionado = round(
+        sum(float(x.get("provisionado") or 0) for x in (extras or [])),
+        2,
+    )
+    extras_realizado = round(
+        sum(float(x.get("realizado") or 0) for x in (extras or [])),
+        2,
+    )
+
+    abs_linhas = kpis_dashboard_abs_linhas(filtros)
+
+    clientes = ranking_solicitacoes_por_cliente(filtros)
+    tipos = ranking_solicitacoes_por_tipo(filtros)
+
+    kpis = {
+        "solicitacoes_abertas": int(sol.get("abertas") or 0),
+        "solicitacoes_realizadas": int(sol.get("fechadas") or 0),
+        "total_gasto": float(sol.get("total_gasto") or 0.0),
+        "extras_provisionado": float(extras_provisionado),
+        "extras_realizado": float(extras_realizado),
+        "absenteismo": float(abs_linhas.get("absenteismo") or 0.0),
+        "linhas": int(abs_linhas.get("linhas") or 0),
+    }
 
     return {
         "filtros": filtros,
-        "kpis": (resumo.get("kpis") or {}),
-        "ranking_faltas": ranking_linhas_faltas_powerbi(filtros),
-        # se o resumo_dashboard também devolve "dados" (cards/linhas),
-        # repassamos sem acoplar o template a outro service
-        "dados": resumo.get("dados") or resumo.get("linhas") or resumo.get("itens") or [],
+        "kpis": kpis,
+        "rankings": {
+            "clientes": clientes or [],
+            "extras": extras or [],
+            "tipos": tipos or [],
+        },
     }

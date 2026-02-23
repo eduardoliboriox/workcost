@@ -107,15 +107,16 @@ def powerbi():
     data = resumo_powerbi_solicitacoes(filtros)
     filtros = data["filtros"]
 
-    ranking = data["ranking_faltas"]
-
     return render_template(
         "powerbi.html",
         filtros=filtros,
         active_menu="dashboard",
-        ranking_faltas_powerbi=ranking,
-        ranking_linhas_faltas_powerbi=ranking,
+
+        ranking_faltas_powerbi=[],
+        ranking_linhas_faltas_powerbi=[],
+
         kpis=data["kpis"],
+        rankings=data.get("rankings", {}),
         dados=data.get("dados", [])
     )
 

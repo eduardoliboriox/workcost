@@ -134,7 +134,7 @@ def api_powerbi_resumo():
 
     return jsonify({
         "kpis": data["kpis"],
-        "ranking_faltas": data["ranking_faltas"]
+        "rankings": data["rankings"],
     })
 
 @bp.route("/dashboard/resumo", methods=["GET"])
