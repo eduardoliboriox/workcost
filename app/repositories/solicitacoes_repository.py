@@ -495,21 +495,30 @@ def listar_faltas_por_data():
 # =========================================================
 
 def contar_absenteismo_geral(
-    data_inicial: date | None,
-    data_final: date | None,
-    turno: str | None,
-    filial: str | None
+    data_inicial: str | None,
+    data_final: str | None,
+    turno: str | None = None,
+    filial: str | None = None
 ):
     """
-    Absenteísmo Geral:
-    - baseado na tabela solicitacao_frequencia
-    - período usa data_execucao da solicitacao
-    - filtros globais: data_inicial, data_final, turno, filial
-    Retorna: (total_registros, total_faltas)
+    Retorna:
+    - total_registros (registros de frequência no período)
+    - total_faltas (compareceu = FALSE no período)
+
+    Respeita filtros globais:
+    - data_inicial, data_final (date)
+    - turno, filial (text)
     """
+
+    # Normaliza (evita '' gerando filtros estranhos)
+    data_inicial = (data_inicial or None)
+    data_final = (data_final or None)
+    turno = (turno or None)
+    filial = (filial or None)
 
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
+
             cur.execute("""
                 SELECT
                     COUNT(*) AS total_registros,
@@ -517,40 +526,34 @@ def contar_absenteismo_geral(
                 FROM solicitacao_frequencia f
                 JOIN solicitacoes s
                   ON s.id = f.solicitacao_id
-                WHERE s.data_execucao IS NOT NULL
-                  AND (%s::date IS NULL OR s.data_execucao >= %s::date)
-                  AND (%s::date IS NULL OR s.data_execucao <= %s::date)
-                  AND (
-                        %s IS NULL OR %s = ''
-                        OR %s = ANY (
-                            regexp_split_to_array(
-                                replace(COALESCE(s.unidade,''), ' ', ''),
-                                ','
-                            )
-                        )
-                  )
-                  AND (
-                        %s IS NULL OR %s = ''
-                        OR %s = ANY (
-                            regexp_split_to_array(
-                                replace(COALESCE(s.turnos,''), ' ', ''),
-                                ','
-                            )
-                        )
-                  )
+                WHERE
+                    (%s::date IS NULL OR s.data_execucao >= %s::date)
+                AND (%s::date IS NULL OR s.data_execucao <= %s::date)
+
+                -- turno: s.turnos é string tipo "1T,2T" (compatível com teu padrão)
+                AND (
+                    %s::text IS NULL
+                    OR s.turnos LIKE ('%%' || %s::text || '%%')
+                )
+
+                -- filial/unidade: s.unidade é string tipo "VAC,VTE" (compatível com teu padrão)
+                AND (
+                    %s::text IS NULL
+                    OR s.unidade LIKE ('%%' || %s::text || '%%')
+                )
             """, (
                 data_inicial, data_inicial,
                 data_final, data_final,
-                filial, filial, filial,
-                turno, turno, turno
+                turno, turno,
+                filial, filial
             ))
 
             row = cur.fetchone() or {}
-            return (
-                int(row.get("total_registros") or 0),
-                int(row.get("total_faltas") or 0),
-            )
 
+            total_registros = int(row.get("total_registros") or 0)
+            total_faltas = int(row.get("total_faltas") or 0)
+
+            return total_registros, total_faltas
 
 def contar_linhas_ativas(
     data_inicial: date | None,
