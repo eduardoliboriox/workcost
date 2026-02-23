@@ -94,9 +94,28 @@ def relatorios():
 @bp.route("/powerbi")
 @login_required
 def powerbi():
+    from calendar import monthrange
+
+    data_inicial = request.args.get("data_inicial")
+    data_final = request.args.get("data_final")
+
+    hoje = date.today()
+    primeiro_dia_mes = date(hoje.year, hoje.month, 1)
+    ultimo_dia_mes = date(
+        hoje.year,
+        hoje.month,
+        monthrange(hoje.year, hoje.month)[1]
+    )
+
+    if not data_inicial:
+        data_inicial = primeiro_dia_mes.isoformat()
+
+    if not data_final:
+        data_final = ultimo_dia_mes.isoformat()
+
     filtros = {
-        "data_inicial": request.args.get("data_inicial"),
-        "data_final": request.args.get("data_final"),
+        "data_inicial": data_inicial,
+        "data_final": data_final,
         "turno": request.args.get("turno"),
         "filial": request.args.get("filial"),
         "setor": request.args.get("setor"),
