@@ -41,7 +41,7 @@ function buildExecutiveSummary({
     O gasto total estimado das realizadas é <strong>${formatBRL(totalGasto)}</strong>.
     Em extras, o realizado está <strong>${direcaoGasto}</strong> do provisionado
     (<strong>${formatBRL(extrasReal)}</strong> vs <strong>${formatBRL(extrasProv)}</strong>).
-    Absenteísmo geral em <strong>${absPercent}%</strong> e <strong>${linhas}</strong> linhas ativas.
+    Absenteísmo geral em <strong>${absPercent}%</strong> e <strong>${linhas}</strong> clientes ativos.
     Direcionamento: <strong>${statusAbs}</strong>.
   `.trim();
 }
