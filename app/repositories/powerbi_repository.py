@@ -6,9 +6,6 @@ from typing import Any
 
 
 def _default_month_range(today: date | None = None) -> tuple[str, str]:
-    """
-    Retorna o range padrão: primeiro e último dia do mês atual (ISO yyyy-mm-dd).
-    """
     hoje = today or date.today()
     primeiro = date(hoje.year, hoje.month, 1)
     ultimo = date(hoje.year, hoje.month, monthrange(hoje.year, hoje.month)[1])
@@ -16,10 +13,6 @@ def _default_month_range(today: date | None = None) -> tuple[str, str]:
 
 
 def _normalize_filtros(raw: dict) -> dict:
-    """
-    Normaliza filtros vindos de request.args para evitar None inesperado.
-    Mantém compatibilidade com o que o template/JS já espera.
-    """
     filtros = dict(raw or {})
 
     padrao_inicio, padrao_fim = _default_month_range()
@@ -36,16 +29,6 @@ def _normalize_filtros(raw: dict) -> dict:
 
 
 def resumo_powerbi_solicitacoes(filtros: dict) -> dict[str, Any]:
-    """
-    PowerBI (gestores) — foco em solicitações, extras, gastos e faltas.
-
-    Retorna:
-      {
-        "filtros": {...},
-        "kpis": {...},
-        "rankings": { "clientes": [...], "extras": [...], "tipos": [...] }
-      }
-    """
     filtros = _normalize_filtros(filtros)
 
     from app.services.solicitacoes_service import (
