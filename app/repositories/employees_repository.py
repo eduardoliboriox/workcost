@@ -55,3 +55,34 @@ def get_employee_by_matricula(matricula: str):
             """, (matricula,))
 
             return cur.fetchone()
+
+# ==========================================================
+# NOVO: Remuneração mensal (somente CLT)
+# ==========================================================
+def get_clt_remuneracao_mensal_by_matricula(matricula: str):
+    """
+    Retorna remuneracao_mensal (NUMERIC) do CLT, se existir.
+    - usa users.user_type = 'CLT'
+    - busca via users.matricula (normalizando zeros)
+    """
+    matricula = (matricula or "").strip()
+
+    if not matricula:
+        return None
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute("""
+                SELECT
+                    up.remuneracao_mensal
+                FROM users u
+                JOIN user_profiles up
+                  ON up.user_id = u.id
+                WHERE u.user_type = 'CLT'
+                  AND ltrim(u.matricula, '0') = ltrim(%s, '0')
+                LIMIT 1
+            """, (matricula,))
+            row = cur.fetchone()
+            if not row:
+                return None
+            return row.get("remuneracao_mensal")
