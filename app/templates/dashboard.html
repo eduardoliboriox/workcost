@@ -225,13 +225,13 @@
   
   <div class="row g-4 mb-4">
   
-    <!-- ================== FINANCEIRO (GASTOS POR PROVISÃO) ================== -->
+    <!-- ================== FINANCEIRO (COMPOSIÇÃO DA PROVISÃO) ================== -->
     <div class="col-lg-4">
       <div class="card shadow-sm p-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h6 class="fw-bold text-success mb-0">
             <i class="bi bi-cash-coin"></i>
-            Tipos de gastos (provisões)
+            Composição da provisão (financeiro)
           </h6>
 
           <button class="btn btn-sm btn-outline-success d-none"
@@ -242,8 +242,8 @@
         </div>
 
         <ul class="list-group list-group-flush" id="rankingGastosList">
-          {% if ranking_gastos and ranking_gastos|length %}
-            {% for g in ranking_gastos %}
+          {% if ranking_tipos_provisao and ranking_tipos_provisao|length %}
+            {% for g in ranking_tipos_provisao %}
             <li class="list-group-item d-flex justify-content-between
                 {% if loop.index0 >= 6 %}d-none extra-gasto{% endif %}">
               <span>
@@ -257,7 +257,7 @@
             {% endfor %}
           {% else %}
             <li class="list-group-item text-muted d-flex justify-content-between">
-              Nenhum gasto encontrado
+              Nenhuma provisão encontrada
               <span class="badge bg-secondary">0</span>
             </li>
           {% endif %}
@@ -442,102 +442,6 @@ function toggleGastos() {
 }
 </script>
 
-<script>
-async function abrirModalLinha(linha) {
-
-  document.getElementById("modalLinhaTitulo").innerText =
-    `Faltas — ${linha}`;
-
-  const params = new URLSearchParams({
-    linha: linha,
-    data_inicial: "{{ filtros.data_inicial }}",
-    data_final: "{{ filtros.data_final }}",
-    turno: "{{ filtros.turno or '' }}",
-    filial: "{{ filtros.filial or '' }}"
-  });
-
-  const resp = await fetch(`/api/dashboard/linha/cargos?${params}`);
-  const dados = await resp.json();
-
-  const lista = document.getElementById("modalLista");
-  const totalSpan = document.getElementById("modalTotal");
-
-  lista.innerHTML = "";
-  let total = 0;
-
-  if (!dados.length) {
-    lista.innerHTML = `
-      <li class="list-group-item text-muted">
-        Nenhuma falta registrada
-      </li>`;
-  }
-
-  dados.forEach(c => {
-    total += c.total;
-
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${c.nome}
-        <span class="badge bg-danger">${c.total}</span>
-      </li>`;
-  });
-
-  totalSpan.innerText = total;
-
-  new bootstrap.Modal(
-    document.getElementById("modalLinha")
-  ).show();
-}
-</script>
-
-<script>
-async function abrirModalFerias(linha) {
-
-  document.getElementById("modalLinhaTitulo").innerText =
-    `Férias — ${linha}`;
-
-  const params = new URLSearchParams({
-    linha,
-    data_inicial: "{{ filtros.data_inicial }}",
-    data_final: "{{ filtros.data_final }}",
-    turno: "{{ filtros.turno or '' }}",
-    filial: "{{ filtros.filial or '' }}"
-  });
-
-  // 🔹 Novo endpoint que retorna cargos
-  const resp = await fetch(`/api/dashboard/linha/ferias_cargos?${params}`);
-  const dados = await resp.json();
-
-  const lista = document.getElementById("modalLista");
-  const totalSpan = document.getElementById("modalTotal");
-
-  lista.innerHTML = "";
-  let total = 0;
-
-  if (!dados.length) {
-    lista.innerHTML = `
-      <li class="list-group-item text-muted">
-        Nenhuma férias registrada
-      </li>`;
-  }
-
-  dados.forEach(c => {
-    total += c.total;
-    lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${c.nome}   <!-- cargo name corrigido -->
-        <span class="badge bg-info">${c.total}</span>
-      </li>`;
-  });
-
-  totalSpan.innerText = total;
-
-  new bootstrap.Modal(
-    document.getElementById("modalLinha")
-  ).show();
-}
-</script>
-  
 <script>
 const btnHoje = document.getElementById("btnHoje");
 if (btnHoje) {
