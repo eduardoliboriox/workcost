@@ -47,7 +47,8 @@ async function atualizarDashboard() {
       respObjetivos,
       respClientes,
       respTipos,
-      respAbsData
+      respAbsData,
+      respProvisaoTipos
     ] = await Promise.all([
       fetch(`/api/dashboard/resumo?${params}`),
       fetch(`/api/dashboard/solicitacoes-resumo?${params}`),
@@ -55,7 +56,8 @@ async function atualizarDashboard() {
       fetch(`/api/dashboard/objetivos?${params}`),
       fetch(`/api/dashboard/clientes?${params}`),
       fetch(`/api/dashboard/tipos-solicitacao?${params}`),
-      fetch(`/api/dashboard/absenteismo-por-data?${params}`)
+      fetch(`/api/dashboard/absenteismo-por-data?${params}`),
+      fetch(`/api/dashboard/provisao-tipos?${params}`)
     ]);
 
     const dataResumo = await respResumo.json();
@@ -65,6 +67,7 @@ async function atualizarDashboard() {
     const rankingClientes = await respClientes.json();
     const rankingTipos = await respTipos.json();
     const rankingAbsData = await respAbsData.json();
+    const rankingProvisaoTipos = await respProvisaoTipos.json();
 
     // ===============================
     // KPIs
@@ -94,6 +97,9 @@ async function atualizarDashboard() {
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
     atualizarAbsenteismoPorData(rankingAbsData);
+
+    // ✅ card financeiro de provisões (provisao_service.py)
+    atualizarTiposProvisao(rankingProvisaoTipos);
 
   } catch (e) {
     console.error("Erro ao atualizar dashboard", e);
@@ -198,6 +204,59 @@ function atualizarAbsenteismoPorData(dados) {
 
   if (btn) {
     if (absenteismoPorDataCache.length > 5) {
+      btn.classList.remove("d-none");
+      btn.innerText = "Ver mais";
+    } else {
+      btn.classList.add("d-none");
+    }
+  }
+}
+
+/**
+ * ✅ Card financeiro: composição da provisão (refeição/transporte/adicional)
+ * Reaproveita o mesmo container/id do card já existente: rankingGastosList
+ */
+function atualizarTiposProvisao(dados) {
+  const lista = document.getElementById("rankingGastosList");
+  const btn = document.getElementById("toggleGastosBtn");
+
+  if (!lista) return;
+
+  const itens = Array.isArray(dados) ? dados : [];
+  lista.innerHTML = "";
+
+  if (!itens.length) {
+    lista.innerHTML = `
+      <li class="list-group-item text-muted d-flex justify-content-between">
+        Nenhuma provisão encontrada
+        <span class="badge bg-secondary">0</span>
+      </li>
+    `;
+    if (btn) btn.classList.add("d-none");
+    return;
+  }
+
+  itens.forEach((g, index) => {
+    const tipo = g.tipo || "";
+    const pct = Number(g.percentual || 0);
+    const total = Number(g.total || 0);
+
+    lista.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between
+          ${index >= 6 ? 'd-none extra-gasto' : ''}">
+        <span>
+          ${tipo}
+          <span class="badge bg-primary ms-2">${pct}%</span>
+        </span>
+        <span class="fw-bold text-success">
+          R$ ${total.toFixed(2).replace(".", ",")}
+        </span>
+      </li>
+    `;
+  });
+
+  if (btn) {
+    if (itens.length > 6) {
       btn.classList.remove("d-none");
       btn.innerText = "Ver mais";
     } else {
