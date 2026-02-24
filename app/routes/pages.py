@@ -9,7 +9,8 @@ from app.services.solicitacoes_service import (
     objetivos_status_dashboard,
     ranking_solicitacoes_por_cliente,
     kpis_dashboard_abs_linhas,
-    ranking_gastos_provisao_dashboard
+    ranking_gastos_provisao_dashboard,
+    ranking_tipos_provisao_dashboard
 )
 
 bp = Blueprint("pages", __name__)
@@ -25,7 +26,6 @@ def dashboard():
 
     from datetime import date
     from calendar import monthrange
-    from app.services.solicitacoes_service import ranking_extras_dashboard
 
     data_inicial = request.args.get("data_inicial")
     data_final = request.args.get("data_final")
@@ -57,7 +57,12 @@ def dashboard():
     ranking_extras = ranking_extras_dashboard(filtros)
     ranking_objetivos = objetivos_status_dashboard(filtros)
     ranking_clientes = ranking_solicitacoes_por_cliente(filtros)
+
+    # mantém o antigo (se usado em outros pontos)
     ranking_gastos = ranking_gastos_provisao_dashboard(filtros)
+
+    # ✅ novo card: composição financeira baseada no provisao_service.py
+    ranking_tipos_provisao = ranking_tipos_provisao_dashboard(filtros)
 
     kpis_fix = kpis_dashboard_abs_linhas(filtros)
     dados.setdefault("kpis", {})
@@ -71,6 +76,7 @@ def dashboard():
         ranking_objetivos=ranking_objetivos,
         ranking_clientes=ranking_clientes,
         ranking_gastos=ranking_gastos,
+        ranking_tipos_provisao=ranking_tipos_provisao,
         active_menu="dashboard",
         **dados
     )
@@ -223,10 +229,6 @@ def solicitacao_view(solicitacao_id):
         origem=origem
     )
 
-# ==============================
-# LEGAL PAGES
-# ==============================
-
 @bp.route("/privacy-policy")
 def privacy_policy():
     return render_template("legal/privacy.html")
@@ -264,7 +266,6 @@ def solicitacao_provisao(solicitacao_id):
         active_menu=active_menu,
         origem=origem
     )
-
 
 
 @bp.route("/solicitacoes/<int:solicitacao_id>/documento")
@@ -309,10 +310,6 @@ def solicitacao_frequencia(solicitacao_id):
         funcionarios=funcionarios,
         active_menu="solicitacoes"
     )
-
-# ==============================
-# PWA (root scope)
-# ==============================
 
 @bp.route("/offline", endpoint="offline_page")
 def offline():
