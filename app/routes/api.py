@@ -10,7 +10,8 @@ from app.services.pcp_service import ranking_linhas_ferias
 from app.services.relatorios_service import gerar_relatorio
 from app.services.solicitacoes_service import (
     criar_solicitacao,
-    ranking_gastos_provisao_dashboard
+    ranking_gastos_provisao_dashboard,
+    ranking_tipos_provisao_dashboard
 )
 from app.services.employees_service import buscar_funcionario
 from app.services.powerbi_service import resumo_powerbi_solicitacoes
@@ -179,6 +180,20 @@ def api_dashboard_gastos_provisao():
     }
 
     return jsonify(ranking_gastos_provisao_dashboard(filtros))
+
+# ✅ NOVO — composição financeira da provisão (provisao_service.py)
+@bp.route("/dashboard/provisao-tipos", methods=["GET"])
+@login_required
+def api_dashboard_provisao_tipos():
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    return jsonify(ranking_tipos_provisao_dashboard(filtros))
 
 
 @bp.route("/solicitacoes", methods=["POST"])
