@@ -12,7 +12,6 @@ from app.services.solicitacoes_service import (
     ranking_gastos_provisao_dashboard
 )
 
-
 bp = Blueprint("pages", __name__)
 
 @bp.route("/")
@@ -208,13 +207,19 @@ def solicitacao_view(solicitacao_id):
     dados = obter_detalhe_solicitacao(solicitacao_id)
     origem = request.args.get("from")
 
+    active_menu = "solicitacoes"
+    if origem == "pedidos":
+        active_menu = "pedidos"
+    elif origem == "minhasextras":
+        active_menu = "minhasextras"
+
     return render_template(
         "solicitacoes.html",
         modo="view",
         solicitacao=dados["solicitacao"],
         funcionarios=dados["funcionarios"],
         aprovacoes=dados["aprovacoes"],
-        active_menu="solicitacoes",
+        active_menu=active_menu,
         origem=origem
     )
 
@@ -243,12 +248,20 @@ def solicitacao_provisao(solicitacao_id):
     if not dados:
         return "Solicitação não encontrada", 404
 
+    origem = request.args.get("from")
+
+    active_menu = "solicitacoes"
+    if origem == "pedidos":
+        active_menu = "pedidos"
+    elif origem == "minhasextras":
+        active_menu = "minhasextras"
+
     return render_template(
         "solicitacoes-provisao.html",
         solicitacao=dados["solicitacao"],
         funcionarios=dados["funcionarios"],
         total_geral=dados["total_geral"],
-        active_menu="solicitacoes"
+        active_menu=active_menu
     )
 
 
