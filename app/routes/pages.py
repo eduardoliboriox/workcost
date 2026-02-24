@@ -261,8 +261,10 @@ def solicitacao_provisao(solicitacao_id):
         solicitacao=dados["solicitacao"],
         funcionarios=dados["funcionarios"],
         total_geral=dados["total_geral"],
-        active_menu=active_menu
+        active_menu=active_menu,
+        origem=origem
     )
+
 
 
 @bp.route("/solicitacoes/<int:solicitacao_id>/documento")
