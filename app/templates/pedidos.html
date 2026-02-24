@@ -121,9 +121,11 @@
                                              solicitacao_id=s.id,
                                              from='pedidos') }}"
                     data-provisao="{{ url_for('pages.solicitacao_provisao',
-                                              solicitacao_id=s.id) }}"
+                                              solicitacao_id=s.id,
+                                              from='pedidos') }}"
                     data-pdf="{{ url_for('pages.solicitacao_documento',
-                                         solicitacao_id=s.id) }}">
+                                         solicitacao_id=s.id,
+                                         from='pedidos') }}">
               
               <option value="">Selecionar</option>
               <option value="arquivo">Arquivo</option>
@@ -170,7 +172,8 @@
         </a>
 
         <a href="{{ url_for('pages.solicitacao_provisao',
-                            solicitacao_id=s.id) }}"
+                            solicitacao_id=s.id,
+                            from='pedidos') }}"
            class="btn btn-sm btn-outline-warning">
           Provisão
         </a>
