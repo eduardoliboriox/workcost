@@ -17,7 +17,7 @@ from app.repositories.solicitacoes_repository import (
     salvar_frequencia,
     contar_presencas,
     contar_absenteismo_geral,
-    contar_linhas_ativas, 
+    contar_linhas_ativas,
     listar_objetivos_dashboard,
     listar_solicitacoes_para_ranking_cliente,
     listar_solicitacoes_para_ranking_tipo,
@@ -247,13 +247,11 @@ def obter_solicitacoes_fechadas():
         total_funcionarios = r["total_funcionarios"]
         assinadas = r["assinadas"]
 
-        # todos roles aprovados?
         roles_aprovados = all(
             aprov_map.get(r["id"], {}).get(role)
             for role in ROLES
         )
 
-        # regra fechamento
         if (
             r["data_execucao"]
             and total_funcionarios > 0
@@ -850,6 +848,7 @@ def kpis_dashboard_abs_linhas(filtros: dict):
         "linhas": clientes_ativos
     }
 
+
 def ranking_gastos_provisao_dashboard(filtros: dict):
 
     from datetime import date
@@ -940,6 +939,92 @@ def ranking_gastos_provisao_dashboard(filtros: dict):
                 _add(str(tipo).strip(), float(valor or 0))
             except Exception:
                 continue
+
+    total_geral = sum(totais.values()) or 0.0
+
+    resultado = []
+    for tipo, total in totais.items():
+        percentual = 0.0 if total_geral <= 0 else round((total / total_geral) * 100, 1)
+        resultado.append({
+            "tipo": tipo,
+            "percentual": percentual,
+            "total": round(float(total), 2)
+        })
+
+    resultado.sort(key=lambda x: x["total"], reverse=True)
+    return resultado
+
+
+# =========================================================
+# DASHBOARD — COMPOSIÇÃO DA PROVISÃO (provisao_service.py)
+# =========================================================
+
+def ranking_tipos_provisao_dashboard(filtros: dict):
+    """
+    Card financeiro (provisões) baseado em app/services/provisao_service.py
+
+    Mostra a composição por:
+    - Refeição
+    - Transporte
+    - Adicional Noturno
+
+    Respeita filtros globais:
+    data_inicial, data_final, turno, filial
+    """
+
+    from datetime import date
+    from app.repositories.solicitacoes_repository import (
+        listar_solicitacoes_com_status,
+        listar_funcionarios_por_solicitacao
+    )
+    from app.services.provisao_service import gerar_provisao
+
+    data_inicial = filtros.get("data_inicial")
+    data_final = filtros.get("data_final")
+    turno_filtro = filtros.get("turno")
+    filial_filtro = filtros.get("filial")
+
+    if data_inicial:
+        data_inicial = date.fromisoformat(data_inicial)
+
+    if data_final:
+        data_final = date.fromisoformat(data_final)
+
+    rows = listar_solicitacoes_com_status()
+
+    totais = {
+        "Refeição": 0.0,
+        "Transporte": 0.0,
+        "Adicional Noturno": 0.0
+    }
+
+    for r in rows:
+
+        data_execucao = r.get("data_execucao")
+        if not data_execucao:
+            continue
+
+        if data_inicial and data_execucao < data_inicial:
+            continue
+
+        if data_final and data_execucao > data_final:
+            continue
+
+        unidades = [u.strip() for u in (r.get("unidade") or "").split(",")]
+        if filial_filtro and filial_filtro not in unidades:
+            continue
+
+        turnos = [t.strip() for t in (r.get("turnos") or "").split(",")]
+        if turno_filtro and turno_filtro not in turnos:
+            continue
+
+        funcionarios = listar_funcionarios_por_solicitacao(r["id"])
+        provisao = gerar_provisao(r, funcionarios)
+
+        for f in (provisao.get("funcionarios") or []):
+            totais["Refeição"] += float(f.get("custo_refeicao") or 0.0)
+            totais["Transporte"] += float(f.get("custo_transporte") or 0.0)
+            totais["Adicional Noturno"] += float(f.get("adicional_noturno") or 0.0)
 
     total_geral = sum(totais.values()) or 0.0
 
