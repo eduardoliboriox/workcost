@@ -27,10 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ===============================
-     FILTROS MOBILE 
-     =============================== */
-
   const searchInput = document.getElementById("filterSearch");
   const estadoSelect = document.getElementById("filterEstado");
   const startDateInput = document.getElementById("filterStartDate");
