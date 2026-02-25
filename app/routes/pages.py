@@ -57,13 +57,8 @@ def dashboard():
     ranking_extras = ranking_extras_dashboard(filtros)
     ranking_objetivos = objetivos_status_dashboard(filtros)
     ranking_clientes = ranking_solicitacoes_por_cliente(filtros)
-
-    # mantém o antigo (se usado em outros pontos)
     ranking_gastos = ranking_gastos_provisao_dashboard(filtros)
-
-    # ✅ novo card: composição financeira baseada no provisao_service.py
     ranking_tipos_provisao = ranking_tipos_provisao_dashboard(filtros)
-
     kpis_fix = kpis_dashboard_abs_linhas(filtros)
     dados.setdefault("kpis", {})
     dados["kpis"]["absenteismo"] = kpis_fix["absenteismo"]
@@ -266,7 +261,6 @@ def solicitacao_provisao(solicitacao_id):
         active_menu=active_menu,
         origem=origem
     )
-
 
 @bp.route("/solicitacoes/<int:solicitacao_id>/documento")
 @login_required

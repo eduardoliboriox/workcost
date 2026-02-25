@@ -39,7 +39,6 @@ function setPeriodoDefault(periodo) {
     fim = new Date(hoje);
     ini = new Date(hoje.getFullYear(), 0, 1);
   } else {
-    // CUSTOM: não mexe
     return;
   }
 
@@ -205,7 +204,6 @@ function renderFaltasPorData(dados) {
       `;
     });
 
-    // bind click
     list.querySelectorAll("li[data-iso]").forEach((li) => {
       li.addEventListener("click", () => abrirModalFaltasPorData(li.dataset.iso));
     });
@@ -277,7 +275,6 @@ function abrirModalFaltasPorData(dataISO) {
     if (totalEl) totalEl.innerText = String(total);
   }
 
-  // bootstrap modal
   new bootstrap.Modal(modalEl).show();
 }
 
@@ -297,7 +294,6 @@ async function gerarRelatorio() {
   showLoading(true);
 
   try {
-    // Reaproveita APIs já existentes (sem criar novas rotas)
     const [
       respResumo,
       respSolicitacoes,
@@ -321,7 +317,6 @@ async function gerarRelatorio() {
     const dataTipos = await respTipos.json();
     const dataAbsData = await respAbsData.json();
 
-    // KPIs (sem HC planejado/real; sem depender de linhas)
     renderKPIs({
       absenteismo: dataResumo?.kpis?.absenteismo ?? 0,
       abertas: dataSolic?.abertas ?? 0,
@@ -329,22 +324,14 @@ async function gerarRelatorio() {
       total_gasto: dataSolic?.total_gasto ?? 0
     });
 
-    // Financeiro + ranking unidade
     renderRankingUnidades(dataExtras);
-
-    // Clientes
     renderRankingClientes(dataClientes);
-
-    // Tipos (por descrição)
     renderRankingTipos(dataTipos);
-
-    // Abs por data (top)
     renderFaltasPorData(dataAbsData);
 
   } catch (e) {
     console.error("Erro ao gerar relatório:", e);
 
-    // fallback visual
     setEmptyTableRows("tabelaUnidades", 4, "Erro ao carregar dados");
     setEmptyList("listaClientes", "Erro ao carregar dados");
     setEmptyList("listaTipos", "Erro ao carregar dados");
@@ -359,7 +346,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = $("formRelatorio");
   const btnLimpar = $("btnLimparFiltros");
 
-  // defaults
   if (periodoSelect) {
     setPeriodoDefault(periodoSelect.value);
 
@@ -386,6 +372,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // primeira carga
   gerarRelatorio();
 });

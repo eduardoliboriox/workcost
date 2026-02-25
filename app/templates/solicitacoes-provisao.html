@@ -28,7 +28,6 @@
 
 {% block content %}
 
-<!-- Reaproveita o mesmo "document-fit" já usado em solicitacoes.html -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/solicitacoes.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/provisao.css') }}">
 
@@ -96,7 +95,6 @@
   </div>
 </div>
 
-<!-- Aplica o scale automático no mobile (mesma lógica do arquivo da solicitação) -->
 <script src="{{ url_for('static', filename='js/document-fit.js') }}"></script>
 
 {% endblock %}

@@ -45,7 +45,6 @@
 
 <form method="get" id="filtrosForm" class="mb-4">
 
-  <!-- HEADER -->
   <div class="d-flex align-items-center gap-4 flex-wrap">
     <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
      alt="Venttos Power BI"
@@ -53,7 +52,6 @@
 
     <div class="row g-2 flex-grow-1">
 
-      <!-- FILIAL -->
       <div class="col-md">
         <label>Filial</label>
         <select name="filial" class="form-select auto-submit">
@@ -64,7 +62,6 @@
         </select>
       </div>
 
-      <!-- TURNO -->
       <div class="col-md">
         <label>Turno</label>
         <select name="turno" class="form-select auto-submit">
@@ -75,7 +72,6 @@
         </select>
       </div>
 
-      <!-- DATAS -->
       <div class="col-md">
         <label>Data Inicial</label>
         <input type="date"
@@ -92,7 +88,6 @@
                value="{{ filtros.data_final }}">
       </div>
 
-      <!-- Mantém compatível com layout antigo (não impacta solicitacoes) -->
       <input type="hidden" name="setor" value="{{ filtros.setor or '' }}">
       <input type="hidden" name="linha" value="{{ filtros.linha or '' }}">
 
@@ -100,7 +95,6 @@
   </div>
 </form>
 
-<!-- KPIs -->
 <div class="row g-3 mb-4 text-center">
   <div class="col-md-2">
     <div class="card shadow-sm p-3">
@@ -145,7 +139,6 @@
   </div>
 </div>
 
-<!-- FAIXA EXECUTIVA (diretoria gosta disso) -->
 <div class="row g-3 mb-4">
   <div class="col-lg-8">
     <div class="card shadow-sm p-3 h-100">
@@ -169,7 +162,6 @@
         Carregando visão executiva...
       </p>
 
-      <!-- Barras simples (Gasto e Extras) -->
       <div class="row g-3">
         <div class="col-md-6">
           <div class="small fw-semibold mb-1">Gasto (Realizado vs Provisionado)</div>
@@ -224,7 +216,6 @@
   </div>
 </div>
 
-<!-- ================= RANKING DE UNIDADES (EXTRAS) ================= -->
 <div class="card shadow-sm p-3 mt-4">
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
     <h6 class="fw-bold text-primary mb-0">
@@ -265,7 +256,6 @@
   </div>
 </div>
 
-<!-- Modal Unidade PowerBI -->
 <div class="modal fade" id="modalLinhaPowerBI" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">
@@ -307,7 +297,7 @@
 
 {% block scripts %}
 <script>
-/* ===== AUTO SUBMIT (POWER BI STYLE) ===== */
+  
 document.querySelectorAll(".auto-submit").forEach(el => {
   el.addEventListener("change", () => {
     document.getElementById("filtrosForm").submit();

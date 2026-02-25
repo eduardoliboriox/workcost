@@ -56,9 +56,6 @@ def get_employee_by_matricula(matricula: str):
 
             return cur.fetchone()
 
-# ==========================================================
-# NOVO: Remuneração mensal (somente CLT)
-# ==========================================================
 def get_clt_remuneracao_mensal_by_matricula(matricula: str):
     """
     Retorna remuneracao_mensal (NUMERIC) do CLT, se existir.

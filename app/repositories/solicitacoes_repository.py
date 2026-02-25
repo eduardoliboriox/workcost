@@ -490,9 +490,7 @@ def listar_faltas_por_data():
             """)
             return cur.fetchall()
 
-# =========================================================
-# DASHBOARD KPIs (Absenteísmo Geral / Linhas Ativas)
-# =========================================================
+
 def contar_absenteismo_geral(
     data_inicial: str | None = None,
     data_final: str | None = None,

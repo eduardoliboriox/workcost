@@ -40,12 +40,10 @@ def create_app():
             "ENVIRONMENT": app.config.get("ENVIRONMENT", "production")
         }
 
-    # 📌 Blueprints
     app.register_blueprint(pages_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
-    # CLI commands
     from app.cli.employees_importer import import_employees
     app.cli.add_command(import_employees)
 

@@ -27,16 +27,11 @@ from app.auth.repository import (
 bp = Blueprint("auth", __name__)
 oauth = OAuth()
 
-
-# ==========================================================
-# OAUTH SETUP
-# ==========================================================
 @bp.record_once
 def setup_oauth(state):
     app = state.app
     oauth.init_app(app)
 
-    # GOOGLE
     oauth.register(
         name="google",
         client_id=app.config["GOOGLE_CLIENT_ID"],
@@ -45,7 +40,6 @@ def setup_oauth(state):
         client_kwargs={"scope": "openid email profile"},
     )
 
-    # GITHUB
     oauth.register(
         name="github",
         client_id=app.config["GITHUB_CLIENT_ID"],
@@ -56,10 +50,6 @@ def setup_oauth(state):
         client_kwargs={"scope": "user:email"},
     )
 
-
-# ==========================================================
-# LOGIN PAGE
-# ==========================================================
 @bp.route("/login")
 def login():
     user_agent = parse(request.headers.get("User-Agent", ""))
@@ -69,10 +59,6 @@ def login():
 
     return render_template("auth/login.html")
 
-
-# ==========================================================
-# GOOGLE LOGIN (mantido intacto)
-# ==========================================================
 @bp.route("/login/google")
 def login_google():
 
@@ -114,10 +100,6 @@ def google_callback():
 
     return redirect(url_for("pages.inicio"))
 
-
-# ==========================================================
-# GITHUB LOGIN (AJUSTADO)
-# ==========================================================
 @bp.route("/login/github")
 def login_github():
 
@@ -155,9 +137,6 @@ def github_callback():
         flash("Falha na autenticação GitHub", "danger")
         return redirect(url_for("auth.login"))
 
-    # =====================================================
-    # EMAIL (GitHub pode não retornar email direto)
-    # =====================================================
     email = profile.get("email")
 
     if not email:
@@ -182,9 +161,6 @@ def github_callback():
     login_user(User(user_data))
 
     return redirect(url_for("pages.inicio"))
-
-
-# ==========================================================
 
 @bp.route("/logout")
 def logout():
@@ -262,7 +238,6 @@ def admin_users_all():
     users = list_all_users(search)
     return render_template("auth/users_all.html", users=users)
 
-# experiência login mobile 
 @bp.route("/login/mobile")
 def login_mobile_choice():
     return render_template("auth/mobile/login_choice.html")

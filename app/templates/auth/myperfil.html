@@ -36,7 +36,6 @@
 
     <h5 class="mb-3">Dados do usuário</h5>
 
-    <!-- ================= DADOS FIXOS ================= -->
     <div class="row g-3 mb-4">
       <div class="col-md-6">
         <label class="form-label">Nome completo</label>
@@ -64,7 +63,6 @@
       </div>
     </div>
 
-    <!-- ================= REMUNERAÇÃO (SOMENTE CLT) ================= -->
     {% if user.user_type == "CLT" %}
     <h5 class="mb-3">Remuneração (CLT)</h5>
 
@@ -83,7 +81,6 @@
     </div>
     {% endif %}
 
-    <!-- ================= CONTATO & ENDEREÇO ================= -->
     <h5 class="mb-3">Contato & Endereço</h5>
 
     <input name="phone"
@@ -110,7 +107,6 @@
     <input name="reference" class="form-control mb-4" placeholder="Referência"
            value="{{ profile.reference if profile }}">
 
-    <!-- ================= ALTERAR SENHA ================= -->
     <h5 class="mb-3">Alterar senha</h5>
 
     <input type="password" name="current_password"

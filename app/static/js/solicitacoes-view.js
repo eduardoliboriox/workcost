@@ -13,10 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pendingApprovals = [];
 
-  /* ======================================================
-     FLUXO DE APROVAÇÃO 
-     ====================================================== */
-
   document.querySelectorAll(".approval-item").forEach(item => {
     const btn = item.querySelector(".btn-approve");
     if (!btn) return;
@@ -64,10 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ======================================================
-     FUNCIONÁRIOS — ASSINATURA 
-     ====================================================== */
-
   document.querySelectorAll("#funcionariosTable .btn-sign")
     .forEach(btn => {
 
@@ -108,10 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
     });
-
-  /* ======================================================
-     SALVAR VIEW
-     ====================================================== */
 
   document.getElementById("btnSaveView")
     ?.addEventListener("click", async (e) => {

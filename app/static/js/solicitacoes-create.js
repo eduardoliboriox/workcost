@@ -9,10 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!form || !btnAddRow || !tbody) return;
 
-  /* ======================================================
-     MATRÍCULA DO USUÁRIO LOGADO
-     ====================================================== */
-
   const loggedUserMatricula = form.dataset.userMatricula;
 
   if (!loggedUserMatricula) {
@@ -32,10 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   addRow();
-
-  /* ======================================================
-     SUBMIT DO FORMULÁRIO
-     ====================================================== */
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -68,10 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.location.href = "/solicitacoes/abertas";
   });
-
-  /* ======================================================
-     FLUXO DE APROVAÇÃO 
-     ====================================================== */
 
   document.querySelectorAll(".btn-approve").forEach(button => {
     button.addEventListener("click", async () => {
@@ -115,10 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
       button.remove();
     });
   });
-
-  /* ======================================================
-     FUNCIONÁRIOS
-     ====================================================== */
 
   function addRow() {
     const row = document.createElement("tr");

@@ -3,16 +3,12 @@ from pathlib import Path
 import pandas as pd
 import psycopg
 
-# =========================
-# CONFIG
-# =========================
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-# Detecta arquivo XLS ou XLSX automaticamente
 EXCEL_PATH = None
 for ext in ["xls", "xlsx", "XLS", "XLSX"]:
     candidate = BASE_DIR / "app" / "data" / f"Lista-de-Funcionarios-Venttos-17-12-25-Completo.{ext}"
@@ -25,27 +21,19 @@ if not EXCEL_PATH:
         "Excel not found in app/data: Lista-de-Funcionarios-Venttos-17-12-25-Completo.[xls,xlsx]"
     )
 
-# Escolhe engine automaticamente
 engine = "xlrd" if EXCEL_PATH.suffix.lower() == ".xls" else "openpyxl"
 
-# =========================
-# HELPERS
-# =========================
 def normalize_status(value) -> str:
     if pd.isna(value):
         return "INACTIVE"
     v = str(value).strip().lower()
     return "ACTIVE" if "ativo" in v else "INACTIVE"
 
-# =========================
-# MAIN
-# =========================
 def main():
     print(f"📊 Reading Excel: {EXCEL_PATH.name} ...")
 
     df = pd.read_excel(EXCEL_PATH, engine=engine)
 
-    # Renomeia colunas com base na posição (colunas B-G)
     df = df.rename(columns={
         df.columns[1]: "full_name",    # Coluna B
         df.columns[2]: "job_title",    # Coluna C
@@ -57,11 +45,9 @@ def main():
 
     df = df[["full_name", "job_title", "department", "hired_at", "status", "branch_name"]]
 
-    # Normaliza status e datas
     df["status"] = df["status"].apply(normalize_status)
     df["hired_at"] = pd.to_datetime(df["hired_at"], errors="coerce").dt.date
 
-    # Remove linhas sem nome
     rows = [
         (
             str(r.full_name).strip(),
@@ -78,12 +64,9 @@ def main():
     print(f"📌 Total rows after filtering: {len(rows)}")
     print(f"🚀 Importing employees into PostgreSQL...")
 
-    # Conecta no PostgreSQL
     with psycopg.connect(DATABASE_URL, sslmode="require", connect_timeout=15) as conn:
         with conn.cursor() as cur:
-            # Limpa tabela antes de inserir
             cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
-            # Insere dados
             cur.executemany("""
                 INSERT INTO employees (
                     full_name,
@@ -99,8 +82,5 @@ def main():
 
     print("✅ Employees imported successfully!")
 
-# =========================
-# ENTRYPOINT
-# =========================
 if __name__ == "__main__":
     main()

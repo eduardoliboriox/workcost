@@ -9,9 +9,9 @@ class Config:
     PREFERRED_URL_SCHEME = "https"
     BASE_URL = os.getenv("BASE_URL")
 
-    # ==========================
+    # =========================
     # OPERACIONAL
-    # ==========================
+    # =========================
     GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 

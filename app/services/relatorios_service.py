@@ -1,4 +1,3 @@
-# app/services/relatorios_service.py
 from app.extensions import get_db
 from psycopg.rows import dict_row
 from datetime import date, timedelta
@@ -25,9 +24,6 @@ def gerar_relatorio(setor, tipo):
     else:
         data_inicial = hoje.replace(month=1, day=1)
 
-    # ===============================
-    # Ranking de linhas por faltas
-    # ===============================
     base_query = """
         SELECT
             l.linha,
@@ -59,9 +55,6 @@ def gerar_relatorio(setor, tipo):
             cur.execute(query, params)
             linhas = cur.fetchall() or []
 
-    # ==========================================
-    # Cargo crítico GLOBAL (visão executiva)
-    # ==========================================
     cargo_query = """
         SELECT
             c.nome,
@@ -81,9 +74,6 @@ def gerar_relatorio(setor, tipo):
             cur.execute(cargo_query, (data_inicial, hoje))
             cargo_critico_global = cur.fetchone()
 
-    # =====================================================
-    # Cargo crítico POR LINHA + percentual dentro da linha
-    # =====================================================
     linha_cargo_query = """
         WITH total_linha AS (
             SELECT
@@ -115,7 +105,6 @@ def gerar_relatorio(setor, tipo):
         LIMIT 1
     """
 
-    # Enriquecendo cada linha com análise de cargo
     for linha in linhas:
         with get_db() as conn:
             with conn.cursor(row_factory=dict_row) as cur:
@@ -138,7 +127,6 @@ def gerar_relatorio(setor, tipo):
         "cargo_critico": cargo_critico_global,
     }
 
-
 def gerar_provisao_gastos_extra(solicitacao_id: int):
 
     solicitacao = buscar_solicitacao_por_id(solicitacao_id)
@@ -150,7 +138,3 @@ def gerar_provisao_gastos_extra(solicitacao_id: int):
         return {"error": "Solicitação não encontrada"}
 
     return gerar_provisao(solicitacao, funcionarios)
-
-
-
-

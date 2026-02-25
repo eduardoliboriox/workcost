@@ -17,9 +17,6 @@ def send_email(to_email: str, subject: str, body: str):
 
     config = current_app.config
 
-    # ==========================
-    # SENDGRID (PRIORIDADE)
-    # ==========================
     if config.get("SENDGRID_API_KEY") and config.get("SENDGRID_FROM"):
         try:
             message = Mail(
@@ -38,9 +35,6 @@ def send_email(to_email: str, subject: str, body: str):
             current_app.logger.error(f"SendGrid error: {e}")
             return False
 
-    # ==========================
-    # SMTP (FALLBACK)
-    # ==========================
     if config.get("SMTP_HOST"):
         try:
             msg = EmailMessage()
@@ -71,9 +65,6 @@ def send_email(to_email: str, subject: str, body: str):
             current_app.logger.error(f"SMTP error: {e}")
             return False
 
-    # ==========================
-    # Nenhuma configuração ativa
-    # ==========================
     current_app.logger.warning(
         "Email not sent: no SENDGRID or SMTP configured."
     )

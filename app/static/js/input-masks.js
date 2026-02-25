@@ -1,15 +1,7 @@
-// ======================================================
-// Brazilian input masks (phone + zip code)
-// Clean | reusable | no dependencies
-// ======================================================
-
 function onlyDigits(value) {
   return value.replace(/\D/g, "");
 }
 
-// ------------------------------------------------------
-// PHONE (99) 99999-9999
-// ------------------------------------------------------
 function maskPhone(input) {
   input.addEventListener("input", () => {
     let v = onlyDigits(input.value).slice(0, 11);
@@ -24,9 +16,6 @@ function maskPhone(input) {
   });
 }
 
-// ------------------------------------------------------
-// ZIP CODE 99999-999
-// ------------------------------------------------------
 function maskZip(input) {
   input.addEventListener("input", () => {
     let v = onlyDigits(input.value).slice(0, 8);
@@ -39,9 +28,6 @@ function maskZip(input) {
   });
 }
 
-// ------------------------------------------------------
-// AUTO INIT
-// ------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelectorAll("[data-mask='phone']")

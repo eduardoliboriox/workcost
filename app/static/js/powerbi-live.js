@@ -15,7 +15,6 @@ function formatBRL(v) {
   return "R$ " + n.toFixed(2).replace(".", ",");
 }
 
-// cache para modal unidade
 let extrasRankingCache = [];
 
 function buildExecutiveSummary({
@@ -109,7 +108,6 @@ function renderRankingUnidades(extras) {
 }
 
 function renderExecutiveBars({ extrasProv, extrasReal, abertas, realizadas }) {
-  // barra gasto (realizado vs provisionado)
   const barGasto = document.getElementById("bar-gasto");
   const barGastoLeft = document.getElementById("bar-gasto-left");
   const barGastoLabel = document.getElementById("bar-gasto-label");
@@ -133,7 +131,6 @@ function renderExecutiveBars({ extrasProv, extrasReal, abertas, realizadas }) {
   if (barGastoLeft) barGastoLeft.innerText = formatBRL(extrasReal);
   if (barGastoLabel) barGastoLabel.innerText = `${formatBRL(extrasReal)} / ${formatBRL(extrasProv)}`;
 
-  // barra solicitacoes (abertas vs total)
   const barSol = document.getElementById("bar-solicitacoes");
   const barSolLabel = document.getElementById("bar-solicitacoes-label");
 
@@ -208,7 +205,6 @@ async function atualizarPowerBI() {
     const k = data?.kpis || {};
     const r = data?.rankings || {};
 
-    // ===== KPIs =====
     document.querySelector("#kpi-solicitacoes-abertas").innerText =
       safeNumber(k.solicitacoes_abertas);
 
@@ -233,7 +229,6 @@ async function atualizarPowerBI() {
     const linhasEl = document.querySelector("#kpi-linhas");
     if (linhasEl) linhasEl.innerText = safeNumber(k.linhas);
 
-    // ===== RESUMO EXECUTIVO =====
     const summaryEl = document.getElementById("exec-summary-text");
     if (summaryEl) {
       summaryEl.innerHTML = buildExecutiveSummary({
@@ -254,10 +249,7 @@ async function atualizarPowerBI() {
       realizadas: safeNumber(k.solicitacoes_realizadas)
     });
 
-    // ===== TOP CLIENTES =====
     renderTopClientes(r.clientes || []);
-
-    // ===== RANKING UNIDADES =====
     renderRankingUnidades(r.extras || []);
 
   } catch (e) {
@@ -265,6 +257,5 @@ async function atualizarPowerBI() {
   }
 }
 
-// Polling inteligente
 setInterval(atualizarPowerBI, 5000);
 document.addEventListener("DOMContentLoaded", atualizarPowerBI);

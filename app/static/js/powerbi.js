@@ -16,7 +16,6 @@ document.getElementById("setorSelect").addEventListener("change", async e => {
   });
 });
 
-// Toggle "Ver mais" linhas no Power BI
 function toggleLinhasPowerBI() {
   const extras = document.querySelectorAll(".extra-linha-powerbi");
   if (!extras.length) return;
@@ -28,7 +27,6 @@ function toggleLinhasPowerBI() {
   btn.textContent = isHidden ? "Recolher" : "Ver mais";
 }
 
-// ================== powerbi.js ==================
 async function refreshPowerBI() {
   try {
     const params = new URLSearchParams({

@@ -1,7 +1,3 @@
-/* =========================
-   FULLSCREEN LAYOUT MODE
-========================= */
-
 function enterFullscreen() {
   document.body.classList.add("fullscreen-mode");
   localStorage.setItem("fullscreen", "1");
@@ -20,7 +16,6 @@ function toggleFullscreen() {
   }
 }
 
-/* Persistência opcional */
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("fullscreen") === "1") {
     document.body.classList.add("fullscreen-mode");
