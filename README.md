@@ -426,5 +426,3 @@ Arquivos:
 ## 📄 Licença
 
 Projeto de uso privado/interno.
-
-```
