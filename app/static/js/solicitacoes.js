@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "Selecione um ou mais setores envolvidos nesta extra"
   );
 
-  // CLIENTES
   initMultiselect(
     "clientesSelect",
     "clientesDisplay",
