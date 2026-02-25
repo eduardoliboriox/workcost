@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* ======================================================
-     FILTROS — DATA PADRÃO (01/01 -> HOJE)
-     ====================================================== */
-
   const searchInput = document.getElementById("filterSearch");
   const startDateInput = document.getElementById("filterStartDate");
   const endDateInput = document.getElementById("filterEndDate");
@@ -14,10 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    // padrão: primeiro dia do ano
     startDateInput.value = `${currentYear}-01-01`;
 
-    // padrão: hoje
     endDateInput.value = today.toISOString().split("T")[0];
   }
 
@@ -58,10 +52,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   applyFilters();
 
-  /* ======================================================
-     SELECT ACESSAR
-     ====================================================== */
-
   document.querySelectorAll(".select-acessar-fechadas")
     .forEach(select => {
 
@@ -80,10 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
     });
-
-  /* ======================================================
-     SALVAR FECHAMENTO (objetivo + observação)
-     ====================================================== */
 
   async function salvarFechamento(id) {
 
