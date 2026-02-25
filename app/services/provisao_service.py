@@ -5,10 +5,6 @@ from app.repositories.employees_repository import (
     get_clt_remuneracao_mensal_by_matricula
 )
 
-# ===============================
-# CONFIGURAÇÕES (FUTURO: BD)
-# ===============================
-
 ADICIONAL_NOTURNO_PERCENTUAL = Decimal("0.20")
 
 JORNADA_MENSAL_HORAS_PADRAO = Decimal("220")
@@ -23,11 +19,6 @@ CUSTO_TRANSPORTE = {
     "ROTA": Decimal("18.00"),
     "VEICULO": Decimal("25.00"),
 }
-
-
-# ===============================
-# UTILITÁRIOS
-# ===============================
 
 def _money(v: Decimal) -> Decimal:
     return (v or Decimal("0")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -107,14 +98,7 @@ def _parse_date_iso(value) -> date | None:
     except Exception:
         return None
 
-# ===============================
-# FERIADOS (BR) p/ DSR
-# - objetivo: automatizar o reflexo 854 (DSR) com base no mês
-# - fator: (dias_descanso / dias_uteis) * adicional_noturno
-# ===============================
-
 def _easter_sunday(year: int) -> date:
-    # Algoritmo de Meeus/Jones/Butcher
     a = year % 19
     b = year // 100
     c = year % 100
@@ -209,10 +193,6 @@ def _valor_hora_clt(remuneracao_mensal) -> Decimal | None:
         return None
     return (rm / JORNADA_MENSAL_HORAS_PADRAO)
 
-# ===============================
-# FUNÇÃO PRINCIPAL
-# ===============================
-
 def gerar_provisao(solicitacao, funcionarios):
     """
     Agora inclui:
@@ -241,9 +221,6 @@ def gerar_provisao(solicitacao, funcionarios):
         custo_refeicao = calcular_refeicoes(turno)
         custo_transporte = calcular_transporte(f["transporte"])
 
-        # =========================
-        # CÁLCULO REAL DO NOTURNO (CLT)
-        # =========================
         remuneracao_mensal = get_clt_remuneracao_mensal_by_matricula(f.get("matricula"))
         valor_hora = _valor_hora_clt(remuneracao_mensal)
 
