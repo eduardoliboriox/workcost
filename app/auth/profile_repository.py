@@ -1,9 +1,6 @@
 from app.extensions import get_db
 from psycopg.rows import dict_row
 
-# ======================================================
-# EMPLOYEE LINK
-# ======================================================
 def find_employee_by_name(full_name: str):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -25,9 +22,7 @@ def link_user_to_employee(user_id: int, employee_id: int):
             """, (employee_id, user_id))
         conn.commit()
 
-# ======================================================
-# PROFILE
-# ======================================================
+
 def get_profile(user_id: int):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
