@@ -1,4 +1,4 @@
-```
+
 # WorkCost (Venttos) — Solicitações, Provisões e KPIs
 
 Aplicação **Fullstack Flask** (MVC) para gestão de **solicitações operacionais** (hora extra / banco de horas / compensação), com:
@@ -196,6 +196,7 @@ Estrutura pensada para separar responsabilidades:
 ├─ run.py                     # Entrypoint
 └─ runtime.txt                # Entrypoint
 ```
+
 ---
 
 ## ⚙️ Tecnologias
