@@ -9,9 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!searchInput || !startDateInput || !endDateInput) return;
 
-  /* ===============================
-     DEFAULT DATES (UX CONSISTENTE)
-     =============================== */
   const today = new Date();
   const currentYear = today.getFullYear();
 
@@ -38,9 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? new Date(endDateInput.value)
       : null;
 
-    /* =====================
-       DESKTOP (tabela)
-       ===================== */
     tableRows.forEach(row => {
       const text = row.innerText.toLowerCase();
       const dateCell = row.querySelector("td:nth-child(2)");
@@ -55,9 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         matchesText && matchesDate ? "" : "none";
     });
 
-    /* =====================
-       MOBILE (cards)
-       ===================== */
     mobileCards.forEach(card => {
       const text = card.innerText.toLowerCase();
 
