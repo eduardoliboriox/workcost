@@ -37,7 +37,6 @@
 
   <div class="row g-3">
 
-    <!-- Dados gerais -->
     <div class="col-md-3">
       <label class="form-label">Data</label>
       <input type="date" name="data" class="form-control" required>
@@ -89,7 +88,6 @@
       <input type="number" name="hc_real" class="form-control" readonly>
     </div>
 
-    <!-- Absenteísmo e Férias -->
     <hr>
     <h6 class="fw-bold mt-3">Absenteísmo por Cargo</h6>
     <div class="row g-3">
@@ -163,7 +161,6 @@
 let cargos = [];
 let ferias = [];
 
-/* ===================== ABSENTEÍSMO ===================== */
 function addCargo() {
   const select = document.getElementById("cargo");
   const qtdInput = document.getElementById("qtd");
@@ -182,7 +179,6 @@ function addCargo() {
   select.value = ""; qtdInput.value = "";
 }
 
-/* ===================== FÉRIAS ===================== */
 function addFerias() {
   const select = document.getElementById("cargoFerias");
   const qtdInput = document.getElementById("qtdFerias");
@@ -200,7 +196,6 @@ function addFerias() {
   select.value = ""; qtdInput.value = "";
 }
 
-/* ===================== UTIL ===================== */
 function atualizarHCReal() {
   const hcPadrao = +document.querySelector("[name='hc_padrao']").value || 0;
   const faltas = cargos.reduce((s,c)=>s+c.quantidade,0);
@@ -212,7 +207,6 @@ function atualizarJsons(){
   document.getElementById("feriasJson").value = JSON.stringify(ferias);
 }
 
-/* ===================== LINHAS ===================== */
 const linhasPorSetor = {
   IM: ["IM-01","IM-02","IM-03","IM-04","IM-05","IM-06"],
   PA: ["IP-COM","PA-01","PA-03","PA-04","PA-07","PA-08","PA-09","PA-13","WIFI"],
@@ -238,7 +232,6 @@ linhaSelect.addEventListener("change", async () => {
   atualizarHCReal();
 });
 
-/* ===================== SALVAR ===================== */
 const form = document.getElementById("formLancamento");
 const msgDiv = document.getElementById("msgLancamento");
 
