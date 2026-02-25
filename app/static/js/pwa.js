@@ -1,4 +1,3 @@
-// PWA bootstrap (safe + minimal)
 (function () {
   if (!("serviceWorker" in navigator)) return;
 
@@ -6,7 +5,6 @@
     navigator.serviceWorker
       .register("/sw.js", { scope: "/" })
       .catch(function () {
-        // silent fail (não quebra nada do app)
       });
   });
 })();
