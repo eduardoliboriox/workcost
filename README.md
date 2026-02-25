@@ -310,7 +310,7 @@ Arquivo:
 
 ## 🗃 Banco de Dados (Railway) — Operação via psql (Windows)
 
-Você já usa `psql.exe` direto no Windows.
+Você já usa `psql.exe` direto no Windows ?!
 
 📌 **Importante (segurança):** não coloque senhas/URLs completas no README público.
 Use o `DATABASE_URL` do Railway e rode assim:
