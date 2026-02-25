@@ -39,9 +39,6 @@
 {% block content %}
 <div class="container-fluid">
 
-  <!-- ===============================
-       FILTROS (GESTÃO)
-       =============================== -->
   <div class="card shadow-sm p-3 mb-3">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
       <div class="fw-bold">
@@ -107,9 +104,6 @@
     </form>
   </div>
 
-  <!-- ===============================
-       LOADING
-       =============================== -->
   <div id="relatorioLoading" class="d-none">
     <div class="card shadow-sm p-3">
       <div class="d-flex align-items-center gap-2">
@@ -122,12 +116,8 @@
     </div>
   </div>
 
-  <!-- ===============================
-       RESULTADO
-       =============================== -->
   <div id="resultadoRelatorio" class="d-none">
 
-    <!-- KPIs principais -->
     <div class="row g-3 mb-3 text-center">
 
       <div class="col-12 col-md-3">
@@ -172,10 +162,8 @@
 
     </div>
 
-    <!-- Financeiro e Rankings -->
     <div class="row g-3 mb-3">
 
-      <!-- Resumo Financeiro -->
       <div class="col-12 col-lg-4">
         <div class="card shadow-sm p-3 h-100">
           <h6 class="fw-bold mb-3">
@@ -204,7 +192,6 @@
         </div>
       </div>
 
-      <!-- Ranking por Unidade -->
       <div class="col-12 col-lg-4">
         <div class="card shadow-sm p-3 h-100">
           <h6 class="fw-bold text-primary mb-3">
@@ -232,7 +219,6 @@
         </div>
       </div>
 
-      <!-- Ranking por Cliente -->
       <div class="col-12 col-lg-4">
         <div class="card shadow-sm p-3 h-100">
           <h6 class="fw-bold text-warning mb-3">
@@ -275,7 +261,6 @@
         </div>
       </div>
 
-      <!-- Ranking por tipo de solicitação (opcional, sem HC/linhas) -->
       <div class="col-12 col-lg-6">
         <div class="card shadow-sm p-3 h-100">
           <h6 class="fw-bold text-info mb-3">
@@ -298,9 +283,6 @@
 
 </div>
 
-<!-- ===============================
-     MODAL — Detalhe de faltas por data
-     =============================== -->
 <div class="modal fade" id="modalFaltasData" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content shadow">
