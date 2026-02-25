@@ -1,11 +1,6 @@
 let dashboardIsLoading = false;
 let dashboardTimeout = null;
 
-/**
- * Cache local do ranking de absenteísmo por data.
- * Evita chamadas extras: o endpoint /api/dashboard/absenteismo-por-data
- * já devolve a lista de funcionários por data.
- */
 let absenteismoPorDataCache = [];
 
 function showDashboardLoading() {
@@ -37,9 +32,6 @@ async function atualizarDashboard() {
       filial: document.querySelector('[name="filial"]').value || ''
     });
 
-    // ===============================
-    // PARALLEL REQUESTS (PROFISSIONAL)
-    // ===============================
     const [
       respResumo,
       respSolicitacoes,
@@ -69,9 +61,6 @@ async function atualizarDashboard() {
     const rankingAbsData = await respAbsData.json();
     const rankingProvisaoTipos = await respProvisaoTipos.json();
 
-    // ===============================
-    // KPIs
-    // ===============================
     document.getElementById("kpi-abs").innerText =
       dataResumo.kpis.absenteismo + "%";
 
@@ -89,16 +78,12 @@ async function atualizarDashboard() {
         .toFixed(2)
         .replace(".", ",");
 
-    // ===============================
-    // Atualizações visuais
-    // ===============================
     atualizarTabelaExtras(rankingExtras);
     atualizarObjetivos(rankingObjetivos);
     atualizarClientes(rankingClientes);
     atualizarTipos(rankingTipos);
     atualizarAbsenteismoPorData(rankingAbsData);
 
-    // ✅ card financeiro de provisões (provisao_service.py)
     atualizarTiposProvisao(rankingProvisaoTipos);
 
   } catch (e) {
@@ -176,7 +161,6 @@ function atualizarTipos(dados) {
 }
 
 function atualizarAbsenteismoPorData(dados) {
-  // cache para o mini modal (detalhes por data)
   absenteismoPorDataCache = Array.isArray(dados) ? dados : [];
 
   const lista = document.getElementById("rankingAbsenteismoDataList");
@@ -212,10 +196,6 @@ function atualizarAbsenteismoPorData(dados) {
   }
 }
 
-/**
- * ✅ Card financeiro: composição da provisão (refeição/transporte/adicional)
- * Reaproveita o mesmo container/id do card já existente: rankingGastosList
- */
 function atualizarTiposProvisao(dados) {
   const lista = document.getElementById("rankingGastosList");
   const btn = document.getElementById("toggleGastosBtn");
@@ -265,10 +245,6 @@ function atualizarTiposProvisao(dados) {
   }
 }
 
-/**
- * Mini modal do Ranking de absenteísmo por data
- * Mostra: Matrícula | Nome | Quantidade + Total
- */
 async function abrirModalAbsenteismo(dataISO) {
 
   const modalEl = document.getElementById("modalAbsenteismo");
@@ -336,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
   atualizarDashboard();
 });
 
-// Auto refresh controlado
 setInterval(() => {
   if (!dashboardIsLoading) {
     atualizarDashboard();
