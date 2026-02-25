@@ -3,7 +3,6 @@ from psycopg.rows import dict_row
 from flask_login import LoginManager
 from flask import current_app
 
-# 🔐 Flask-Login (instanciado UMA vez)
 login_manager = LoginManager()
 
 def get_db():
