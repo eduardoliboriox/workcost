@@ -181,7 +181,6 @@ def api_dashboard_gastos_provisao():
 
     return jsonify(ranking_gastos_provisao_dashboard(filtros))
 
-# ✅ NOVO — composição financeira da provisão (provisao_service.py)
 @bp.route("/dashboard/provisao-tipos", methods=["GET"])
 @login_required
 def api_dashboard_provisao_tipos():
@@ -194,7 +193,6 @@ def api_dashboard_provisao_tipos():
     }
 
     return jsonify(ranking_tipos_provisao_dashboard(filtros))
-
 
 @bp.route("/solicitacoes", methods=["POST"])
 def api_criar_solicitacao():
