@@ -954,11 +954,6 @@ def ranking_gastos_provisao_dashboard(filtros: dict):
     resultado.sort(key=lambda x: x["total"], reverse=True)
     return resultado
 
-
-# =========================================================
-# DASHBOARD — COMPOSIÇÃO DA PROVISÃO (provisao_service.py)
-# =========================================================
-
 def ranking_tipos_provisao_dashboard(filtros: dict):
     """
     Card financeiro (provisões) baseado em app/services/provisao_service.py
