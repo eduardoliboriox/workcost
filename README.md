@@ -195,10 +195,7 @@ Estrutura pensada para separar responsabilidades:
 ├─ requirements.txt
 ├─ run.py                     # Entrypoint
 └─ runtime.txt                # Entrypoint
-````
-
-> Observação: parte do projeto foi derivada de outro repositório e ainda está em análise para decidir quais arquivos permanecem.
-
+```
 ---
 
 ## ⚙️ Tecnologias
