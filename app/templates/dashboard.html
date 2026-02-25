@@ -40,9 +40,6 @@
 </div>
 {% endblock %}
 
-<!-- ===============================
-     DASHBOARD LOADING OVERLAY
-     =============================== -->
 <div id="dashboardLoadingOverlay" class="dashboard-loading-overlay d-none">
   <div class="dashboard-loading-content">
     <div class="spinner-border text-primary" role="status"></div>
@@ -93,7 +90,6 @@
 
   </form>
 
-<!-- KPIs -->
 <div class="row g-3 mb-4 text-center">
   <div class="col-md-2">
     <div class="card shadow-sm p-3 kpi-card">
@@ -133,7 +129,6 @@
   
 <div class="row g-3 mb-4">
 
-<!-- Ranking por Unidade (Extras) -->
 <div class="col-md-4">
   <div class="card shadow-sm p-3">
     <h6 class="fw-bold text-primary mb-3">
@@ -175,7 +170,6 @@
   </div>
 </div>
   
-  <!-- Status dos Objetivos -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
       <h6 class="fw-bold text-danger mb-3">
@@ -196,7 +190,6 @@
     </div>
   </div>
 
-  <!-- Ranking de Solicitações por Cliente -->
   <div class="col-md-4">
     <div class="card shadow-sm p-3">
   
@@ -225,7 +218,6 @@
   
   <div class="row g-4 mb-4">
   
-    <!-- ================== FINANCEIRO (COMPOSIÇÃO DA PROVISÃO) ================== -->
     <div class="col-lg-4">
       <div class="card shadow-sm p-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -265,12 +257,10 @@
       </div>
     </div>
   
-    <!-- ================== RANKINGS LATERAIS ================== -->
     <div class="col-lg-8">
   
       <div class="row g-3">
   
-        <!-- Ranking por Tipo de Solicitação -->
         <div class="col-12 col-lg-6">
           <div class="card shadow-sm p-3">
             <h6 class="fw-bold text-info mb-3">
@@ -295,7 +285,6 @@
           </div>
         </div>
   
-        <!-- Ranking Absenteísmo por Data -->
         <div class="col-12 col-lg-6">
           <div class="card shadow-sm p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -313,7 +302,6 @@
         
             <ul class="list-group list-group-flush"
                 id="rankingAbsenteismoDataList">
-              <!-- preenchido via JS -->
             </ul>
           </div>
         </div>
@@ -323,7 +311,6 @@
   
   </div>
 
-<!-- Modal de Faltas por Linha -->
 <div class="modal fade" id="modalLinha" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">
@@ -345,7 +332,6 @@
   </div>
 </div>
 
-<!-- Modal Absenteísmo por Data -->
 <div class="modal fade" id="modalAbsenteismo" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content shadow">
@@ -367,7 +353,6 @@
               </tr>
             </thead>
             <tbody id="modalAbsTabelaBody">
-              <!-- preenchido via JS -->
             </tbody>
           </table>
         </div>
