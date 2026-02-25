@@ -3,13 +3,7 @@ import re
 
 
 def normalize_username(value: str) -> str:
-    """
-    Normaliza string para uso como username:
-    - remove acentos
-    - converte para lowercase
-    - remove caracteres inválidos
-    - mantém letras, números e ponto
-    """
+
     if not value:
         return ""
 
