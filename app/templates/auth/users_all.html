@@ -78,9 +78,6 @@
 
         <td class="text-end">
 
-          {# ============================
-             USUÁRIO PENDENTE
-             ============================ #}
           {% if not u.is_active %}
             <a href="{{ url_for('auth.approve_user_route', user_id=u.id) }}"
                class="btn btn-sm btn-outline-success">
@@ -92,9 +89,6 @@
               Negar
             </a>
 
-          {# ============================
-             USUÁRIO ATIVO
-             ============================ #}
           {% else %}
             <form method="post"
                   action="{{ url_for('auth.update_user_role_route', user_id=u.id) }}"
