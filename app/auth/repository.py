@@ -5,9 +5,6 @@ from werkzeug.security import generate_password_hash
 from app.utils.text import normalize_username
 from datetime import datetime, timedelta
 
-# =====================================================
-# CORE USERS (Flask-Login / OAuth / Local)
-# =====================================================
 def get_user_by_id(user_id):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -49,9 +46,6 @@ def create_user(data):
             conn.commit()
             return cur.fetchone()
 
-# =====================================================
-# LOCAL AUTH
-# =====================================================
 def get_user_by_username(username: str):
     """
     Busca usuário por username de forma accent-insensitive.
@@ -104,9 +98,6 @@ def create_local_user(data):
             conn.commit()
             return cur.fetchone()
 
-# =====================================================
-# ADMIN
-# =====================================================
 def list_pending_users(search=None):
     with get_db() as conn:
         with conn.cursor(row_factory=dict_row) as cur:
@@ -178,7 +169,6 @@ def list_all_users(search=None):
                 )
             return cur.fetchall()
 
-# =====================================================
 def update_user_password(user_id: int, new_password: str):
     password_hash = generate_password_hash(new_password)
 
