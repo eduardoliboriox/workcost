@@ -7,6 +7,22 @@
   <form method="post"
         action="{{ url_for('auth.login_local') }}"
         class="mobile-form">
+    
+    <button
+      id="install-app-btn"
+      type="button"
+      class="btn btn-outline-light w-100 mb-3 d-none d-inline-flex align-items-center justify-content-center gap-2"
+      aria-hidden="true"
+    >
+      <img
+        src="{{ url_for('static', filename='images/logos/pwa-192.png') }}"
+        alt="WorkCost"
+        width="18"
+        height="18"
+        style="border-radius:4px;"
+      >
+      <span>Instalar aplicativo</span>
+    </button>
 
     <div class="input-group mb-3 auth-input">
       <span class="input-group-text">
