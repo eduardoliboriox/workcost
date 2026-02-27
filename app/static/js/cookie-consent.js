@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  if (localStorage.getItem("cookieConsent") === "accepted") {
+  const consent = localStorage.getItem("cookieConsent");
+
+  if (consent === "all" || consent === "essential" || consent === "accepted") {
     return;
   }
 
@@ -9,22 +11,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   banner.innerHTML = `
     <div class="cookie-content">
-      Utilizamos cookies para melhorar sua experiência.
-      <a href="/cookie-policy" target="_blank">Saiba mais</a>
+      Este site utiliza tecnologias como cookies para ativar funcionalidades essenciais do site, bem como para análise de dados, personalização e publicidade direcionada.
+      <a href="/cookie-policy" target="_blank" rel="noopener noreferrer">Saiba mais</a>
     </div>
     <div class="cookie-actions">
       <button id="acceptCookies" class="btn btn-sm btn-primary">
-        Aceitar todos
+        Aceitar
+      </button>
+      <button id="denyNonEssentialCookies" class="btn btn-sm btn-outline-secondary">
+        Negar não essencial
       </button>
     </div>
   `;
 
   document.body.appendChild(banner);
 
-  document.getElementById("acceptCookies")
-    .addEventListener("click", () => {
-      localStorage.setItem("cookieConsent", "accepted");
+  const acceptBtn = document.getElementById("acceptCookies");
+  const denyBtn = document.getElementById("denyNonEssentialCookies");
+
+  if (acceptBtn) {
+    acceptBtn.addEventListener("click", () => {
+      localStorage.setItem("cookieConsent", "all");
       banner.remove();
     });
+  }
+
+  if (denyBtn) {
+    denyBtn.addEventListener("click", () => {
+      localStorage.setItem("cookieConsent", "essential");
+      banner.remove();
+    });
+  }
 
 });
